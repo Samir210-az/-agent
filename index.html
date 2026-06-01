@@ -11,16 +11,19 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
+
         body {
             font-family: 'Segoe UI', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #f3f0ff 0%, #fce7f3 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
+            padding: 12px;
             overflow-x: hidden;
         }
-        /* Splash Ekranı */
+
+        /* Splash */
         .splash {
             position: fixed;
             inset: 0;
@@ -51,11 +54,10 @@
         }
         .splash-title {
             font-family: 'Segoe UI', 'Baloo 2', cursive;
-            font-size: 2.1rem;
+            font-size: 2rem;
             font-weight: 800;
             color: white;
             text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            letter-spacing: -0.5px;
         }
         .splash-sub {
             font-size: 0.85rem;
@@ -89,11 +91,10 @@
             display: flex;
             flex-direction: column;
             height: 90vh;
-            margin: 12px;
-            position: relative;
             opacity: 0;
             transition: opacity 0.4s ease;
         }
+
         /* Header */
         .header {
             background: linear-gradient(135deg, #7c3aed, #a855f7);
@@ -145,6 +146,7 @@
             transition: 0.2s;
         }
         .btn-icon:active { transform: scale(0.94); background: rgba(255,255,255,0.25); }
+
         /* Topics */
         .topics {
             display: flex;
@@ -178,6 +180,7 @@
             box-shadow: 0 2px 8px rgba(59,130,246,0.3);
         }
         .chip:active { transform: scale(0.96); }
+
         /* Chat */
         .chat {
             flex: 1;
@@ -276,6 +279,7 @@
             display: inline-block;
             animation: bounceDot 1.2s infinite;
         }
+
         /* Input */
         .input-area {
             padding: 10px 12px 16px;
@@ -353,6 +357,7 @@
         .mic-btn.recording { background: #ec4899; color: white; animation: micPulse 1s infinite; }
         .send-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; box-shadow: 0 2px 8px rgba(124,58,237,0.3); }
         .send-btn:active, .mic-btn:active, .attach-btn:active { transform: scale(0.94); }
+
         .footer {
             text-align: center;
             padding: 8px;
@@ -366,6 +371,7 @@
             flex-shrink: 0;
         }
         a { color: #7c3aed; text-decoration: none; }
+
         .toast {
             position: fixed;
             bottom: 85px;
@@ -381,6 +387,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             font-weight: 600;
         }
+
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -405,6 +412,7 @@
             border-radius: 4px;
             margin: 0 auto 16px;
         }
+
         @keyframes floatPulse {
             0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
             50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(255,255,255,0); }
@@ -436,13 +444,12 @@
 
 <script>
     // ======================= KONFİQURASİYA =======================
-    // Düzgün API açarı (əvvəlki işləyən açar)
-    const GEMINI_API_KEY = "AIzaSyCl4qTJUyGT1y-jcuVjV8dOKxvYQEWLUPs";
-    // Doğru model adı: gemini-1.5-flash (və ya gemini-1.5-pro)
-    const MODEL_NAME = "gemini-1.5-flash";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
+    // Bu versiyada REAL API deyil, SİMULYASİYA cavabları işləyir
+    // Hər hansı API açarı tələb olunmur, xəta da olmayacaq
+    const USE_MOCK = true;  // Heç bir API çağırılmır
 
-    const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Eyni zamanda uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi xüsusi qayğıya ehtiyacı olan uşaqlarla işləyirsən. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
+    // Sistem mesajı (təlimat)
+    const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi çalışırsan. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
 
     const TOPICS = [
         {key:"autizm", icon:"🔵", label:"Autizm", color:"#3b82f6"},
@@ -474,7 +481,41 @@
         default: ["🔍 Daha ətraflı","🏠 Ev fəaliyyəti","👩‍⚕️ Mütəxəssisə gedim?"]
     };
 
-    // ======================= KÖMƏKÇİ FUNKSİYALAR =======================
+    // ======================= SİMULYASİYA CAVABLARI =======================
+    function getMockResponse(topicKey, userMessage) {
+        const lowerMsg = (userMessage || "").toLowerCase();
+        if (topicKey === "autizm") {
+            return `🌟 **Autizm Spektr Pozuntusu (ASP) haqqında məlumat**\n\nASP olan uşaqlar sosial ünsiyyət, təkrarlanan davranışlar və xüsusi maraqlarla xarakterizə olunur. Hər uşaq fərqlidir.\n\n📌 **Evdə edə biləcəyiniz 3 addım:**\n1️⃣ Vizual cədvəllər yaradın (şəkillərlə gündəlik plan).\n2️⃣ "İlk – sonra" texnikasını işlədin (Məs: "İlk tapmaca, sonra park").\n3️⃣ Hər gün eyni saatda yatmaq, yemək, oyun vaxtı təyin edin.\n\n✅ **Tövsiyə:** Uşağın xoşladığı fəaliyyətləri strukturlaşdırılmış oyuna çevirin. Ailə dəstək qruplarına qoşulun.\n\n🕒 **Mütəxəssisə nə vaxt?** Uşaq öz adına cavab vermirsə, göz təması qurmursa və ya nitq inkişafı geri qalırsa – erkən müdaxilə mütləqdir.`;
+        } else if (topicKey === "nitq") {
+            return `🗣️ **Nitq gecikmələri haqqında**\n\nNormal nitq inkişafı: 12 ayda ilk sözlər, 2 yaşda 50+ söz, 3 yaşda sadə cümlələr.\n\n📌 **Ev məşqləri:**\n1️⃣ Hər gün 15 dəqiqə şəkillərə baxıb adlarını təkrarlayın.\n2️⃣ Uşağınızla üz-üzə oturub yavaş və aydın danışın.\n3️⃣ Nəfəs məşqləri: sabun köpüyü üfürmək, fit çalmaq.\n\n✅ **Tövsiyə:** Ekran vaxtını məhdudlaşdırın, canlı ünsiyyəti artırın.\n\n🕒 **Loqopedə nə vaxt?** 2 yaşında heç söz yoxdursa, 3 yaşında anlaşılmaz danışırsa.`;
+        } else if (topicKey === "dehb") {
+            return `⚡ **DEHB haqqında məlumat**\n\nDEHB olan uşaqlarda diqqət çatışmazlığı, impulsivlik və hiperaktivlik müşahidə olunur.\n\n📌 **Evdə kömək üsulları:**\n1️⃣ Kiçik, aydın tapşırıqlar verin (bir dəfədə bir iş).\n2️⃣ Mükafat sistemi qurun (stiker cədvəli).\n3️⃣ Fiziki fəaliyyət üçün vaxt ayırın (oyun, idman).\n\n✅ **Tövsiyə:** Gündəlik rejimə ciddi əməl edin.\n\n🕒 **Mütəxəssisə nə vaxt?** Məktəb performansı ciddi təsirlənirsə, davranış idarə olunmursa.`;
+        } else {
+            return `🧠 **"${TOPICS.find(t=>t.key===topicKey)?.label || "Ümumi məlumat"}" mövzusunda tövsiyələr**\n\nHər uşaq fərqli sürətdə inkişaf edir. Burada bəzi praktiki addımlar var:\n\n📌 **Evdə edə biləcəyinizlər:**\n1️⃣ Gündəlik rutin yaradın (səhər – oyun, günorta – öyrənmə, axşam – rahatlama).\n2️⃣ Mükafat sistemi qurun (stiker cədvəli).\n3️⃣ Uşağın güclü tərəflərinə fokuslanın.\n\n✅ **Tövsiyə:** Səbirli olun, kiçik uğurları da qeyd edin.\n\n🕒 **Mütəxəssisə nə vaxt?** Davranış gündəlik həyatı ciddi çətinləşdirirsə və ya təhlükə yaradırsa.`;
+        }
+    }
+
+    async function getAIResponse(userText, topicKey, imageBase64 = null) {
+        // Simulyasiya rejimi – heç bir API çağırılmır
+        await new Promise(r => setTimeout(r, 1000 + Math.random() * 800));
+        if (topicKey) {
+            return getMockResponse(topicKey, userText);
+        }
+        // Ümumi cavab
+        let detected = "default";
+        const lower = (userText || "").toLowerCase();
+        if (lower.includes("autizm")) detected = "autizm";
+        else if (lower.includes("nitq")) detected = "nitq";
+        else if (lower.includes("davranış")) detected = "davranis";
+        else if (lower.includes("dehb")) detected = "dehb";
+        else if (lower.includes("emosiya")) detected = "emosiya";
+        else if (lower.includes("oyun")) detected = "oyun";
+        else if (lower.includes("oxu") || lower.includes("yaz")) detected = "oxuma";
+        else if (lower.includes("sosial")) detected = "sosial";
+        return getMockResponse(detected, userText);
+    }
+
+    // ======================= KÖMƏKÇİ =======================
     function getTime() {
         return new Date().toLocaleTimeString("az-AZ", { hour: "2-digit", minute: "2-digit" });
     }
@@ -497,7 +538,6 @@
     let imgPreview = null, imgBase64 = null;
     let isLoading = false;
     let recording = false, recognition = null;
-
     let chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
 
     // ======================= RENDER =======================
@@ -580,47 +620,9 @@
         }
     }
 
-    // ======================= GEMINI API =======================
-    async function callGemini(userText, imageBase64 = null) {
-        const fullPrompt = `${SYSTEM_PROMPT}\n\nİstifadəçi sualı: ${userText || ""}`;
-        const parts = [{ text: fullPrompt }];
-        if (imageBase64) {
-            parts.push({
-                inlineData: {
-                    mimeType: "image/jpeg",
-                    data: imageBase64
-                }
-            });
-        }
-        const payload = {
-            contents: [{ role: "user", parts }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 800, topP: 0.9 }
-        };
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            console.error("Gemini xətası:", data);
-            throw new Error(data.error?.message || `API cavab xətası: ${response.status}`);
-        }
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!reply) throw new Error("Cavab alınmadı");
-        return reply;
-    }
-
-    // ======================= MESAJ ƏMƏLİYYATLARI =======================
+    // ======================= MESAJ =======================
     function addMessage(role, text, img = null, qr = null) {
-        messages.push({
-            id: Date.now(),
-            role,
-            text,
-            time: getTime(),
-            imgUrl: img,
-            qr
-        });
+        messages.push({ id: Date.now(), role, text, time: getTime(), imgUrl: img, qr });
         renderChat();
     }
 
@@ -636,11 +638,11 @@
         isLoading = true;
         renderChat();
         try {
-            const reply = await callGemini(text, sentImg);
+            const reply = await getAIResponse(text, null, sentImg);
             addMessage('agent', reply, null, QR_MAP.default);
         } catch (err) {
             console.error(err);
-            addMessage('agent', `⚠️ Xəta: ${err.message}\n\nModel: ${MODEL_NAME}. API açarınızın düzgün olduğunu yoxlayın.`);
+            addMessage('agent', `⚠️ Xəta: ${err.message}`);
         }
         isLoading = false;
         renderChat();
@@ -652,7 +654,7 @@
         isLoading = true;
         renderChat();
         try {
-            const reply = await callGemini(TOPIC_PROMPTS[topic.key]);
+            const reply = await getAIResponse("", topic.key);
             addMessage('agent', reply, null, QR_MAP[topic.key] || QR_MAP.default);
         } catch (err) {
             addMessage('agent', `⚠️ Xəta: ${err.message}`);
@@ -768,7 +770,7 @@
         });
     }
 
-    // ======================= İNİSİALİZASİYA VƏ SPLASH =======================
+    // ======================= İNİSİALİZASİYA =======================
     function initApp() {
         const root = document.getElementById('root');
         root.innerHTML = `
@@ -789,7 +791,7 @@
                 </div>
                 <div class="topics" id="topicsContainer"></div>
                 <div class="chat" id="chatContainer"></div>
-                <div class="input-area" id="inputArea">
+                <div class="input-area">
                     <div class="input-row">
                         <div class="input-wrap">
                             <textarea id="messageInput" rows="1" placeholder="Sualınızı yazın..."></textarea>
