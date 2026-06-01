@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AN PSİXOLOJİ – Peşəkar Uşaq Psixologiyası Agent</title>
+    <title>AN PSİXOLOJİ – Rəsmi Agent</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Nunito', sans-serif;
         }
-
         body {
-            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #f3f0ff 0%, #fce7f3 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
         }
-
-        /* Splash Screen - Orijinal Animasiya */
+        /* SPLASH EKRANI (animasiyalı) */
         .splash {
             position: fixed;
             inset: 0;
@@ -31,13 +28,13 @@
             align-items: center;
             justify-content: center;
             z-index: 10000;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.5s ease;
         }
         .splash.hide {
             opacity: 0;
             pointer-events: none;
         }
-        .splash-logo {
+        .splash-icon {
             font-size: 4rem;
             margin-bottom: 20px;
             background: rgba(255,255,255,0.2);
@@ -47,18 +44,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: float 2s ease-in-out infinite, pulseGlow 1.8s ease-in-out infinite;
-            box-shadow: 0 0 0 0 rgba(255,255,255,0.4);
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-            70% { box-shadow: 0 0 0 25px rgba(255,255,255,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+            animation: pulseGlow 1.2s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
         }
         .splash-title {
             font-family: 'Baloo 2', cursive;
@@ -66,41 +53,39 @@
             font-weight: 800;
             color: white;
             letter-spacing: -0.5px;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: slideUp 0.8s ease-out;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .splash-sub {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.85);
             margin-top: 8px;
             font-weight: 600;
-            animation: slideUp 0.8s 0.1s backwards;
         }
-        .splash-dots {
+        .dot-container {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-top: 30px;
         }
-        .splash-dot {
+        .dot {
             width: 10px;
             height: 10px;
-            background: white;
+            background: rgba(255,255,255,0.6);
             border-radius: 50%;
-            animation: bounceDot 1.2s infinite ease-in-out;
+            animation: bounceDot 1s infinite;
         }
-        .splash-dot:nth-child(1) { animation-delay: 0s; }
-        .splash-dot:nth-child(2) { animation-delay: 0.2s; }
-        .splash-dot:nth-child(3) { animation-delay: 0.4s; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes pulseGlow {
+            0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255,255,255,0); }
+        }
         @keyframes bounceDot {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
-            40% { transform: scale(1.3); opacity: 1; }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            0%,80%,100% { transform: translateY(0); opacity: 0.5; }
+            40% { transform: translateY(-12px); opacity: 1; }
         }
 
-        /* Əsas App Stili */
+        /* ƏSAS APP STILLƏRİ */
         .app {
             max-width: 500px;
             width: 100%;
@@ -111,9 +96,7 @@
             display: flex;
             flex-direction: column;
             height: 90vh;
-            position: relative;
         }
-        /* Header */
         .header {
             background: linear-gradient(135deg, #7c3aed, #a855f7);
             padding: 13px 15px;
@@ -142,9 +125,9 @@
             background: #4ade80;
             border-radius: 50%;
             border: 2px solid #7c3aed;
-            animation: onlinePulse 2s infinite;
+            animation: pulseOnline 2s infinite;
         }
-        @keyframes onlinePulse {
+        @keyframes pulseOnline {
             0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
             50% { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
         }
@@ -159,10 +142,7 @@
             cursor: pointer;
             font-size: 1rem;
             color: white;
-            transition: 0.2s;
         }
-        .btn-icon:active { transform: scale(0.95); }
-        /* Topics */
         .topics {
             display: flex;
             gap: 8px;
@@ -170,7 +150,6 @@
             overflow-x: auto;
             background: #f8f7ff;
             border-bottom: 1px solid #ede9fe;
-            scrollbar-width: thin;
         }
         .chip {
             background: white;
@@ -182,14 +161,13 @@
             color: #4b5563;
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
         .chip.active {
             background: #3b82f6;
             color: white;
             border-color: #3b82f6;
         }
-        /* Chat */
         .chat {
             flex: 1;
             overflow-y: auto;
@@ -203,13 +181,11 @@
             display: flex;
             gap: 10px;
             align-items: flex-end;
-            animation: fadeInUp 0.25s ease;
+            animation: fadeIn 0.2s ease;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .user-message {
+            flex-direction: row-reverse;
         }
-        .user-message { flex-direction: row-reverse; }
         .agent-avatar, .user-avatar {
             width: 32px;
             height: 32px;
@@ -261,9 +237,7 @@
             font-weight: 600;
             color: #7c3aed;
             cursor: pointer;
-            transition: 0.15s;
         }
-        .qr-btn:active { background: #e0d4fc; }
         .chat-img {
             max-width: 100%;
             max-height: 150px;
@@ -286,15 +260,18 @@
             background: #7c3aed;
             border-radius: 50%;
             display: inline-block;
-            animation: bounceAnim 1.2s infinite;
+            animation: bounceTyping 1.2s infinite;
         }
         .typing span:nth-child(2) { animation-delay: 0.2s; }
         .typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounceAnim {
-            0%,60%,100% { transform: translateY(0); opacity: 0.4; }
-            30% { transform: translateY(-8px); opacity: 1; }
+        @keyframes bounceTyping {
+            0%,80%,100% { transform: translateY(0); opacity: 0.4; }
+            40% { transform: translateY(-6px); opacity: 1; }
         }
-        /* Input */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .input-area {
             padding: 8px 12px 16px;
             background: white;
@@ -324,9 +301,6 @@
             font-size: 0.6rem;
             cursor: pointer;
             border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .input-row {
             display: flex;
@@ -364,7 +338,6 @@
             width: 38px;
             height: 38px;
             border-radius: 50%;
-            transition: 0.1s;
         }
         .mic-btn {
             background: #ede9fe;
@@ -386,7 +359,10 @@
             justify-content: center;
             gap: 12px;
         }
-        a { color: #7c3aed; text-decoration: none; }
+        a {
+            color: #7c3aed;
+            text-decoration: none;
+        }
         .toast {
             position: fixed;
             bottom: 80px;
@@ -399,21 +375,18 @@
             font-size: 0.7rem;
             z-index: 1000;
             white-space: nowrap;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         /* Voice overlay */
         .voice-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(124,58,237,0.95);
-            backdrop-filter: blur(8px);
+            background: rgba(124,58,237,0.94);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
             gap: 20px;
-            animation: fadeIn 0.2s;
         }
         .voice-circle {
             width: 110px;
@@ -424,34 +397,74 @@
             align-items: center;
             justify-content: center;
             font-size: 3rem;
-            border: 3px solid rgba(255,255,255,0.5);
+            border: 3px solid white;
             animation: voicePulse 1.2s infinite;
         }
         @keyframes voicePulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
             50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255,255,255,0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0); }
         }
         .voice-stop {
             background: white;
             border: none;
-            border-radius: 40px;
-            padding: 10px 28px;
-            font-weight: 800;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: bold;
             color: #7c3aed;
             cursor: pointer;
         }
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 1500;
+        }
+        .modal-sheet {
+            background: white;
+            width: 100%;
+            border-radius: 24px 24px 0 0;
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin: 0 auto 15px;
+        }
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .spec-card {
+            background: #f8f7ff;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #ede9fe;
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="app" id="app"></div>
+<div id="app"></div>
 
 <script>
     // ======================= KONFİQURASİYA =======================
-    const GEMINI_API_KEY = "AIzaSyCl4qTJUyGT1y-jcuVjV8dOKxvYQEWLUPs";
-    // Düzgün model adı - API v1beta üçün
-    const MODEL_NAME = "gemini-1.5-flash";
+    // 🔐 ÖZ ETİBARLI GEMİNİ API AÇARINIZI BURAYA YAZIN
+    const GEMINI_API_KEY = "AIzaSyCl4qTJUyGT1y-jcuVjV8dOKxvYQEWLUPs";  // <-- Dəyişdirin
+
+    // Model adı düzəldildi: gemini-1.5-flash -> gemini-1.5-pro (və ya gemini-pro)
+    const MODEL_NAME = "gemini-1.5-pro";
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
 
     // Məlumatlar
     const TOPICS = [
@@ -481,53 +494,22 @@
         dehb:["🏃 Enerji fəaliyyətlər","📌 Diqqət məşqləri","🌙 Yuxu rutini"],
         default:["🔍 Daha ətraflı","🏠 Ev fəaliyyəti","👩‍⚕️ Mütəxəssisə gedim?"]
     };
+    const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi çalışırsan. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
 
-    // ======================= KÖMƏKÇİ =======================
+    // Köməkçi funksiyalar
     function getTime() { return new Date().toLocaleTimeString("az-AZ", { hour:"2-digit", minute:"2-digit" }); }
     function renderText(t) { return t.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\n/g,"<br>"); }
-    function showToast(msg) { let d=document.createElement('div'); d.className='toast'; d.innerText=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),2500); }
+    function showToast(msg) { let div=document.createElement('div'); div.className='toast'; div.innerText=msg; document.body.appendChild(div); setTimeout(()=>div.remove(),2500); }
 
-    // ======================= GEMINI API ÇAĞIRIŞI (DÜZGÜN) =======================
-    async function callGemini(userText, imageBase64 = null) {
-        const systemPrompt = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi çalışırsan. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə. Cavablar strukturlaşdırılmış və mehriban olsun.`;
-        
-        const parts = [{ text: systemPrompt + "\n\nİstifadəçi sualı: " + (userText || "") }];
-        if (imageBase64) {
-            parts.push({ inlineData: { mimeType: "image/jpeg", data: imageBase64 } });
-        }
-        
-        // API v1beta və düzgün model yolu
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
-        
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ role: "user", parts }],
-                generationConfig: { temperature: 0.7, maxOutputTokens: 800, topP: 0.9 }
-            })
-        });
-        
-        const data = await response.json();
-        if (!response.ok) {
-            console.error('Gemini API xətası:', data);
-            throw new Error(data.error?.message || `API xətası: ${response.status}`);
-        }
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!reply) throw new Error('Cavab alınmadı');
-        return reply;
-    }
-
-    // ======================= APP STATE =======================
+    // State
     let messages = [];
     let activeTopic = null;
     let imgPreview = null, imgBase64 = null;
     let isLoading = false;
     let recording = false, recognition = null;
-
     let chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
 
-    // ======================= RENDER FUNKSİYALARI =======================
+    // Render chat
     function renderChat() {
         if(!chatContainer) return;
         chatContainer.innerHTML = '';
@@ -566,125 +548,161 @@
         renderThumb();
     }
     function renderThumb() { let old=document.querySelector('.thumb-preview'); if(old) old.remove(); if(imgPreview && document.querySelector('.input-area')) { let wrap=document.createElement('div'); wrap.className='thumb-preview'; wrap.innerHTML=`<img class="thumb-img" src="${imgPreview}"><button class="rm-btn">✕</button>`; document.querySelector('.input-area').prepend(wrap); wrap.querySelector('.rm-btn').onclick=()=>{ imgPreview=null; imgBase64=null; renderThumb(); }; } }
-    function addMessage(role, text, img=null, qr=null) { messages.push({ id:Date.now(), role, text, time:getTime(), imgUrl:img, qr }); renderChat(); }
 
-    // ======================= GÖNDƏRMƏ =======================
+    // Gemini API çağırışı (düzəldilmiş model)
+    async function callGemini(userText, imageBase64) {
+        const parts = [{ text: SYSTEM_PROMPT + "\n\nİstifadəçi sualı: " + (userText || "") }];
+        if (imageBase64) {
+            parts.push({ inlineData: { mimeType: "image/jpeg", data: imageBase64 } });
+        }
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ role: "user", parts }],
+                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            const errMsg = data.error?.message || `HTTP ${response.status}`;
+            throw new Error(errMsg);
+        }
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!reply) throw new Error('Cavab alınmadı');
+        return reply;
+    }
+
     async function sendMessage(overrideText=null) {
         const text = (overrideText!==null) ? overrideText : inputTextarea.value.trim();
         if(!text && !imgBase64) return;
-        addMessage('user', text || "📷 Şəkil", imgPreview);
+        // User mesajını əlavə et
+        messages.push({ id:Date.now(), role:'user', text: text || "📷 Şəkil", time:getTime(), imgUrl:imgPreview });
         const sentImg = imgBase64;
         imgPreview=null; imgBase64=null;
         if(inputTextarea) inputTextarea.value='';
         renderThumb();
-        isLoading=true; renderChat();
+        isLoading=true;
+        renderChat();
         try {
             const reply = await callGemini(text, sentImg);
-            addMessage('agent', reply, null, QR_MAP.default);
-        } catch(e) { 
-            console.error(e);
-            addMessage('agent', `⚠️ Xəta: ${e.message}. Zəhmət olmasa daha sonra cəhd edin.`, null, QR_MAP.default); 
+            messages.push({ id:Date.now(), role:'agent', text:reply, time:getTime(), qr:QR_MAP.default });
+        } catch(e) {
+            messages.push({ id:Date.now(), role:'agent', text:`⚠️ Xəta: ${e.message}`, time:getTime(), qr:QR_MAP.default });
         }
-        isLoading=false; renderChat();
+        isLoading=false;
+        renderChat();
     }
+
+    function addWelcomeMessage() {
+        messages = [{
+            id:Date.now(),
+            role:'agent',
+            text:"Salam! Mən **AN PSİXOLOJİ** agentiyəm 🌈\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınız haqqında sualınızı yazın, danışın və ya şəkil göndərin!",
+            time:getTime(),
+            qr:["🔵 Autizm haqqında","🗣️ Nitq gecikmələri","⚡ DEHB","😤 Davranış problemi"]
+        }];
+        renderChat();
+    }
+
     async function handleTopic(topic) {
-        activeTopic=topic.key;
-        addMessage('user', `${topic.icon} ${topic.label} haqqında məlumat`);
-        isLoading=true; renderChat();
+        activeTopic = topic.key;
+        messages.push({ id:Date.now(), role:'user', text:`${topic.icon} ${topic.label} haqqında məlumat`, time:getTime() });
+        isLoading=true;
+        renderChat();
         try {
             const reply = await callGemini(TOPIC_PROMPTS[topic.key]);
-            addMessage('agent', reply, null, QR_MAP[topic.key]||QR_MAP.default);
-        } catch(e) { addMessage('agent', `⚠️ Xəta: ${e.message}`); }
-        isLoading=false; renderChat();
+            messages.push({ id:Date.now(), role:'agent', text:reply, time:getTime(), qr:QR_MAP[topic.key]||QR_MAP.default });
+        } catch(e) {
+            messages.push({ id:Date.now(), role:'agent', text:`⚠️ Xəta: ${e.message}`, time:getTime(), qr:QR_MAP.default });
+        }
+        isLoading=false;
+        renderChat();
         document.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('active'));
         const activeChip = [...document.querySelectorAll('.chip')].find(ch=>ch.innerText.includes(topic.label));
         if(activeChip) activeChip.classList.add('active');
     }
-    function clearChat() { messages=[]; addMessage('agent',"Salam! Mən **AN PSİXOLOJİ** agentiyəm 🌈\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınız haqqında sualınızı yazın, danışın və ya şəkil göndərin!", null, ["🔵 Autizm","🗣️ Nitq","⚡ DEHB","😤 Davranış"]); renderChat(); }
 
-    // ======================= SƏS, ŞƏKİL =======================
-    function handleFile(e) { let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=ev=>{ imgPreview=ev.target.result; imgBase64=imgPreview.split(',')[1]; showToast('📷 Şəkil əlavə edildi'); renderThumb(); }; r.readAsDataURL(f); e.target.value=''; }
-    function startVoice() { 
-        let SR=window.SpeechRecognition||window.webkitSpeechRecognition; 
-        if(!SR){ showToast('⚠️ Brauzer dəstəkləmir'); return; } 
-        let r=new SR(); r.lang='az-AZ'; r.continuous=false; r.interimResults=false;
-        r.onresult=e=>{ inputTextarea.value=e.results[0][0].transcript; showToast('✅ Nitq tanındı'); stopVoice(); };
-        r.onerror=()=>{ showToast('⚠️ Nitq tanınmadı'); stopVoice(); };
-        r.start(); recording=true; recognition=r;
+    function clearChat() { messages=[]; addWelcomeMessage(); activeTopic=null; document.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('active')); }
+
+    // Voice handlers
+    function startVoice() {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if(!SR){ showToast('⚠️ Brauzer dəstəkləmir'); return; }
+        const r = new SR();
+        r.lang='az-AZ';
+        r.onresult=e=>{ inputTextarea.value=e.results[0][0].transcript; showToast('✅ Nitq tanındı'); recording=false; removeVoiceOverlay(); };
+        r.onerror=()=>{ showToast('⚠️ Nitq tanınmadı'); recording=false; removeVoiceOverlay(); };
+        r.onend=()=>{ recording=false; removeVoiceOverlay(); };
+        r.start();
+        recording=true;
+        recognition=r;
         showVoiceOverlay();
     }
-    function stopVoice() { if(recognition) { try{recognition.stop();}catch(e){} recognition=null; } recording=false; removeVoiceOverlay(); }
-    function showVoiceOverlay() {
-        let existing=document.querySelector('.voice-overlay'); if(existing) existing.remove();
-        let div=document.createElement('div'); div.className='voice-overlay'; div.id='voiceOverlay';
-        div.innerHTML=`<div class="voice-circle">🎙️</div><div style="color:white; font-weight:bold;">Dinlənilir...</div><button class="voice-stop" id="voiceStopBtn">Dayandır</button>`;
-        document.body.appendChild(div);
-        document.getElementById('voiceStopBtn').onclick=stopVoice;
-    }
-    function removeVoiceOverlay() { let v=document.querySelector('.voice-overlay'); if(v) v.remove(); }
+    function stopVoice() { if(recognition) { recognition.stop(); recognition=null; } recording=false; removeVoiceOverlay(); }
+    function showVoiceOverlay() { let ov=document.createElement('div'); ov.id='voiceOverlay'; ov.className='voice-overlay'; ov.innerHTML=`<div class="voice-circle">🎙️</div><div style="color:white;font-weight:bold">Danışın...</div><button class="voice-stop" id="voiceStopBtn">⏹ Dayandır</button>`; document.body.appendChild(ov); document.getElementById('voiceStopBtn')?.addEventListener('click',stopVoice); }
+    function removeVoiceOverlay() { let ov=document.getElementById('voiceOverlay'); if(ov) ov.remove(); }
 
-    // ======================= MODAL =======================
+    // Modal
     function showInfoModal() {
-        let modal=document.createElement('div'); modal.style.position='fixed'; modal.style.inset='0'; modal.style.background='rgba(0,0,0,0.5)'; modal.style.zIndex='1000'; modal.style.display='flex'; modal.style.alignItems='flex-end';
-        let sheet=document.createElement('div'); sheet.style.background='white'; sheet.style.width='100%'; sheet.style.borderRadius='24px 24px 0 0'; sheet.style.padding='16px 20px 25px';
-        sheet.innerHTML=`<div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 12px"></div><h3 style="color:#7c3aed">👨‍⚕️ Mütəxəssislər</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">${[
+        let modal=document.createElement('div'); modal.className='modal-overlay';
+        let sheet=document.createElement('div'); sheet.className='modal-sheet';
+        sheet.innerHTML=`<div class="modal-handle"></div><h3 style="color:#7c3aed">👨‍⚕️ Mütəxəssislər</h3><div class="spec-grid" id="specGrid"></div><div style="background:#fef3c7;border-radius:12px;padding:8px;font-size:0.7rem;color:#92400e">⚠️ Diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div>`;
+        modal.appendChild(sheet); document.body.appendChild(modal);
+        const grid=sheet.querySelector('#specGrid');
+        const specs=[
             {icon:'🧠',name:'Psixoloq',desc:'Emosional inkişaf, davranış',q:'Psixoloq olaraq uşağımın emosional inkişafı üçün tövsiyə ver.'},
             {icon:'🗣️',name:'Loqoped',desc:'Nitq, artikulyasiya',q:'Loqoped olaraq uşağımın nitq inkişafı üçün tövsiyə ver.'},
             {icon:'🖐️',name:'Erqoterapevt',desc:'Motor bacarıqlar',q:'Erqoterapevt olaraq motor bacarıqlar üçün ev məşqləri tövsiyə et.'},
             {icon:'📚',name:'Psixopedaqoq',desc:'Öyrənmə, oxuma',q:'Psixopedaqoq olaraq uşağımın öyrənmə prosesini necə dəstəkləyim?'}
-        ].map(s=>`<div style="background:#f8f7ff;border-radius:12px;padding:10px;text-align:center;cursor:pointer" data-msg="${s.q}"><div style="font-size:1.6rem">${s.icon}</div><div style="font-weight:800;font-size:0.7rem">${s.name}</div><div style="font-size:0.6rem">${s.desc}</div></div>`).join('')}</div><div style="background:#fef3c7;border-radius:12px;padding:8px;margin-top:12px;font-size:0.7rem;color:#92400e">⚠️ Diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div>`;
-        modal.appendChild(sheet); document.body.appendChild(modal);
-        sheet.querySelectorAll('[data-msg]').forEach(el=>el.addEventListener('click',()=>{ modal.remove(); sendMessage(el.dataset.msg); }));
-        modal.addEventListener('click',(e)=> { if(e.target===modal) modal.remove(); });
+        ];
+        specs.forEach(s=>{ let card=document.createElement('div'); card.className='spec-card'; card.innerHTML=`<div style="font-size:1.6rem">${s.icon}</div><div style="font-weight:800;font-size:0.7rem">${s.name}</div><div style="font-size:0.6rem">${s.desc}</div>`; card.onclick=()=>{ modal.remove(); sendMessage(s.q); }; grid.appendChild(card); });
+        modal.onclick=(e)=>{ if(e.target===modal) modal.remove(); };
     }
 
-    // ======================= SPLASH EKRANI =======================
-    function showSplash() {
-        const splashDiv = document.createElement('div');
-        splashDiv.className = 'splash';
-        splashDiv.id = 'splashScreen';
-        splashDiv.innerHTML = `
-            <div class="splash-logo">🧠</div>
-            <div class="splash-title">AN PSİXOLOJİ</div>
-            <div class="splash-sub">Peşəkar Uşaq Psixologiyası AI Agent</div>
-            <div class="splash-dots">
-                <div class="splash-dot"></div>
-                <div class="splash-dot"></div>
-                <div class="splash-dot"></div>
-            </div>
-        `;
-        document.body.appendChild(splashDiv);
-        setTimeout(() => {
-            splashDiv.classList.add('hide');
-            setTimeout(() => splashDiv.remove(), 600);
-        }, 2200);
-    }
-
-    // ======================= İNİSİALİZASİYA =======================
+    // İnitialization
     function init() {
-        const appDiv = document.getElementById('app');
-        appDiv.innerHTML = `
-            <div class="header">
-                <div class="avatar">🧠<div class="online-dot"></div></div>
-                <div style="flex:1"><h2>AN PSİXOLOJİ</h2><p>Psixoloq · Loqoped · Erqoterapevt · Psixopedaqoq</p></div>
-                <button class="btn-icon" id="infoBtn">👨‍⚕️</button>
-                <button class="btn-icon" id="clearBtn">🗑️</button>
+        const container = document.getElementById('app');
+        container.innerHTML = `
+            <div class="splash" id="splashScreen">
+                <div class="splash-icon">🧠</div>
+                <div class="splash-title">AN PSİXOLOJİ</div>
+                <div class="splash-sub">Uşaq Psixologiyası AI Agenti</div>
+                <div class="dot-container"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
             </div>
-            <div class="topics" id="topicsContainer"></div>
-            <div class="chat" id="chatContainer"></div>
-            <div class="input-area" id="inputArea">
-                <div class="input-row">
-                    <div class="input-wrap">
-                        <textarea id="messageInput" rows="1" placeholder="Sualınızı yazın..."></textarea>
-                        <button class="attach-btn" id="attachBtn">📎</button>
-                    </div>
-                    <button class="mic-btn" id="micBtn">🎙️</button>
-                    <button class="send-btn" id="sendBtn">➤</button>
+            <div class="app" style="display:none" id="mainApp">
+                <div class="header">
+                    <div class="avatar">🧠<div class="online-dot"></div></div>
+                    <div style="flex:1"><h2>AN PSİXOLOJİ</h2><p>Psixoloq · Loqoped · Erqoterapevt · Psixopedaqoq</p></div>
+                    <button class="btn-icon" id="infoBtn">👨‍⚕️</button>
+                    <button class="btn-icon" id="clearBtn">🗑️</button>
                 </div>
-                <input type="file" id="fileInput" accept="image/*" style="display:none">
+                <div class="topics" id="topicsContainer"></div>
+                <div class="chat" id="chatContainer"></div>
+                <div class="input-area" id="inputArea">
+                    <div class="input-row">
+                        <div class="input-wrap">
+                            <textarea id="messageInput" rows="1" placeholder="Sualınızı yazın..."></textarea>
+                            <button class="attach-btn" id="attachBtn">📎</button>
+                        </div>
+                        <button class="mic-btn" id="micBtn">🎙️</button>
+                        <button class="send-btn" id="sendBtn">➤</button>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" style="display:none">
+                </div>
+                <div class="footer"><span>by s_akhundoff</span><a href="#">📷 @s_akhundoff</a></div>
             </div>
-            <div class="footer"><span>by s_akhundoff</span><a href="#">📷 @s_akhundoff</a></div>
         `;
+        const splash = document.getElementById('splashScreen');
+        const mainApp = document.getElementById('mainApp');
+        setTimeout(() => {
+            splash.classList.add('hide');
+            setTimeout(() => {
+                splash.style.display = 'none';
+                mainApp.style.display = 'flex';
+            }, 500);
+        }, 2000);
+
         chatContainer = document.getElementById('chatContainer');
         topicsContainer = document.getElementById('topicsContainer');
         inputTextarea = document.getElementById('messageInput');
@@ -697,17 +715,15 @@
 
         TOPICS.forEach(t=>{ let btn=document.createElement('button'); btn.className='chip'; btn.innerText=`${t.icon} ${t.label}`; btn.onclick=()=>handleTopic(t); topicsContainer.appendChild(btn); });
         attachBtn.onclick=()=>fileInput.click();
-        fileInput.onchange=handleFile;
+        fileInput.onchange=(e)=>{ let f=e.target.files[0]; if(f){ let r=new FileReader(); r.onload=ev=>{ imgPreview=ev.target.result; imgBase64=imgPreview.split(',')[1]; showToast('📷 Şəkil əlavə edildi'); renderThumb(); }; r.readAsDataURL(f); } e.target.value=''; };
         micBtn.onclick=()=>recording?stopVoice():startVoice();
         sendBtn.onclick=()=>sendMessage();
         clearBtn.onclick=clearChat;
         infoBtn.onclick=showInfoModal;
         inputTextarea.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); } });
         inputTextarea.addEventListener('input',function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,80)+'px'; });
-        clearChat();
+        addWelcomeMessage();
     }
-
-    showSplash();
     init();
 </script>
 </body>
