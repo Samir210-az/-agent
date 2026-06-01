@@ -11,7 +11,6 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-
         body {
             font-family: 'Segoe UI', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #f3f0ff 0%, #fce7f3 100%);
@@ -21,8 +20,7 @@
             align-items: flex-start;
             overflow-x: hidden;
         }
-
-        /* Açılış ekranı (splash) */
+        /* Splash Ekranı */
         .splash {
             position: fixed;
             inset: 0;
@@ -33,7 +31,6 @@
             justify-content: center;
             z-index: 10000;
             transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            backdrop-filter: blur(0px);
         }
         .splash.hide {
             opacity: 0;
@@ -81,7 +78,7 @@
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
-        /* Əsas app konteyneri */
+        /* Əsas App */
         .app {
             max-width: 500px;
             width: 100%;
@@ -94,8 +91,9 @@
             height: 90vh;
             margin: 12px;
             position: relative;
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
-
         /* Header */
         .header {
             background: linear-gradient(135deg, #7c3aed, #a855f7);
@@ -147,7 +145,6 @@
             transition: 0.2s;
         }
         .btn-icon:active { transform: scale(0.94); background: rgba(255,255,255,0.25); }
-
         /* Topics */
         .topics {
             display: flex;
@@ -181,7 +178,6 @@
             box-shadow: 0 2px 8px rgba(59,130,246,0.3);
         }
         .chip:active { transform: scale(0.96); }
-
         /* Chat */
         .chat {
             flex: 1;
@@ -280,10 +276,7 @@
             display: inline-block;
             animation: bounceDot 1.2s infinite;
         }
-        .typing span:nth-child(2) { animation-delay: 0.2s; }
-        .typing span:nth-child(3) { animation-delay: 0.4s; }
-
-        /* Input area */
+        /* Input */
         .input-area {
             padding: 10px 12px 16px;
             background: white;
@@ -360,7 +353,6 @@
         .mic-btn.recording { background: #ec4899; color: white; animation: micPulse 1s infinite; }
         .send-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; box-shadow: 0 2px 8px rgba(124,58,237,0.3); }
         .send-btn:active, .mic-btn:active, .attach-btn:active { transform: scale(0.94); }
-
         .footer {
             text-align: center;
             padding: 8px;
@@ -374,7 +366,6 @@
             flex-shrink: 0;
         }
         a { color: #7c3aed; text-decoration: none; }
-
         .toast {
             position: fixed;
             bottom: 85px;
@@ -389,10 +380,7 @@
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             font-weight: 600;
-            backdrop-filter: blur(4px);
         }
-
-        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -417,8 +405,6 @@
             border-radius: 4px;
             margin: 0 auto 16px;
         }
-
-        /* Animasiyalar */
         @keyframes floatPulse {
             0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
             50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(255,255,255,0); }
@@ -449,11 +435,12 @@
 <div id="root"></div>
 
 <script>
-    // --------------------------------------------------------------
-    // KONFİQURASİYA
-    // --------------------------------------------------------------
-    const GEMINI_API_KEY = "AQ.Ab8RN6K9zaK37ArP_94RNpsw8ufJrT_bfkiFa0GnGmgr1fG0Gg";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+    // ======================= KONFİQURASİYA =======================
+    // Düzgün API açarı (əvvəlki işləyən açar)
+    const GEMINI_API_KEY = "AIzaSyCl4qTJUyGT1y-jcuVjV8dOKxvYQEWLUPs";
+    // Doğru model adı: gemini-1.5-flash (və ya gemini-1.5-pro)
+    const MODEL_NAME = "gemini-1.5-flash";
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
 
     const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Eyni zamanda uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi xüsusi qayğıya ehtiyacı olan uşaqlarla işləyirsən. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
 
@@ -487,9 +474,7 @@
         default: ["🔍 Daha ətraflı","🏠 Ev fəaliyyəti","👩‍⚕️ Mütəxəssisə gedim?"]
     };
 
-    // --------------------------------------------------------------
-    // KÖMƏKÇİ FUNKSİYALAR
-    // --------------------------------------------------------------
+    // ======================= KÖMƏKÇİ FUNKSİYALAR =======================
     function getTime() {
         return new Date().toLocaleTimeString("az-AZ", { hour: "2-digit", minute: "2-digit" });
     }
@@ -506,21 +491,16 @@
         setTimeout(() => div.remove(), 2600);
     }
 
-    // --------------------------------------------------------------
-    // STATE
-    // --------------------------------------------------------------
+    // ======================= STATE =======================
     let messages = [];
     let activeTopic = null;
     let imgPreview = null, imgBase64 = null;
     let isLoading = false;
     let recording = false, recognition = null;
 
-    // DOM elementləri
-    let appContainer, chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
+    let chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
 
-    // --------------------------------------------------------------
-    // RENDER (Söhbət və şəkil önizləmə)
-    // --------------------------------------------------------------
+    // ======================= RENDER =======================
     function renderChat() {
         if (!chatContainer) return;
         chatContainer.innerHTML = '';
@@ -600,9 +580,7 @@
         }
     }
 
-    // --------------------------------------------------------------
-    // GEMINI API CALL (DÜZGÜN MODEL)
-    // --------------------------------------------------------------
+    // ======================= GEMINI API =======================
     async function callGemini(userText, imageBase64 = null) {
         const fullPrompt = `${SYSTEM_PROMPT}\n\nİstifadəçi sualı: ${userText || ""}`;
         const parts = [{ text: fullPrompt }];
@@ -626,16 +604,14 @@
         const data = await response.json();
         if (!response.ok) {
             console.error("Gemini xətası:", data);
-            throw new Error(data.error?.message || "API cavab vermədi");
+            throw new Error(data.error?.message || `API cavab xətası: ${response.status}`);
         }
         const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (!reply) throw new Error("Cavab alınmadı");
         return reply;
     }
 
-    // --------------------------------------------------------------
-    // MESAJ ƏMƏLİYYATLARI
-    // --------------------------------------------------------------
+    // ======================= MESAJ ƏMƏLİYYATLARI =======================
     function addMessage(role, text, img = null, qr = null) {
         messages.push({
             id: Date.now(),
@@ -664,7 +640,7 @@
             addMessage('agent', reply, null, QR_MAP.default);
         } catch (err) {
             console.error(err);
-            addMessage('agent', `⚠️ Xəta: ${err.message}\n\nModel adı və ya API açarı yoxlanılmalıdır.`);
+            addMessage('agent', `⚠️ Xəta: ${err.message}\n\nModel: ${MODEL_NAME}. API açarınızın düzgün olduğunu yoxlayın.`);
         }
         isLoading = false;
         renderChat();
@@ -695,9 +671,7 @@
         renderChat();
     }
 
-    // --------------------------------------------------------------
-    // SƏS TANIMA, ŞƏKİL YÜKLƏMƏ
-    // --------------------------------------------------------------
+    // ======================= SƏS, ŞƏKİL =======================
     function handleFile(e) {
         let f = e.target.files[0];
         if (!f) return;
@@ -753,9 +727,7 @@
         if (micBtn) micBtn.classList.remove('recording');
     }
 
-    // --------------------------------------------------------------
-    // MÜTƏXƏSSİS MODAL
-    // --------------------------------------------------------------
+    // ======================= MODAL =======================
     function showInfoModal() {
         const modalDiv = document.createElement('div');
         modalDiv.className = 'modal-overlay';
@@ -796,12 +768,10 @@
         });
     }
 
-    // --------------------------------------------------------------
-    // İNİSİALİZASİYA VƏ SPLASH EKRANI
-    // --------------------------------------------------------------
+    // ======================= İNİSİALİZASİYA VƏ SPLASH =======================
     function initApp() {
-        appContainer = document.getElementById('root');
-        appContainer.innerHTML = `
+        const root = document.getElementById('root');
+        root.innerHTML = `
             <div class="splash" id="splashScreen">
                 <div class="splash-icon">🧠</div>
                 <div class="splash-title">AN PSİXOLOJİ</div>
@@ -810,7 +780,7 @@
                     <div class="dot"></div><div class="dot"></div><div class="dot"></div>
                 </div>
             </div>
-            <div class="app" style="opacity:0; transition:opacity 0.4s;" id="mainApp">
+            <div class="app" id="mainApp">
                 <div class="header">
                     <div class="avatar">🧠<div class="online-dot"></div></div>
                     <div class="header-info"><h2>AN PSİXOLOJİ</h2><p>Psixoloq · Loqoped · Erqoterapevt · Psixopedaqoq</p></div>
