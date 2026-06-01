@@ -2,23 +2,27 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AN PSİXOLOJİ – Rəsmi Agent</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>AN PSİXOLOJİ – Peşəkar Uşaq Agent</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
+
         body {
+            font-family: 'Segoe UI', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #f3f0ff 0%, #fce7f3 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            overflow-x: hidden;
         }
-        /* SPLASH EKRANI (animasiyalı) */
+
+        /* Açılış ekranı (splash) */
         .splash {
             position: fixed;
             inset: 0;
@@ -28,7 +32,8 @@
             align-items: center;
             justify-content: center;
             z-index: 10000;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            backdrop-filter: blur(0px);
         }
         .splash.hide {
             opacity: 0;
@@ -36,74 +41,70 @@
         }
         .splash-icon {
             font-size: 4rem;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             background: rgba(255,255,255,0.2);
-            width: 120px;
-            height: 120px;
             border-radius: 50%;
+            width: 110px;
+            height: 110px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: pulseGlow 1.2s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            animation: floatPulse 1.6s ease-in-out infinite;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .splash-title {
-            font-family: 'Baloo 2', cursive;
-            font-size: 2.2rem;
+            font-family: 'Segoe UI', 'Baloo 2', cursive;
+            font-size: 2.1rem;
             font-weight: 800;
             color: white;
-            letter-spacing: -0.5px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
         }
         .splash-sub {
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.85);
-            margin-top: 8px;
-            font-weight: 600;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 6px;
+            font-weight: 500;
         }
-        .dot-container {
+        .dot-group {
             display: flex;
-            gap: 10px;
-            margin-top: 30px;
+            gap: 12px;
+            margin-top: 28px;
         }
         .dot {
             width: 10px;
             height: 10px;
             background: rgba(255,255,255,0.6);
             border-radius: 50%;
-            animation: bounceDot 1s infinite;
+            animation: bounceDot 1.2s ease-in-out infinite;
         }
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes pulseGlow {
-            0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255,255,255,0); }
-        }
-        @keyframes bounceDot {
-            0%,80%,100% { transform: translateY(0); opacity: 0.5; }
-            40% { transform: translateY(-12px); opacity: 1; }
-        }
-
-        /* ƏSAS APP STILLƏRİ */
+        /* Əsas app konteyneri */
         .app {
             max-width: 500px;
             width: 100%;
             background: white;
             border-radius: 32px;
             overflow: hidden;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.25);
             display: flex;
             flex-direction: column;
             height: 90vh;
+            margin: 12px;
+            position: relative;
         }
+
+        /* Header */
         .header {
             background: linear-gradient(135deg, #7c3aed, #a855f7);
-            padding: 13px 15px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             gap: 10px;
             color: white;
+            flex-shrink: 0;
         }
         .avatar {
             width: 44px;
@@ -113,209 +114,222 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             position: relative;
+            flex-shrink: 0;
         }
         .online-dot {
             position: absolute;
             bottom: 2px;
             right: 2px;
-            width: 11px;
-            height: 11px;
+            width: 12px;
+            height: 12px;
             background: #4ade80;
             border-radius: 50%;
             border: 2px solid #7c3aed;
-            animation: pulseOnline 2s infinite;
+            animation: pulseGreen 2s infinite;
         }
-        @keyframes pulseOnline {
-            0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
-            50% { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
-        }
-        .header h2 { font-size: 1rem; font-weight: 800; }
-        .header p { font-size: 0.6rem; opacity: 0.8; }
+        .header-info { flex: 1; min-width: 0; }
+        .header-info h2 { font-size: 1rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .header-info p { font-size: 0.6rem; opacity: 0.85; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .btn-icon {
-            width: 35px;
-            height: 35px;
+            width: 36px;
+            height: 36px;
             background: rgba(255,255,255,0.15);
             border: none;
             border-radius: 50%;
             cursor: pointer;
             font-size: 1rem;
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
         }
+        .btn-icon:active { transform: scale(0.94); background: rgba(255,255,255,0.25); }
+
+        /* Topics */
         .topics {
             display: flex;
             gap: 8px;
             padding: 10px 12px;
             overflow-x: auto;
+            flex-shrink: 0;
             background: #f8f7ff;
             border-bottom: 1px solid #ede9fe;
+            scrollbar-width: thin;
         }
         .chip {
             background: white;
             border: 1.5px solid #e5e7eb;
-            border-radius: 20px;
-            padding: 5px 12px;
+            border-radius: 30px;
+            padding: 5px 14px;
             font-size: 0.7rem;
             font-weight: 700;
             color: #4b5563;
             white-space: nowrap;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         .chip.active {
             background: #3b82f6;
             color: white;
             border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.3);
         }
+        .chip:active { transform: scale(0.96); }
+
+        /* Chat */
         .chat {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 14px 12px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
             background: #f9f9fe;
         }
         .message {
             display: flex;
             gap: 10px;
             align-items: flex-end;
-            animation: fadeIn 0.2s ease;
+            animation: fadeSlideUp 0.25s ease;
         }
-        .user-message {
-            flex-direction: row-reverse;
-        }
+        .user-message { flex-direction: row-reverse; }
         .agent-avatar, .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
             flex-shrink: 0;
         }
         .agent-avatar { background: linear-gradient(135deg, #7c3aed, #ec4899); }
         .user-avatar { background: linear-gradient(135deg, #0d9488, #06b6d4); }
         .bubble {
-            max-width: 75%;
-            padding: 8px 12px;
-            border-radius: 18px;
+            max-width: 78%;
+            padding: 9px 13px;
+            border-radius: 20px;
             font-size: 0.85rem;
-            line-height: 1.4;
+            line-height: 1.45;
         }
         .agent-bubble {
             background: white;
             border: 1px solid #e2e8f0;
             border-bottom-left-radius: 4px;
             color: #1e1b4b;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
         .user-bubble {
             background: linear-gradient(135deg, #7c3aed, #a855f7);
             color: white;
             border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 6px rgba(124,58,237,0.25);
         }
         .time {
             font-size: 0.55rem;
             color: #94a3b8;
-            margin-top: 3px;
-            padding: 0 4px;
+            margin-top: 4px;
+            padding: 0 6px;
         }
         .qr-wrap {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
-            margin-top: 8px;
+            margin-top: 9px;
         }
         .qr-btn {
             background: #f0e6ff;
             border: none;
-            border-radius: 16px;
-            padding: 3px 10px;
+            border-radius: 30px;
+            padding: 4px 12px;
             font-size: 0.65rem;
             font-weight: 600;
             color: #7c3aed;
             cursor: pointer;
+            transition: 0.15s;
         }
+        .qr-btn:active { background: #e0d0ff; transform: scale(0.96); }
         .chat-img {
             max-width: 100%;
             max-height: 150px;
-            border-radius: 12px;
-            margin-top: 6px;
+            border-radius: 14px;
+            margin-top: 8px;
             cursor: pointer;
-            border: 1px solid #e9e9ef;
+            border: 2px solid #ede9fe;
+            object-fit: cover;
         }
         .typing {
             background: #e9e9ef;
-            border-radius: 20px;
-            padding: 10px 14px;
+            border-radius: 24px;
+            padding: 11px 16px;
             display: flex;
-            gap: 5px;
+            gap: 6px;
             width: fit-content;
         }
         .typing span {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             background: #7c3aed;
             border-radius: 50%;
             display: inline-block;
-            animation: bounceTyping 1.2s infinite;
+            animation: bounceDot 1.2s infinite;
         }
         .typing span:nth-child(2) { animation-delay: 0.2s; }
         .typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounceTyping {
-            0%,80%,100% { transform: translateY(0); opacity: 0.4; }
-            40% { transform: translateY(-6px); opacity: 1; }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+
+        /* Input area */
         .input-area {
-            padding: 8px 12px 16px;
+            padding: 10px 12px 16px;
             background: white;
             border-top: 1px solid #ede9fe;
+            flex-shrink: 0;
         }
         .thumb-preview {
             position: relative;
             display: inline-block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .thumb-img {
-            width: 55px;
-            height: 55px;
-            border-radius: 10px;
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
             object-fit: cover;
             border: 2px solid #a78bfa;
         }
         .rm-btn {
             position: absolute;
-            top: -6px;
-            right: -6px;
-            width: 18px;
-            height: 18px;
+            top: -8px;
+            right: -8px;
+            width: 22px;
+            height: 22px;
             background: #ec4899;
             color: white;
             border-radius: 50%;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             cursor: pointer;
             border: none;
+            font-weight: bold;
         }
         .input-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: flex-end;
         }
         .input-wrap {
             flex: 1;
             background: #f8f7ff;
             border: 1.5px solid #ede9fe;
-            border-radius: 24px;
-            padding: 6px 10px;
+            border-radius: 30px;
+            padding: 6px 12px;
             display: flex;
             align-items: flex-end;
-            gap: 5px;
+            gap: 6px;
         }
         textarea {
             flex: 1;
@@ -326,28 +340,27 @@
             resize: none;
             max-height: 80px;
             font-family: inherit;
+            padding: 5px 0;
         }
         .attach-btn, .mic-btn, .send-btn {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            transition: 0.15s;
         }
-        .mic-btn {
-            background: #ede9fe;
-            color: #7c3aed;
-        }
-        .send-btn {
-            background: linear-gradient(135deg, #7c3aed, #ec4899);
-            color: white;
-            box-shadow: 0 2px 8px rgba(124,58,237,0.3);
-        }
+        .attach-btn { color: #7c3aed; background: #ede9fe; }
+        .mic-btn { background: #ede9fe; color: #7c3aed; }
+        .mic-btn.recording { background: #ec4899; color: white; animation: micPulse 1s infinite; }
+        .send-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; box-shadow: 0 2px 8px rgba(124,58,237,0.3); }
+        .send-btn:active, .mic-btn:active, .attach-btn:active { transform: scale(0.94); }
+
         .footer {
             text-align: center;
             padding: 8px;
@@ -358,115 +371,92 @@
             display: flex;
             justify-content: center;
             gap: 12px;
+            flex-shrink: 0;
         }
-        a {
-            color: #7c3aed;
-            text-decoration: none;
-        }
+        a { color: #7c3aed; text-decoration: none; }
+
         .toast {
             position: fixed;
-            bottom: 80px;
+            bottom: 85px;
             left: 50%;
             transform: translateX(-50%);
             background: #1e1b4b;
             color: white;
-            border-radius: 20px;
-            padding: 6px 18px;
+            border-radius: 40px;
+            padding: 8px 20px;
             font-size: 0.7rem;
-            z-index: 1000;
+            z-index: 1100;
             white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-weight: 600;
+            backdrop-filter: blur(4px);
         }
-        /* Voice overlay */
-        .voice-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(124,58,237,0.94);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            gap: 20px;
-        }
-        .voice-circle {
-            width: 110px;
-            height: 110px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            border: 3px solid white;
-            animation: voicePulse 1.2s infinite;
-        }
-        @keyframes voicePulse {
-            0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255,255,255,0); }
-        }
-        .voice-stop {
-            background: white;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 25px;
-            font-weight: bold;
-            color: #7c3aed;
-            cursor: pointer;
-        }
+
         /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.5);
+            z-index: 2000;
             display: flex;
             align-items: flex-end;
-            z-index: 1500;
+            justify-content: center;
         }
         .modal-sheet {
             background: white;
             width: 100%;
-            border-radius: 24px 24px 0 0;
-            padding: 20px;
-            max-height: 70vh;
-            overflow-y: auto;
+            max-width: 500px;
+            border-radius: 28px 28px 0 0;
+            padding: 20px 20px 30px;
+            animation: slideUp 0.3s ease;
         }
         .modal-handle {
-            width: 40px;
+            width: 45px;
             height: 4px;
-            background: #e2e8f0;
-            border-radius: 2px;
-            margin: 0 auto 15px;
+            background: #ddd;
+            border-radius: 4px;
+            margin: 0 auto 16px;
         }
-        .spec-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 15px 0;
+
+        /* Animasiyalar */
+        @keyframes floatPulse {
+            0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(255,255,255,0); }
         }
-        .spec-card {
-            background: #f8f7ff;
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid #ede9fe;
+        @keyframes bounceDot {
+            0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1.3); opacity: 1; }
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseGreen {
+            0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+            50% { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
+        }
+        @keyframes micPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(236,72,153,0.5); }
+            50% { box-shadow: 0 0 0 8px rgba(236,72,153,0); }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-<div id="app"></div>
+<div id="root"></div>
 
 <script>
-    // ======================= KONFİQURASİYA =======================
-    // 🔐 ÖZ ETİBARLI GEMİNİ API AÇARINIZI BURAYA YAZIN
-    const GEMINI_API_KEY = "AIzaSyCl4qTJUyGT1y-jcuVjV8dOKxvYQEWLUPs";  // <-- Dəyişdirin
+    // --------------------------------------------------------------
+    // KONFİQURASİYA
+    // --------------------------------------------------------------
+    const GEMINI_API_KEY = "AQ.Ab8RN6K9zaK37ArP_94RNpsw8ufJrT_bfkiFa0GnGmgr1fG0Gg";
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
 
-    // Model adı düzəldildi: gemini-1.5-flash -> gemini-1.5-pro (və ya gemini-pro)
-    const MODEL_NAME = "gemini-1.5-pro";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
+    const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Eyni zamanda uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi xüsusi qayğıya ehtiyacı olan uşaqlarla işləyirsən. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
 
-    // Məlumatlar
     const TOPICS = [
         {key:"autizm", icon:"🔵", label:"Autizm", color:"#3b82f6"},
         {key:"nitq", icon:"🗣️", label:"Nitq", color:"#8b5cf6"},
@@ -477,41 +467,62 @@
         {key:"oxuma", icon:"📚", label:"Oxuma/Yazma", color:"#6366f1"},
         {key:"sosial", icon:"👫", label:"Sosial Bacarıq", color:"#0d9488"}
     ];
+
     const TOPIC_PROMPTS = {
-        autizm:"Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, gündəlik rutin necə qurulmalıdır?",
-        nitq:"Uşaqlarda nitq gecikmələri haqqında məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır?",
-        davranis:"Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik) necə idarə etmək olar?",
-        dehb:"DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, məktəbdə dəstək.",
-        emosiya:"Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları.",
-        oyun:"Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri.",
-        oxuma:"Uşaqlarda oxuma-yazma çətinlikləri (disleksiya). Əlamətlər, evdə kömək üsulları.",
-        sosial:"Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar."
+        autizm: "Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, gündəlik rutin necə qurulmalıdır?",
+        nitq: "Uşaqlarda nitq gecikmələri haqqında məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır?",
+        davranis: "Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik) necə idarə etmək olar?",
+        dehb: "DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, məktəbdə dəstək.",
+        emosiya: "Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları.",
+        oyun: "Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri.",
+        oxuma: "Uşaqlarda oxuma-yazma çətinlikləri (disleksiya). Əlamətlər, evdə kömək üsulları.",
+        sosial: "Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar."
     };
+
     const QR_MAP = {
-        autizm:["🎮 Oyun tövsiyələri","📋 Gündəlik rutin","🗣️ Ünsiyyət bacarıqları"],
-        nitq:["📝 Ev məşqləri","🎵 Mahnılarla nitq","⏰ Mütəxəssisə nə vaxt?"],
-        davranis:["😌 Sakinləşdirmə","📊 Davranış cədvəli","🏫 Məktəbdə dəstək"],
-        dehb:["🏃 Enerji fəaliyyətlər","📌 Diqqət məşqləri","🌙 Yuxu rutini"],
-        default:["🔍 Daha ətraflı","🏠 Ev fəaliyyəti","👩‍⚕️ Mütəxəssisə gedim?"]
+        autizm: ["🎮 Oyun tövsiyələri","📋 Gündəlik rutin","🗣️ Ünsiyyət bacarıqları"],
+        nitq: ["📝 Ev məşqləri","🎵 Mahnılarla nitq","⏰ Mütəxəssisə nə vaxt?"],
+        davranis: ["😌 Sakinləşdirmə","📊 Davranış cədvəli","🏫 Məktəbdə dəstək"],
+        dehb: ["🏃 Enerji fəaliyyətlər","📌 Diqqət məşqləri","🌙 Yuxu rutini"],
+        default: ["🔍 Daha ətraflı","🏠 Ev fəaliyyəti","👩‍⚕️ Mütəxəssisə gedim?"]
     };
-    const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi çalışırsan. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
 
-    // Köməkçi funksiyalar
-    function getTime() { return new Date().toLocaleTimeString("az-AZ", { hour:"2-digit", minute:"2-digit" }); }
-    function renderText(t) { return t.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\n/g,"<br>"); }
-    function showToast(msg) { let div=document.createElement('div'); div.className='toast'; div.innerText=msg; document.body.appendChild(div); setTimeout(()=>div.remove(),2500); }
+    // --------------------------------------------------------------
+    // KÖMƏKÇİ FUNKSİYALAR
+    // --------------------------------------------------------------
+    function getTime() {
+        return new Date().toLocaleTimeString("az-AZ", { hour: "2-digit", minute: "2-digit" });
+    }
+    function renderText(t) {
+        return t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                .replace(/\*(.+?)\*/g, "<em>$1</em>")
+                .replace(/\n/g, "<br>");
+    }
+    function showToast(msg) {
+        let div = document.createElement('div');
+        div.className = 'toast';
+        div.innerText = msg;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2600);
+    }
 
-    // State
+    // --------------------------------------------------------------
+    // STATE
+    // --------------------------------------------------------------
     let messages = [];
     let activeTopic = null;
     let imgPreview = null, imgBase64 = null;
     let isLoading = false;
     let recording = false, recognition = null;
-    let chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
 
-    // Render chat
+    // DOM elementləri
+    let appContainer, chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
+
+    // --------------------------------------------------------------
+    // RENDER (Söhbət və şəkil önizləmə)
+    // --------------------------------------------------------------
     function renderChat() {
-        if(!chatContainer) return;
+        if (!chatContainer) return;
         chatContainer.innerHTML = '';
         messages.forEach(msg => {
             const row = document.createElement('div');
@@ -523,157 +534,286 @@
             bubbleWrapper.style.maxWidth = '78%';
             const bubble = document.createElement('div');
             bubble.className = `bubble ${msg.role === 'agent' ? 'agent-bubble' : 'user-bubble'}`;
-            if(msg.role === 'agent') bubble.innerHTML = renderText(msg.text);
+            if (msg.role === 'agent') bubble.innerHTML = renderText(msg.text);
             else bubble.innerText = msg.text;
-            if(msg.imgUrl) { let img=document.createElement('img'); img.src=msg.imgUrl; img.className='chat-img'; img.onclick=()=>window.open(msg.imgUrl); bubble.appendChild(img); }
-            if(msg.qr && msg.role==='agent') {
-                let wrap=document.createElement('div'); wrap.className='qr-wrap';
-                msg.qr.forEach(q=>{ let btn=document.createElement('button'); btn.className='qr-btn'; btn.innerText=q; btn.onclick=()=>sendMessage(q); wrap.appendChild(btn); });
+            if (msg.imgUrl) {
+                let img = document.createElement('img');
+                img.src = msg.imgUrl;
+                img.className = 'chat-img';
+                img.onclick = () => window.open(msg.imgUrl);
+                bubble.appendChild(img);
+            }
+            if (msg.qr && msg.role === 'agent') {
+                let wrap = document.createElement('div');
+                wrap.className = 'qr-wrap';
+                msg.qr.forEach(q => {
+                    let btn = document.createElement('button');
+                    btn.className = 'qr-btn';
+                    btn.innerText = q;
+                    btn.onclick = () => sendMessage(q);
+                    wrap.appendChild(btn);
+                });
                 bubble.appendChild(wrap);
             }
-            const timeSpan=document.createElement('div'); timeSpan.className='time'; timeSpan.innerText=msg.time;
-            bubbleWrapper.appendChild(bubble); bubbleWrapper.appendChild(timeSpan);
-            row.appendChild(avatar); row.appendChild(bubbleWrapper);
+            const timeSpan = document.createElement('div');
+            timeSpan.className = 'time';
+            timeSpan.innerText = msg.time;
+            bubbleWrapper.appendChild(bubble);
+            bubbleWrapper.appendChild(timeSpan);
+            row.appendChild(avatar);
+            row.appendChild(bubbleWrapper);
             chatContainer.appendChild(row);
         });
-        if(isLoading) {
-            let row=document.createElement('div'); row.className='message';
-            let av=document.createElement('div'); av.className='agent-avatar'; av.innerText='🧸';
-            let typing=document.createElement('div'); typing.className='typing';
-            for(let i=0;i<3;i++) { let d=document.createElement('span'); typing.appendChild(d); }
-            row.appendChild(av); row.appendChild(typing);
+        if (isLoading) {
+            let row = document.createElement('div');
+            row.className = 'message';
+            let av = document.createElement('div');
+            av.className = 'agent-avatar';
+            av.innerText = '🧸';
+            let typing = document.createElement('div');
+            typing.className = 'typing';
+            for (let i = 0; i < 3; i++) {
+                let d = document.createElement('span');
+                typing.appendChild(d);
+            }
+            row.appendChild(av);
+            row.appendChild(typing);
             chatContainer.appendChild(row);
         }
         chatContainer.scrollTop = chatContainer.scrollHeight;
         renderThumb();
     }
-    function renderThumb() { let old=document.querySelector('.thumb-preview'); if(old) old.remove(); if(imgPreview && document.querySelector('.input-area')) { let wrap=document.createElement('div'); wrap.className='thumb-preview'; wrap.innerHTML=`<img class="thumb-img" src="${imgPreview}"><button class="rm-btn">✕</button>`; document.querySelector('.input-area').prepend(wrap); wrap.querySelector('.rm-btn').onclick=()=>{ imgPreview=null; imgBase64=null; renderThumb(); }; } }
 
-    // Gemini API çağırışı (düzəldilmiş model)
-    async function callGemini(userText, imageBase64) {
-        const parts = [{ text: SYSTEM_PROMPT + "\n\nİstifadəçi sualı: " + (userText || "") }];
-        if (imageBase64) {
-            parts.push({ inlineData: { mimeType: "image/jpeg", data: imageBase64 } });
+    function renderThumb() {
+        let old = document.querySelector('.thumb-preview');
+        if (old) old.remove();
+        if (imgPreview && document.querySelector('.input-area')) {
+            let wrap = document.createElement('div');
+            wrap.className = 'thumb-preview';
+            wrap.innerHTML = `<img class="thumb-img" src="${imgPreview}"><button class="rm-btn">✕</button>`;
+            document.querySelector('.input-area').prepend(wrap);
+            wrap.querySelector('.rm-btn').onclick = () => {
+                imgPreview = null;
+                imgBase64 = null;
+                renderThumb();
+            };
         }
+    }
+
+    // --------------------------------------------------------------
+    // GEMINI API CALL (DÜZGÜN MODEL)
+    // --------------------------------------------------------------
+    async function callGemini(userText, imageBase64 = null) {
+        const fullPrompt = `${SYSTEM_PROMPT}\n\nİstifadəçi sualı: ${userText || ""}`;
+        const parts = [{ text: fullPrompt }];
+        if (imageBase64) {
+            parts.push({
+                inlineData: {
+                    mimeType: "image/jpeg",
+                    data: imageBase64
+                }
+            });
+        }
+        const payload = {
+            contents: [{ role: "user", parts }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 800, topP: 0.9 }
+        };
         const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ role: "user", parts }],
-                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
-            })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
         });
         const data = await response.json();
         if (!response.ok) {
-            const errMsg = data.error?.message || `HTTP ${response.status}`;
-            throw new Error(errMsg);
+            console.error("Gemini xətası:", data);
+            throw new Error(data.error?.message || "API cavab vermədi");
         }
         const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!reply) throw new Error('Cavab alınmadı');
+        if (!reply) throw new Error("Cavab alınmadı");
         return reply;
     }
 
-    async function sendMessage(overrideText=null) {
-        const text = (overrideText!==null) ? overrideText : inputTextarea.value.trim();
-        if(!text && !imgBase64) return;
-        // User mesajını əlavə et
-        messages.push({ id:Date.now(), role:'user', text: text || "📷 Şəkil", time:getTime(), imgUrl:imgPreview });
-        const sentImg = imgBase64;
-        imgPreview=null; imgBase64=null;
-        if(inputTextarea) inputTextarea.value='';
-        renderThumb();
-        isLoading=true;
-        renderChat();
-        try {
-            const reply = await callGemini(text, sentImg);
-            messages.push({ id:Date.now(), role:'agent', text:reply, time:getTime(), qr:QR_MAP.default });
-        } catch(e) {
-            messages.push({ id:Date.now(), role:'agent', text:`⚠️ Xəta: ${e.message}`, time:getTime(), qr:QR_MAP.default });
-        }
-        isLoading=false;
+    // --------------------------------------------------------------
+    // MESAJ ƏMƏLİYYATLARI
+    // --------------------------------------------------------------
+    function addMessage(role, text, img = null, qr = null) {
+        messages.push({
+            id: Date.now(),
+            role,
+            text,
+            time: getTime(),
+            imgUrl: img,
+            qr
+        });
         renderChat();
     }
 
-    function addWelcomeMessage() {
-        messages = [{
-            id:Date.now(),
-            role:'agent',
-            text:"Salam! Mən **AN PSİXOLOJİ** agentiyəm 🌈\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınız haqqında sualınızı yazın, danışın və ya şəkil göndərin!",
-            time:getTime(),
-            qr:["🔵 Autizm haqqında","🗣️ Nitq gecikmələri","⚡ DEHB","😤 Davranış problemi"]
-        }];
+    async function sendMessage(overrideText = null) {
+        const text = (overrideText !== null) ? overrideText : inputTextarea.value.trim();
+        if (!text && !imgBase64) return;
+        addMessage('user', text || "📷 Şəkil analizi", imgPreview);
+        const sentImg = imgBase64;
+        imgPreview = null;
+        imgBase64 = null;
+        if (inputTextarea) inputTextarea.value = '';
+        renderThumb();
+        isLoading = true;
+        renderChat();
+        try {
+            const reply = await callGemini(text, sentImg);
+            addMessage('agent', reply, null, QR_MAP.default);
+        } catch (err) {
+            console.error(err);
+            addMessage('agent', `⚠️ Xəta: ${err.message}\n\nModel adı və ya API açarı yoxlanılmalıdır.`);
+        }
+        isLoading = false;
         renderChat();
     }
 
     async function handleTopic(topic) {
         activeTopic = topic.key;
-        messages.push({ id:Date.now(), role:'user', text:`${topic.icon} ${topic.label} haqqında məlumat`, time:getTime() });
-        isLoading=true;
+        addMessage('user', `${topic.icon} ${topic.label} haqqında məlumat`);
+        isLoading = true;
         renderChat();
         try {
             const reply = await callGemini(TOPIC_PROMPTS[topic.key]);
-            messages.push({ id:Date.now(), role:'agent', text:reply, time:getTime(), qr:QR_MAP[topic.key]||QR_MAP.default });
-        } catch(e) {
-            messages.push({ id:Date.now(), role:'agent', text:`⚠️ Xəta: ${e.message}`, time:getTime(), qr:QR_MAP.default });
+            addMessage('agent', reply, null, QR_MAP[topic.key] || QR_MAP.default);
+        } catch (err) {
+            addMessage('agent', `⚠️ Xəta: ${err.message}`);
         }
-        isLoading=false;
+        isLoading = false;
         renderChat();
-        document.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('active'));
-        const activeChip = [...document.querySelectorAll('.chip')].find(ch=>ch.innerText.includes(topic.label));
-        if(activeChip) activeChip.classList.add('active');
+        document.querySelectorAll('.chip').forEach(ch => ch.classList.remove('active'));
+        const activeChip = [...document.querySelectorAll('.chip')].find(ch => ch.innerText.includes(topic.label));
+        if (activeChip) activeChip.classList.add('active');
     }
 
-    function clearChat() { messages=[]; addWelcomeMessage(); activeTopic=null; document.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('active')); }
+    function clearChat() {
+        messages = [];
+        addMessage('agent', "Salam! Mən **AN PSİXOLOJİ** agentiyəm 🌈\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınız haqqında sualınızı yazın, danışın və ya şəkil göndərin!",
+            null, ["🔵 Autizm", "🗣️ Nitq", "⚡ DEHB", "😤 Davranış"]);
+        renderChat();
+    }
 
-    // Voice handlers
+    // --------------------------------------------------------------
+    // SƏS TANIMA, ŞƏKİL YÜKLƏMƏ
+    // --------------------------------------------------------------
+    function handleFile(e) {
+        let f = e.target.files[0];
+        if (!f) return;
+        let reader = new FileReader();
+        reader.onload = ev => {
+            imgPreview = ev.target.result;
+            imgBase64 = imgPreview.split(',')[1];
+            showToast('📷 Şəkil əlavə edildi');
+            renderThumb();
+        };
+        reader.readAsDataURL(f);
+        e.target.value = '';
+    }
+
     function startVoice() {
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if(!SR){ showToast('⚠️ Brauzer dəstəkləmir'); return; }
-        const r = new SR();
-        r.lang='az-AZ';
-        r.onresult=e=>{ inputTextarea.value=e.results[0][0].transcript; showToast('✅ Nitq tanındı'); recording=false; removeVoiceOverlay(); };
-        r.onerror=()=>{ showToast('⚠️ Nitq tanınmadı'); recording=false; removeVoiceOverlay(); };
-        r.onend=()=>{ recording=false; removeVoiceOverlay(); };
-        r.start();
-        recording=true;
-        recognition=r;
-        showVoiceOverlay();
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+            showToast("⚠️ Brauzeriniz səs tanımını dəstəkləmir");
+            return;
+        }
+        const recog = new SpeechRec();
+        recog.lang = 'az-AZ';
+        recog.continuous = false;
+        recog.interimResults = false;
+        recog.onresult = (e) => {
+            const text = e.results[0][0].transcript;
+            inputTextarea.value = text;
+            showToast('✅ Nitq tanındı');
+            recording = false;
+            if (micBtn) micBtn.classList.remove('recording');
+        };
+        recog.onerror = () => {
+            showToast('⚠️ Səs tanınmadı');
+            recording = false;
+            if (micBtn) micBtn.classList.remove('recording');
+        };
+        recog.onend = () => {
+            recording = false;
+            if (micBtn) micBtn.classList.remove('recording');
+        };
+        recog.start();
+        recording = true;
+        if (micBtn) micBtn.classList.add('recording');
+        recognition = recog;
     }
-    function stopVoice() { if(recognition) { recognition.stop(); recognition=null; } recording=false; removeVoiceOverlay(); }
-    function showVoiceOverlay() { let ov=document.createElement('div'); ov.id='voiceOverlay'; ov.className='voice-overlay'; ov.innerHTML=`<div class="voice-circle">🎙️</div><div style="color:white;font-weight:bold">Danışın...</div><button class="voice-stop" id="voiceStopBtn">⏹ Dayandır</button>`; document.body.appendChild(ov); document.getElementById('voiceStopBtn')?.addEventListener('click',stopVoice); }
-    function removeVoiceOverlay() { let ov=document.getElementById('voiceOverlay'); if(ov) ov.remove(); }
 
-    // Modal
+    function stopVoice() {
+        if (recognition) {
+            recognition.stop();
+            recognition = null;
+        }
+        recording = false;
+        if (micBtn) micBtn.classList.remove('recording');
+    }
+
+    // --------------------------------------------------------------
+    // MÜTƏXƏSSİS MODAL
+    // --------------------------------------------------------------
     function showInfoModal() {
-        let modal=document.createElement('div'); modal.className='modal-overlay';
-        let sheet=document.createElement('div'); sheet.className='modal-sheet';
-        sheet.innerHTML=`<div class="modal-handle"></div><h3 style="color:#7c3aed">👨‍⚕️ Mütəxəssislər</h3><div class="spec-grid" id="specGrid"></div><div style="background:#fef3c7;border-radius:12px;padding:8px;font-size:0.7rem;color:#92400e">⚠️ Diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div>`;
-        modal.appendChild(sheet); document.body.appendChild(modal);
-        const grid=sheet.querySelector('#specGrid');
-        const specs=[
-            {icon:'🧠',name:'Psixoloq',desc:'Emosional inkişaf, davranış',q:'Psixoloq olaraq uşağımın emosional inkişafı üçün tövsiyə ver.'},
-            {icon:'🗣️',name:'Loqoped',desc:'Nitq, artikulyasiya',q:'Loqoped olaraq uşağımın nitq inkişafı üçün tövsiyə ver.'},
-            {icon:'🖐️',name:'Erqoterapevt',desc:'Motor bacarıqlar',q:'Erqoterapevt olaraq motor bacarıqlar üçün ev məşqləri tövsiyə et.'},
-            {icon:'📚',name:'Psixopedaqoq',desc:'Öyrənmə, oxuma',q:'Psixopedaqoq olaraq uşağımın öyrənmə prosesini necə dəstəkləyim?'}
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'modal-overlay';
+        modalDiv.innerHTML = `
+            <div class="modal-sheet">
+                <div class="modal-handle"></div>
+                <h3 style="color:#7c3aed; margin-bottom:12px;">👨‍⚕️ Mütəxəssislər Komandası</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;" id="specGridModal"></div>
+                <div style="background:#fef3c7; border-radius:14px; padding:10px; margin-top:16px; font-size:0.7rem; color:#92400e;">⚠️ Diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+        const grid = modalDiv.querySelector('#specGridModal');
+        const specs = [
+            { icon: "🧠", name: "Psixoloq", desc: "Emosional inkişaf, davranış", q: "Psixoloq olaraq uşağımın emosional inkişafı üçün tövsiyə ver." },
+            { icon: "🗣️", name: "Loqoped", desc: "Nitq, artikulyasiya", q: "Loqoped olaraq uşağımın nitq inkişafı üçün tövsiyə ver." },
+            { icon: "🖐️", name: "Erqoterapevt", desc: "Motor bacarıqlar", q: "Erqoterapevt olaraq motor bacarıqlar üçün ev məşqləri tövsiyə et." },
+            { icon: "📚", name: "Psixopedaqoq", desc: "Öyrənmə, oxuma", q: "Psixopedaqoq olaraq uşağımın öyrənmə prosesini necə dəstəkləyim?" }
         ];
-        specs.forEach(s=>{ let card=document.createElement('div'); card.className='spec-card'; card.innerHTML=`<div style="font-size:1.6rem">${s.icon}</div><div style="font-weight:800;font-size:0.7rem">${s.name}</div><div style="font-size:0.6rem">${s.desc}</div>`; card.onclick=()=>{ modal.remove(); sendMessage(s.q); }; grid.appendChild(card); });
-        modal.onclick=(e)=>{ if(e.target===modal) modal.remove(); };
+        specs.forEach(s => {
+            const card = document.createElement('div');
+            card.style.background = "#f8f7ff";
+            card.style.borderRadius = "14px";
+            card.style.padding = "12px";
+            card.style.textAlign = "center";
+            card.style.cursor = "pointer";
+            card.innerHTML = `<div style="font-size:1.8rem;">${s.icon}</div>
+                             <div style="font-weight:800; font-size:0.75rem;">${s.name}</div>
+                             <div style="font-size:0.6rem;">${s.desc}</div>`;
+            card.onclick = () => {
+                modalDiv.remove();
+                sendMessage(s.q);
+            };
+            grid.appendChild(card);
+        });
+        modalDiv.addEventListener('click', (e) => {
+            if (e.target === modalDiv) modalDiv.remove();
+        });
     }
 
-    // İnitialization
-    function init() {
-        const container = document.getElementById('app');
-        container.innerHTML = `
+    // --------------------------------------------------------------
+    // İNİSİALİZASİYA VƏ SPLASH EKRANI
+    // --------------------------------------------------------------
+    function initApp() {
+        appContainer = document.getElementById('root');
+        appContainer.innerHTML = `
             <div class="splash" id="splashScreen">
                 <div class="splash-icon">🧠</div>
                 <div class="splash-title">AN PSİXOLOJİ</div>
                 <div class="splash-sub">Uşaq Psixologiyası AI Agenti</div>
-                <div class="dot-container"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                <div class="dot-group">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
             </div>
-            <div class="app" style="display:none" id="mainApp">
+            <div class="app" style="opacity:0; transition:opacity 0.4s;" id="mainApp">
                 <div class="header">
                     <div class="avatar">🧠<div class="online-dot"></div></div>
-                    <div style="flex:1"><h2>AN PSİXOLOJİ</h2><p>Psixoloq · Loqoped · Erqoterapevt · Psixopedaqoq</p></div>
+                    <div class="header-info"><h2>AN PSİXOLOJİ</h2><p>Psixoloq · Loqoped · Erqoterapevt · Psixopedaqoq</p></div>
                     <button class="btn-icon" id="infoBtn">👨‍⚕️</button>
                     <button class="btn-icon" id="clearBtn">🗑️</button>
                 </div>
@@ -693,15 +833,14 @@
                 <div class="footer"><span>by s_akhundoff</span><a href="#">📷 @s_akhundoff</a></div>
             </div>
         `;
+
         const splash = document.getElementById('splashScreen');
         const mainApp = document.getElementById('mainApp');
         setTimeout(() => {
-            splash.classList.add('hide');
-            setTimeout(() => {
-                splash.style.display = 'none';
-                mainApp.style.display = 'flex';
-            }, 500);
-        }, 2000);
+            if (splash) splash.classList.add('hide');
+            if (mainApp) mainApp.style.opacity = '1';
+            setTimeout(() => splash?.remove(), 600);
+        }, 1900);
 
         chatContainer = document.getElementById('chatContainer');
         topicsContainer = document.getElementById('topicsContainer');
@@ -713,18 +852,36 @@
         clearBtn = document.getElementById('clearBtn');
         infoBtn = document.getElementById('infoBtn');
 
-        TOPICS.forEach(t=>{ let btn=document.createElement('button'); btn.className='chip'; btn.innerText=`${t.icon} ${t.label}`; btn.onclick=()=>handleTopic(t); topicsContainer.appendChild(btn); });
-        attachBtn.onclick=()=>fileInput.click();
-        fileInput.onchange=(e)=>{ let f=e.target.files[0]; if(f){ let r=new FileReader(); r.onload=ev=>{ imgPreview=ev.target.result; imgBase64=imgPreview.split(',')[1]; showToast('📷 Şəkil əlavə edildi'); renderThumb(); }; r.readAsDataURL(f); } e.target.value=''; };
-        micBtn.onclick=()=>recording?stopVoice():startVoice();
-        sendBtn.onclick=()=>sendMessage();
-        clearBtn.onclick=clearChat;
-        infoBtn.onclick=showInfoModal;
-        inputTextarea.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); } });
-        inputTextarea.addEventListener('input',function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,80)+'px'; });
-        addWelcomeMessage();
+        TOPICS.forEach(t => {
+            let btn = document.createElement('button');
+            btn.className = 'chip';
+            btn.innerText = `${t.icon} ${t.label}`;
+            btn.onclick = () => handleTopic(t);
+            topicsContainer.appendChild(btn);
+        });
+
+        attachBtn.onclick = () => fileInput.click();
+        fileInput.onchange = handleFile;
+        micBtn.onclick = () => recording ? stopVoice() : startVoice();
+        sendBtn.onclick = () => sendMessage();
+        clearBtn.onclick = clearChat;
+        infoBtn.onclick = showInfoModal;
+
+        inputTextarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        inputTextarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+        });
+
+        clearChat();
     }
-    init();
+
+    initApp();
 </script>
 </body>
 </html>
