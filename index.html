@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AN PSİXOLOJİ – Agent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+        body { background: linear-gradient(135deg, #f3f0ff 0%, #fce7f3 100%); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
+        .app { max-width: 500px; width: 100%; background: white; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2); display: flex; flex-direction: column; height: 90vh; }
+        .header { background: linear-gradient(135deg, #7c3aed, #a855f7); padding: 13px 15px; display: flex; align-items: center; gap: 10px; color: white; }
+        .avatar { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; position: relative; }
+        .online-dot { position: absolute; bottom: 2px; right: 2px; width: 11px; height: 11px; background: #4ade80; border-radius: 50%; border: 2px solid #7c3aed; animation: pulse 2s infinite; }
+        .header h2 { font-size: 1rem; font-weight: 800; }
+        .header p { font-size: 0.6rem; opacity: 0.8; }
+        .btn-icon { width: 35px; height: 35px; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; cursor: pointer; font-size: 1rem; color: white; }
+        .topics { display: flex; gap: 8px; padding: 10px 12px; overflow-x: auto; background: #f8f7ff; border-bottom: 1px solid #ede9fe; }
+        .chip { background: white; border: 1.5px solid #e5e7eb; border-radius: 20px; padding: 5px 12px; font-size: 0.7rem; font-weight: 700; color: #4b5563; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .chip.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .chat { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; background: #f9f9fe; }
+        .message { display: flex; gap: 10px; align-items: flex-end; animation: fadeIn 0.2s ease; }
+        .user-message { flex-direction: row-reverse; }
+        .agent-avatar, .user-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+        .agent-avatar { background: linear-gradient(135deg, #7c3aed, #ec4899); }
+        .user-avatar { background: linear-gradient(135deg, #0d9488, #06b6d4); }
+        .bubble { max-width: 75%; padding: 8px 12px; border-radius: 18px; font-size: 0.85rem; line-height: 1.4; }
+        .agent-bubble { background: white; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; color: #1e1b4b; }
+        .user-bubble { background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; border-bottom-right-radius: 4px; }
+        .time { font-size: 0.55rem; color: #94a3b8; margin-top: 3px; padding: 0 4px; }
+        .qr-wrap { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .qr-btn { background: #f0e6ff; border: none; border-radius: 16px; padding: 3px 10px; font-size: 0.65rem; font-weight: 600; color: #7c3aed; cursor: pointer; }
+        .chat-img { max-width: 100%; max-height: 150px; border-radius: 12px; margin-top: 6px; cursor: pointer; border: 1px solid #e9e9ef; }
+        .typing { background: #e9e9ef; border-radius: 20px; padding: 10px 14px; display: flex; gap: 5px; width: fit-content; }
+        .typing span { width: 7px; height: 7px; background: #7c3aed; border-radius: 50%; display: inline-block; animation: bounce 1.2s infinite; }
+        .input-area { padding: 8px 12px 16px; background: white; border-top: 1px solid #ede9fe; }
+        .thumb-preview { position: relative; display: inline-block; margin-bottom: 6px; }
+        .thumb-img { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; border: 2px solid #a78bfa; }
+        .rm-btn { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; background: #ec4899; color: white; border-radius: 50%; font-size: 0.6rem; cursor: pointer; border: none; }
+        .input-row { display: flex; gap: 8px; align-items: flex-end; }
+        .input-wrap { flex: 1; background: #f8f7ff; border: 1.5px solid #ede9fe; border-radius: 24px; padding: 6px 10px; display: flex; align-items: flex-end; gap: 5px; }
+        textarea { flex: 1; border: none; outline: none; background: transparent; font-size: 0.85rem; resize: none; max-height: 80px; font-family: inherit; }
+        .attach-btn, .mic-btn, .send-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; }
+        .mic-btn { background: #ede9fe; color: #7c3aed; }
+        .send-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; box-shadow: 0 2px 8px rgba(124,58,237,0.3); }
+        .footer { text-align: center; padding: 8px; font-size: 0.6rem; background: #f8f7ff; color: #6b7280; border-top: 1px solid #ede9fe; display: flex; justify-content: center; gap: 12px; }
+        a { color: #7c3aed; text-decoration: none; }
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1e1b4b; color: white; border-radius: 20px; padding: 6px 18px; font-size: 0.7rem; z-index: 1000; white-space: nowrap; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1.2); opacity: 1; } }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); } 50% { box-shadow: 0 0 0 5px rgba(74,222,128,0); } }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="header">
+        <div class="avatar">🧠<div class="online-dot"></div></div>
+        <div style="flex:1"><h2>AN PSİXOLOJİ</h2><p>Psixoloq · Loqoped · Erqoterapevt · Psixopedaqoq</p></div>
+        <button class="btn-icon" id="infoBtn">👨‍⚕️</button>
+        <button class="btn-icon" id="clearBtn">🗑️</button>
+    </div>
+    <div class="topics" id="topicsContainer"></div>
+    <div class="chat" id="chatContainer"></div>
+    <div class="input-area" id="inputArea">
+        <div class="input-row">
+            <div class="input-wrap">
+                <textarea id="messageInput" rows="1" placeholder="Sualınızı yazın..."></textarea>
+                <button class="attach-btn" id="attachBtn">📎</button>
+            </div>
+            <button class="mic-btn" id="micBtn">🎙️</button>
+            <button class="send-btn" id="sendBtn">➤</button>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+    <div class="footer"><span>by s_akhundoff</span><a href="#">📷 @s_akhundoff</a></div>
+</div>
+<script>
+    // ======================= MƏLUMATLAR =======================
+    const TOPICS = [
+        {key:"autizm", icon:"🔵", label:"Autizm", color:"#3b82f6"},
+        {key:"nitq", icon:"🗣️", label:"Nitq", color:"#8b5cf6"},
+        {key:"davranis", icon:"😤", label:"Davranış", color:"#ec4899"},
+        {key:"dehb", icon:"⚡", label:"DEHB", color:"#f59e0b"},
+        {key:"emosiya", icon:"❤️", label:"Emosiya", color:"#ef4444"},
+        {key:"oyun", icon:"🎮", label:"Oyun Terapiyası", color:"#10b981"},
+        {key:"oxuma", icon:"📚", label:"Oxuma/Yazma", color:"#6366f1"},
+        {key:"sosial", icon:"👫", label:"Sosial Bacarıq", color:"#0d9488"}
+    ];
+    const TOPIC_PROMPTS = {
+        autizm:"Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, gündəlik rutin necə qurulmalıdır?",
+        nitq:"Uşaqlarda nitq gecikmələri haqqında məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır?",
+        davranis:"Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik) necə idarə etmək olar?",
+        dehb:"DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, məktəbdə dəstək.",
+        emosiya:"Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları.",
+        oyun:"Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri.",
+        oxuma:"Uşaqlarda oxuma-yazma çətinlikləri (disleksiya). Əlamətlər, evdə kömək üsulları.",
+        sosial:"Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar."
+    };
+    const QR_MAP = {
+        autizm:["🎮 Oyun tövsiyələri","📋 Gündəlik rutin","🗣️ Ünsiyyət bacarıqları"],
+        nitq:["📝 Ev məşqləri","🎵 Mahnılarla nitq","⏰ Mütəxəssisə nə vaxt?"],
+        davranis:["😌 Sakinləşdirmə","📊 Davranış cədvəli","🏫 Məktəbdə dəstək"],
+        dehb:["🏃 Enerji fəaliyyətlər","📌 Diqqət məşqləri","🌙 Yuxu rutini"],
+        default:["🔍 Daha ətraflı","🏠 Ev fəaliyyəti","👩‍⚕️ Mütəxəssisə gedim?"]
+    };
+
+    // 🔐 SİZİN GEMİNİ API AÇARINIZ (burada ictimai görünür, amma GitHub Pages-də belədir)
+    const GEMINI_API_KEY = "AIzaSyCl4qTJUyGT1y-jcuVjV8dOKxvYQEWLUPs";
+
+    // ======================= KÖMƏKÇİ =======================
+    function getTime() { return new Date().toLocaleTimeString("az-AZ", { hour:"2-digit", minute:"2-digit" }); }
+    function renderText(t) { return t.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\n/g,"<br>"); }
+    function showToast(msg) { let div=document.createElement('div'); div.className='toast'; div.innerText=msg; document.body.appendChild(div); setTimeout(()=>div.remove(),2500); }
+
+    // ======================= STATE =======================
+    let messages = [];
+    let activeTopic = null;
+    let imgPreview = null, imgBase64 = null;
+    let isLoading = false;
+    let recording = false, recognition = null;
+
+    let chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
+
+    // ======================= RENDER =======================
+    function renderChat() {
+        if(!chatContainer) return;
+        chatContainer.innerHTML = '';
+        messages.forEach(msg => {
+            const row = document.createElement('div');
+            row.className = `message ${msg.role === 'user' ? 'user-message' : ''}`;
+            const avatar = document.createElement('div');
+            avatar.className = msg.role === 'agent' ? 'agent-avatar' : 'user-avatar';
+            avatar.innerText = msg.role === 'agent' ? '🧸' : '👤';
+            const bubbleWrapper = document.createElement('div');
+            bubbleWrapper.style.maxWidth = '78%';
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${msg.role === 'agent' ? 'agent-bubble' : 'user-bubble'}`;
+            if(msg.role === 'agent') bubble.innerHTML = renderText(msg.text);
+            else bubble.innerText = msg.text;
+            if(msg.imgUrl) { let img=document.createElement('img'); img.src=msg.imgUrl; img.className='chat-img'; img.onclick=()=>window.open(msg.imgUrl); bubble.appendChild(img); }
+            if(msg.qr && msg.role==='agent') {
+                let wrap=document.createElement('div'); wrap.className='qr-wrap';
+                msg.qr.forEach(q=>{ let btn=document.createElement('button'); btn.className='qr-btn'; btn.innerText=q; btn.onclick=()=>sendMessage(q); wrap.appendChild(btn); });
+                bubble.appendChild(wrap);
+            }
+            const timeSpan=document.createElement('div'); timeSpan.className='time'; timeSpan.innerText=msg.time;
+            bubbleWrapper.appendChild(bubble); bubbleWrapper.appendChild(timeSpan);
+            row.appendChild(avatar); row.appendChild(bubbleWrapper);
+            chatContainer.appendChild(row);
+        });
+        if(isLoading) {
+            let row=document.createElement('div'); row.className='message';
+            let av=document.createElement('div'); av.className='agent-avatar'; av.innerText='🧸';
+            let typing=document.createElement('div'); typing.className='typing';
+            for(let i=0;i<3;i++) { let d=document.createElement('span'); typing.appendChild(d); }
+            row.appendChild(av); row.appendChild(typing);
+            chatContainer.appendChild(row);
+        }
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        renderThumb();
+    }
+    function renderThumb() { let old=document.querySelector('.thumb-preview'); if(old) old.remove(); if(imgPreview && document.querySelector('.input-area')) { let wrap=document.createElement('div'); wrap.className='thumb-preview'; wrap.innerHTML=`<img class="thumb-img" src="${imgPreview}"><button class="rm-btn">✕</button>`; document.querySelector('.input-area').prepend(wrap); wrap.querySelector('.rm-btn').onclick=()=>{ imgPreview=null; imgBase64=null; renderThumb(); }; } }
+
+    // ======================= GEMINI API (BİRBAŞA) =======================
+    async function callGemini(userText, imageBase64) {
+        const systemPrompt = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi çalışırsan. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
+        const parts = [{ text: systemPrompt + "\n\nİstifadəçi sualı: " + (userText || "") }];
+        if (imageBase64) {
+            parts.push({ inlineData: { mimeType: "image/jpeg", data: imageBase64 } });
+        }
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ role: "user", parts }],
+                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+            })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error?.message || 'API xətası');
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!reply) throw new Error('Cavab alınmadı');
+        return reply;
+    }
+
+    async function sendMessage(overrideText=null) {
+        const text = (overrideText!==null) ? overrideText : inputTextarea.value.trim();
+        if(!text && !imgBase64) return;
+        addMessage('user', text || "📷 Şəkil", imgPreview);
+        const sentImg = imgBase64;
+        imgPreview=null; imgBase64=null;
+        if(inputTextarea) inputTextarea.value='';
+        renderThumb();
+        isLoading=true; renderChat();
+        try {
+            const reply = await callGemini(text, sentImg);
+            addMessage('agent', reply, null, QR_MAP.default);
+        } catch(e) { addMessage('agent', `⚠️ Xəta: ${e.message}`); }
+        isLoading=false; renderChat();
+    }
+    function addMessage(role, text, img=null, qr=null) {
+        messages.push({ id:Date.now(), role, text, time:getTime(), imgUrl:img, qr });
+        renderChat();
+    }
+    async function handleTopic(topic) {
+        activeTopic=topic.key;
+        addMessage('user', `${topic.icon} ${topic.label} haqqında məlumat`);
+        isLoading=true; renderChat();
+        try {
+            const reply = await callGemini(TOPIC_PROMPTS[topic.key]);
+            addMessage('agent', reply, null, QR_MAP[topic.key]||QR_MAP.default);
+        } catch(e) { addMessage('agent', `⚠️ Xəta: ${e.message}`); }
+        isLoading=false; renderChat();
+        document.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('active'));
+        const activeChip = [...document.querySelectorAll('.chip')].find(ch=>ch.innerText.includes(topic.label));
+        if(activeChip) activeChip.classList.add('active');
+    }
+    function clearChat() { messages=[]; addMessage('agent',"Salam! Mən **AN PSİXOLOJİ** agentiyəm 🌈\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınız haqqında sualınızı yazın, danışın və ya şəkil göndərin!", null, ["🔵 Autizm","🗣️ Nitq","⚡ DEHB","😤 Davranış"]); renderChat(); }
+
+    // ======================= SƏS, ŞƏKİL =======================
+    function handleFile(e) { let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=ev=>{ imgPreview=ev.target.result; imgBase64=imgPreview.split(',')[1]; showToast('📷 Şəkil əlavə edildi'); renderThumb(); }; r.readAsDataURL(f); e.target.value=''; }
+    function startVoice() { let SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){ showToast('⚠️ Brauzer dəstəkləmir'); return; } let r=new SR(); r.lang='az-AZ'; r.onresult=e=>{ inputTextarea.value=e.results[0][0].transcript; showToast('✅ Nitq tanındı'); }; r.onerror=()=>showToast('⚠️ Nitq tanınmadı'); r.start(); recording=true; recognition=r; }
+    function stopVoice() { if(recognition) { recognition.stop(); recognition=null; } recording=false; }
+
+    // ======================= MODAL =======================
+    function showInfoModal() {
+        let modal=document.createElement('div'); modal.style.position='fixed'; modal.style.inset='0'; modal.style.background='rgba(0,0,0,0.5)'; modal.style.zIndex='1000'; modal.style.display='flex'; modal.style.alignItems='flex-end';
+        let sheet=document.createElement('div'); sheet.style.background='white'; sheet.style.width='100%'; sheet.style.borderRadius='24px 24px 0 0'; sheet.style.padding='16px 20px 25px';
+        sheet.innerHTML=`<div style="width:40px;height:4px;background:#e2e8f0;border-radius:2px;margin:0 auto 12px"></div><h3 style="color:#7c3aed">👨‍⚕️ Mütəxəssislər</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">${[
+            {icon:'🧠',name:'Psixoloq',desc:'Emosional inkişaf, davranış',q:'Psixoloq olaraq uşağımın emosional inkişafı üçün tövsiyə ver.'},
+            {icon:'🗣️',name:'Loqoped',desc:'Nitq, artikulyasiya',q:'Loqoped olaraq uşağımın nitq inkişafı üçün tövsiyə ver.'},
+            {icon:'🖐️',name:'Erqoterapevt',desc:'Motor bacarıqlar',q:'Erqoterapevt olaraq motor bacarıqlar üçün ev məşqləri tövsiyə et.'},
+            {icon:'📚',name:'Psixopedaqoq',desc:'Öyrənmə, oxuma',q:'Psixopedaqoq olaraq uşağımın öyrənmə prosesini necə dəstəkləyim?'}
+        ].map(s=>`<div style="background:#f8f7ff;border-radius:12px;padding:10px;text-align:center;cursor:pointer" data-msg="${s.q}"><div style="font-size:1.6rem">${s.icon}</div><div style="font-weight:800;font-size:0.7rem">${s.name}</div><div style="font-size:0.6rem">${s.desc}</div></div>`).join('')}</div><div style="background:#fef3c7;border-radius:12px;padding:8px;margin-top:12px;font-size:0.7rem;color:#92400e">⚠️ Diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div>`;
+        modal.appendChild(sheet); document.body.appendChild(modal);
+        sheet.querySelectorAll('[data-msg]').forEach(el=>el.addEventListener('click',()=>{ modal.remove(); sendMessage(el.dataset.msg); }));
+        modal.addEventListener('click',(e)=> { if(e.target===modal) modal.remove(); });
+    }
+
+    // ======================= İNİSİALİZASİYA =======================
+    function init() {
+        chatContainer = document.getElementById('chatContainer');
+        topicsContainer = document.getElementById('topicsContainer');
+        inputTextarea = document.getElementById('messageInput');
+        fileInput = document.getElementById('fileInput');
+        micBtn = document.getElementById('micBtn');
+        sendBtn = document.getElementById('sendBtn');
+        attachBtn = document.getElementById('attachBtn');
+        clearBtn = document.getElementById('clearBtn');
+        infoBtn = document.getElementById('infoBtn');
+        if(!chatContainer) return;
+
+        TOPICS.forEach(t=>{ let btn=document.createElement('button'); btn.className='chip'; btn.innerText=`${t.icon} ${t.label}`; btn.onclick=()=>handleTopic(t); topicsContainer.appendChild(btn); });
+        attachBtn.onclick=()=>fileInput.click();
+        fileInput.onchange=handleFile;
+        micBtn.onclick=()=>recording?stopVoice():startVoice();
+        sendBtn.onclick=()=>sendMessage();
+        clearBtn.onclick=clearChat;
+        infoBtn.onclick=showInfoModal;
+        inputTextarea.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); } });
+        inputTextarea.addEventListener('input',function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,80)+'px'; });
+        clearChat();
+    }
+    init();
+</script>
+</body>
+</html>
