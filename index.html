@@ -13,8 +13,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #f3f0ff 0%, #fce7f3 100%);
+            font-family: 'Segoe UI', 'Nunito', 'Comic Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #fff3e0 0%, #ffe6d5 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,314 +23,254 @@
             overflow-x: hidden;
         }
 
-        /* Splash (Açılış) Ekranı */
+        /* Splash */
         .splash {
             position: fixed;
             inset: 0;
-            background: linear-gradient(145deg, #7c3aed 0%, #ec4899 60%, #f59e0b 100%);
+            background: linear-gradient(145deg, #ff9a3c, #ff5e7c, #d84c9c);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 10000;
-            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: opacity 0.6s;
         }
-        .splash.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
+        .splash.hide { opacity: 0; pointer-events: none; }
         .splash-icon {
-            font-size: 4rem;
-            margin-bottom: 16px;
-            background: rgba(255,255,255,0.2);
+            font-size: 4.5rem;
+            background: rgba(255,255,255,0.25);
             border-radius: 50%;
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: floatPulse 1.6s ease-in-out infinite;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: floatPulse 1.6s infinite;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
         }
         .splash-title {
-            font-family: 'Segoe UI', 'Baloo 2', cursive;
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: 2.2rem;
+            font-weight: 900;
             color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
         }
         .splash-sub {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.95);
             margin-top: 6px;
-            font-weight: 500;
+            font-weight: 600;
         }
-        .dot-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 28px;
-        }
+        .dot-group { display: flex; gap: 12px; margin-top: 28px; }
         .dot {
-            width: 10px;
-            height: 10px;
-            background: rgba(255,255,255,0.6);
+            width: 10px; height: 10px;
+            background: rgba(255,255,255,0.7);
             border-radius: 50%;
-            animation: bounceDot 1.2s ease-in-out infinite;
+            animation: bounceDot 1.2s infinite;
         }
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
 
-        /* Əsas App Konteyneri – Mobil tam uyğun */
+        /* Əsas app konteyneri */
         .app {
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
-            background: white;
-            border-radius: 32px;
+            background: rgba(255,255,245,0.98);
+            border-radius: 44px;
             overflow: hidden;
-            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.25);
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             height: 90vh;
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.4s;
+            backdrop-filter: blur(0px);
         }
 
-        /* Header */
+        /* Header – yumşaq gradient */
         .header {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
-            padding: 12px 16px;
+            background: linear-gradient(115deg, #f97316, #ec4899, #8b5cf6);
+            padding: 14px 18px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: white;
             flex-shrink: 0;
         }
         .avatar {
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.2);
+            width: 48px; height: 48px;
+            background: rgba(255,255,255,0.25);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             position: relative;
-            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .online-dot {
             position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
+            bottom: 2px; right: 2px;
+            width: 12px; height: 12px;
             background: #4ade80;
             border-radius: 50%;
-            border: 2px solid #7c3aed;
+            border: 2px solid #f97316;
             animation: pulseGreen 2s infinite;
         }
         .header-info { flex: 1; min-width: 0; }
-        .header-info h2 { font-size: 1rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .header-info p { font-size: 0.6rem; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .header-info h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .header-info p {
+            font-size: 0.65rem;
+            opacity: 0.9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .btn-icon {
-            width: 36px;
-            height: 36px;
-            background: rgba(255,255,255,0.15);
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.2);
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: 0.2s;
-            flex-shrink: 0;
         }
-        .btn-icon:active { transform: scale(0.94); background: rgba(255,255,255,0.25); }
+        .btn-icon:active { transform: scale(0.94); background: rgba(255,255,255,0.3); }
 
-        /* Topics – Çiplər (Mobil üçün üfüqi sürüşdürmə) */
+        /* TOPICS – 4 sütunlu grid (mobil uyğun) */
         .topics {
-            display: flex;
-            gap: 8px;
-            padding: 10px 12px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            flex-shrink: 0;
-            background: #f8f7ff;
-            border-bottom: 1px solid #ede9fe;
-            scrollbar-width: thin;
-            -webkit-overflow-scrolling: touch;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 14px 12px;
+            background: #fffaf2;
+            border-bottom: 1px solid #ffdbb5;
         }
         .chip {
-            background: white;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 30px;
-            padding: 5px 14px;
+            background: linear-gradient(110deg, #ffffff, #fff6ea);
+            border: 1px solid #ffcd94;
+            border-radius: 40px;
+            padding: 8px 4px;
             font-size: 0.7rem;
-            font-weight: 700;
-            color: #4b5563;
+            font-weight: 800;
+            color: #bc6f1a;
+            text-align: center;
             white-space: nowrap;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
-            flex-shrink: 0;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
+        .chip i, .chip span { font-size: 0.85rem; }
         .chip.active {
-            background: #3b82f6;
+            background: #f97316;
             color: white;
-            border-color: #3b82f6;
-            box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+            border-color: #f97316;
+            box-shadow: 0 4px 10px rgba(249,115,22,0.3);
         }
-        .chip:active { transform: scale(0.96); }
+        .chip:active { transform: scale(0.96); background: #f97316; color: white; }
 
-        /* Chat */
+        /* Chat sahəsi */
         .chat {
             flex: 1;
             overflow-y: auto;
-            padding: 14px 12px;
+            padding: 16px 12px;
             display: flex;
             flex-direction: column;
             gap: 14px;
-            background: #f9f9fe;
+            background: #fffdf8;
         }
-        .message {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            animation: fadeSlideUp 0.25s ease;
-        }
+        .message { display: flex; gap: 10px; align-items: flex-end; animation: fadeSlideUp 0.25s; }
         .user-message { flex-direction: row-reverse; }
         .agent-avatar, .user-avatar {
-            width: 34px;
-            height: 34px;
+            width: 34px; height: 34px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1rem;
             flex-shrink: 0;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
-        .agent-avatar { background: linear-gradient(135deg, #7c3aed, #ec4899); }
+        .agent-avatar { background: linear-gradient(135deg, #f97316, #ec4899); }
         .user-avatar { background: linear-gradient(135deg, #0d9488, #06b6d4); }
         .bubble {
             max-width: 78%;
-            padding: 9px 13px;
-            border-radius: 20px;
+            padding: 10px 14px;
+            border-radius: 22px;
             font-size: 0.85rem;
-            line-height: 1.45;
+            line-height: 1.5;
             word-break: break-word;
+            overflow-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .agent-bubble {
             background: white;
-            border: 1px solid #e2e8f0;
-            border-bottom-left-radius: 4px;
-            color: #1e1b4b;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            border: 1px solid #ffe0b5;
+            border-bottom-left-radius: 5px;
+            color: #3a2a1f;
         }
         .user-bubble {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            background: linear-gradient(115deg, #f97316, #ec4899);
             color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 6px rgba(124,58,237,0.25);
+            border-bottom-right-radius: 5px;
         }
-        .time {
-            font-size: 0.55rem;
-            color: #94a3b8;
-            margin-top: 4px;
-            padding: 0 6px;
-        }
-        .qr-wrap {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 9px;
-        }
+        .time { font-size: 0.55rem; color: #b98f63; margin-top: 4px; padding: 0 6px; font-weight: 500; }
+        .qr-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
         .qr-btn {
-            background: #f0e6ff;
-            border: none;
-            border-radius: 30px;
-            padding: 4px 12px;
+            background: #fff0e0;
+            border: 1px solid #ffd5aa;
+            border-radius: 40px;
+            padding: 5px 14px;
             font-size: 0.65rem;
-            font-weight: 600;
-            color: #7c3aed;
+            font-weight: 700;
+            color: #c46d1a;
             cursor: pointer;
             transition: 0.15s;
         }
-        .qr-btn:active { background: #e0d0ff; transform: scale(0.96); }
-        .chat-img {
-            max-width: 100%;
-            max-height: 150px;
-            border-radius: 14px;
-            margin-top: 8px;
-            cursor: pointer;
-            border: 2px solid #ede9fe;
-            object-fit: cover;
-        }
+        .qr-btn:active { background: #f97316; color: white; transform: scale(0.96); }
         .typing {
-            background: #e9e9ef;
-            border-radius: 24px;
-            padding: 11px 16px;
+            background: #f0ede8;
+            border-radius: 26px;
+            padding: 12px 18px;
             display: flex;
             gap: 6px;
             width: fit-content;
         }
-        .typing span {
-            width: 8px;
-            height: 8px;
-            background: #7c3aed;
-            border-radius: 50%;
-            display: inline-block;
-            animation: bounceDot 1.2s infinite;
-        }
+        .typing span { width: 8px; height: 8px; background: #f97316; border-radius: 50%; animation: bounceDot 1.2s infinite; }
 
-        /* Input hissəsi */
+        /* Input sahəsi */
         .input-area {
-            padding: 10px 12px 16px;
-            background: white;
-            border-top: 1px solid #ede9fe;
+            padding: 12px 14px 18px;
+            background: #fffcf5;
+            border-top: 1px solid #ffddb0;
             flex-shrink: 0;
-        }
-        .thumb-preview {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-        .thumb-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 14px;
-            object-fit: cover;
-            border: 2px solid #a78bfa;
-        }
-        .rm-btn {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 22px;
-            height: 22px;
-            background: #ec4899;
-            color: white;
-            border-radius: 50%;
-            font-size: 0.65rem;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
         }
         .input-row {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: flex-end;
         }
         .input-wrap {
             flex: 1;
-            background: #f8f7ff;
-            border: 1.5px solid #ede9fe;
-            border-radius: 30px;
-            padding: 6px 12px;
+            background: #fef7ef;
+            border: 1.5px solid #ffd8aa;
+            border-radius: 34px;
+            padding: 8px 16px;
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             gap: 6px;
         }
         textarea {
@@ -342,91 +282,88 @@
             resize: none;
             max-height: 80px;
             font-family: inherit;
-            padding: 5px 0;
+            color: #2c241a;
         }
-        .attach-btn, .mic-btn, .send-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
+        .mic-btn, .send-btn {
+            width: 44px; height: 44px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            background: none;
+            border: none;
             transition: 0.15s;
-            flex-shrink: 0;
         }
-        .attach-btn { color: #7c3aed; background: #ede9fe; }
-        .mic-btn { background: #ede9fe; color: #7c3aed; }
-        .mic-btn.recording { background: #ec4899; color: white; animation: micPulse 1s infinite; }
-        .send-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; box-shadow: 0 2px 8px rgba(124,58,237,0.3); }
-        .send-btn:active, .mic-btn:active, .attach-btn:active { transform: scale(0.94); }
+        .mic-btn {
+            background: #ffefe2;
+            color: #f97316;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .mic-btn.recording {
+            background: #ec4899;
+            color: white;
+            animation: micPulse 1s infinite;
+        }
+        .send-btn {
+            background: linear-gradient(115deg, #f97316, #ec4899);
+            color: white;
+            box-shadow: 0 4px 10px rgba(249,115,22,0.3);
+        }
+        .mic-btn:active, .send-btn:active { transform: scale(0.94); }
 
         .footer {
             text-align: center;
             padding: 8px;
             font-size: 0.6rem;
-            background: #f8f7ff;
-            color: #6b7280;
-            border-top: 1px solid #ede9fe;
+            background: #fffaf2;
+            color: #b48c5c;
+            border-top: 1px solid #ffe0bb;
             display: flex;
             justify-content: center;
             gap: 12px;
             flex-shrink: 0;
         }
-        a { color: #7c3aed; text-decoration: none; }
+        a { color: #f97316; text-decoration: none; font-weight: 600; }
 
         .toast {
-            position: fixed;
-            bottom: 85px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e1b4b;
-            color: white;
-            border-radius: 40px;
-            padding: 8px 20px;
+            position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
+            background: #2e241d;
+            color: #ffefdf;
+            border-radius: 50px;
+            padding: 8px 22px;
             font-size: 0.7rem;
             z-index: 1100;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .modal-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: rgba(0,0,0,0.5);
             z-index: 2000;
             display: flex;
             align-items: flex-end;
-            justify-content: center;
         }
         .modal-sheet {
-            background: white;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 28px 28px 0 0;
+            background: #fff9f0;
+            width: 100%; max-width: 550px;
+            border-radius: 36px 36px 0 0;
             padding: 20px 20px 30px;
-            animation: slideUp 0.3s ease;
+            animation: slideUp 0.3s;
         }
-        .modal-handle {
-            width: 45px;
-            height: 4px;
-            background: #ddd;
-            border-radius: 4px;
-            margin: 0 auto 16px;
-        }
+        .modal-handle { width: 50px; height: 5px; background: #ffc48a; border-radius: 6px; margin: 0 auto 16px; }
 
         /* Animasiyalar */
         @keyframes floatPulse {
             0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-            50% { transform: scale(1.08); box-shadow: 0 0 0 12px rgba(255,255,255,0); }
+            50% { transform: scale(1.1); box-shadow: 0 0 0 18px rgba(255,255,255,0); }
         }
         @keyframes bounceDot {
             0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
-            40% { transform: scale(1.3); opacity: 1; }
+            40% { transform: scale(1.2); opacity: 1; }
         }
         @keyframes fadeSlideUp {
             from { opacity: 0; transform: translateY(12px); }
@@ -444,28 +381,55 @@
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
         }
+
+        /* Kiçik ekranlarda çip yazıları bir az kiçilə bilər */
+        @media (max-width: 450px) {
+            .topics { gap: 6px; padding: 10px 8px; }
+            .chip { font-size: 0.65rem; padding: 6px 2px; white-space: nowrap; }
+            .chip i { font-size: 0.75rem; }
+            .bubble { max-width: 85%; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
 <div id="root"></div>
 
 <script>
-    // ======================= YENİ API AÇARI =======================
-    const GEMINI_API_KEY = "AQ.Ab8RN6JADYrsq5vMeIUzwZtYToYnKhBfd2L1Ht2l18rz1CK67Q";
-    const MODEL_NAME = "gemini-1.5-flash";  // Google tərəfindən dəstəklənən sürətli model
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
+    // =============== GITHUB AI (GPT-4o-mini) – TOXUNULMAYIB ===============
+    const GITHUB_TOKEN = "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";  // Öz tokeninizlə əvəz edin
+    
+    async function callProfessionalAI(prompt) {
+        const response = await fetch('https://models.inference.ai.azure.com/chat/completions', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [
+                    { role: "system", content: "Sən 'AN PSİXOLOJİ' adlı ixtisaslaşmış AI agentisən. Uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi çalışırsan. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə." },
+                    { role: "user", content: prompt }
+                ],
+                max_tokens: 1000,
+                temperature: 0.7
+            })
+        });
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(`HTTP ${response.status}: ${err}`);
+        }
+        const data = await response.json();
+        return data.choices[0].message.content;
+    }
 
-    const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Uşaq psixoloqu, loqoped, erqoterapevt və psixopedaqoq kimi çalışırsan. Hər cavabda: 1) İsti giriş 2) Sadə məlumat 3) 3-5 praktiki ev addımı 4) Nə etməyin 5) Tövsiyə 6) Mütəxəssisə nə vaxt. Azərbaycan dilində, emoji istifadə et. Diaqnoz vermə.`;
-
+    // =============== KONFİQURASİYA (MÖVZULAR) ===============
     const TOPICS = [
-        {key:"autizm", icon:"🔵", label:"Autizm", color:"#3b82f6"},
-        {key:"nitq", icon:"🗣️", label:"Nitq", color:"#8b5cf6"},
-        {key:"davranis", icon:"😤", label:"Davranış", color:"#ec4899"},
-        {key:"dehb", icon:"⚡", label:"DEHB", color:"#f59e0b"},
-        {key:"emosiya", icon:"❤️", label:"Emosiya", color:"#ef4444"},
-        {key:"oyun", icon:"🎮", label:"Oyun Terapiyası", color:"#10b981"},
-        {key:"oxuma", icon:"📚", label:"Oxuma/Yazma", color:"#6366f1"},
-        {key:"sosial", icon:"👫", label:"Sosial Bacarıq", color:"#0d9488"}
+        {key:"autizm", icon:"🔵", label:"Autizm"},
+        {key:"nitq", icon:"🗣️", label:"Nitq"},
+        {key:"davranis", icon:"😤", label:"Davranış"},
+        {key:"dehb", icon:"⚡", label:"DEHB"},
+        {key:"emosiya", icon:"❤️", label:"Emosiya"},
+        {key:"oyun", icon:"🎮", label:"Oyun Terapiyası"},
+        {key:"oxuma", icon:"📚", label:"Oxuma/Yazma"},
+        {key:"sosial", icon:"👫", label:"Sosial Bacarıq"}
     ];
 
     const TOPIC_PROMPTS = {
@@ -487,64 +451,27 @@
         default: ["🔍 Daha ətraflı","🏠 Ev fəaliyyəti","👩‍⚕️ Mütəxəssisə gedim?"]
     };
 
-    // ======================= KÖMƏKÇİ FUNKSİYALAR =======================
-    function getTime() {
-        return new Date().toLocaleTimeString("az-AZ", { hour: "2-digit", minute: "2-digit" });
-    }
-    function renderText(t) {
-        return t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-                .replace(/\*(.+?)\*/g, "<em>$1</em>")
-                .replace(/\n/g, "<br>");
-    }
-    function showToast(msg) {
-        let div = document.createElement('div');
-        div.className = 'toast';
-        div.innerText = msg;
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 2600);
-    }
+    // =============== KÖMƏKÇİ ===============
+    function getTime() { return new Date().toLocaleTimeString("az-AZ", { hour: "2-digit", minute: "2-digit" }); }
+    function renderText(t) { return t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>"); }
+    function showToast(msg) { let d=document.createElement('div'); d.className='toast'; d.innerText=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),2600); }
 
-    // ======================= GEMINI API CALL (REAL) =======================
-    async function callGemini(userText, imageBase64 = null) {
-        const fullPrompt = `${SYSTEM_PROMPT}\n\nİstifadəçi sualı: ${userText || ""}`;
-        const parts = [{ text: fullPrompt }];
-        if (imageBase64) {
-            parts.push({
-                inlineData: {
-                    mimeType: "image/jpeg",
-                    data: imageBase64
-                }
-            });
-        }
-        const payload = {
-            contents: [{ role: "user", parts }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 800, topP: 0.9 }
-        };
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            console.error("Gemini xətası:", data);
-            // Xəta olarsa simulyasiya cavabı qaytar (xəta mesajı göstərmə)
-            return `🌟 **AI cavabı müvəqqəti olaraq əldə olunmur.**\n\nZəhmət olmasa bir az sonra yenidən cəhd edin. Sualınız: ${userText.substring(0, 100)}...`;
-        }
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!reply) throw new Error("Cavab alınmadı");
-        return reply;
-    }
-
-    // ======================= STATE =======================
+    // =============== STATE ===============
     let messages = [];
     let activeTopic = null;
-    let imgPreview = null, imgBase64 = null;
     let isLoading = false;
     let recording = false, recognition = null;
-    let chatContainer, topicsContainer, inputTextarea, fileInput, micBtn, sendBtn, attachBtn, clearBtn, infoBtn;
+    let chatContainer, topicsContainer, inputTextarea, micBtn, sendBtn, clearBtn, infoBtn;
 
-    // ======================= RENDER =======================
+    // =============== AI SORĞUSU ===============
+    async function getAIResponse(userText, topicKey = null) {
+        let prompt = userText;
+        if (topicKey && TOPIC_PROMPTS[topicKey]) prompt = TOPIC_PROMPTS[topicKey];
+        else if (!userText) prompt = "Ümumi məlumat ver";
+        return await callProfessionalAI(prompt);
+    }
+
+    // =============== RENDER ===============
     function renderChat() {
         if (!chatContainer) return;
         chatContainer.innerHTML = '';
@@ -560,238 +487,121 @@
             bubble.className = `bubble ${msg.role === 'agent' ? 'agent-bubble' : 'user-bubble'}`;
             if (msg.role === 'agent') bubble.innerHTML = renderText(msg.text);
             else bubble.innerText = msg.text;
-            if (msg.imgUrl) {
-                let img = document.createElement('img');
-                img.src = msg.imgUrl;
-                img.className = 'chat-img';
-                img.onclick = () => window.open(msg.imgUrl);
-                bubble.appendChild(img);
-            }
             if (msg.qr && msg.role === 'agent') {
-                let wrap = document.createElement('div');
-                wrap.className = 'qr-wrap';
-                msg.qr.forEach(q => {
-                    let btn = document.createElement('button');
-                    btn.className = 'qr-btn';
-                    btn.innerText = q;
-                    btn.onclick = () => sendMessage(q);
-                    wrap.appendChild(btn);
-                });
+                let wrap = document.createElement('div'); wrap.className = 'qr-wrap';
+                msg.qr.forEach(q => { let btn = document.createElement('button'); btn.className = 'qr-btn'; btn.innerText = q; btn.onclick = () => sendMessage(q); wrap.appendChild(btn); });
                 bubble.appendChild(wrap);
             }
-            const timeSpan = document.createElement('div');
-            timeSpan.className = 'time';
-            timeSpan.innerText = msg.time;
-            bubbleWrapper.appendChild(bubble);
-            bubbleWrapper.appendChild(timeSpan);
-            row.appendChild(avatar);
-            row.appendChild(bubbleWrapper);
+            const timeSpan = document.createElement('div'); timeSpan.className = 'time'; timeSpan.innerText = msg.time;
+            bubbleWrapper.appendChild(bubble); bubbleWrapper.appendChild(timeSpan);
+            row.appendChild(avatar); row.appendChild(bubbleWrapper);
             chatContainer.appendChild(row);
         });
         if (isLoading) {
-            let row = document.createElement('div');
-            row.className = 'message';
-            let av = document.createElement('div');
-            av.className = 'agent-avatar';
-            av.innerText = '🧸';
-            let typing = document.createElement('div');
-            typing.className = 'typing';
-            for (let i = 0; i < 3; i++) {
-                let d = document.createElement('span');
-                typing.appendChild(d);
-            }
-            row.appendChild(av);
-            row.appendChild(typing);
+            let row = document.createElement('div'); row.className = 'message';
+            let av = document.createElement('div'); av.className = 'agent-avatar'; av.innerText = '🧸';
+            let typing = document.createElement('div'); typing.className = 'typing';
+            for (let i=0;i<3;i++) { let d=document.createElement('span'); typing.appendChild(d); }
+            row.appendChild(av); row.appendChild(typing);
             chatContainer.appendChild(row);
         }
         chatContainer.scrollTop = chatContainer.scrollHeight;
-        renderThumb();
     }
 
-    function renderThumb() {
-        let old = document.querySelector('.thumb-preview');
-        if (old) old.remove();
-        if (imgPreview && document.querySelector('.input-area')) {
-            let wrap = document.createElement('div');
-            wrap.className = 'thumb-preview';
-            wrap.innerHTML = `<img class="thumb-img" src="${imgPreview}"><button class="rm-btn">✕</button>`;
-            document.querySelector('.input-area').prepend(wrap);
-            wrap.querySelector('.rm-btn').onclick = () => {
-                imgPreview = null;
-                imgBase64 = null;
-                renderThumb();
-            };
-        }
-    }
-
-    // ======================= MESAJ ƏMƏLİYYATLARI =======================
-    function addMessage(role, text, img = null, qr = null) {
-        messages.push({
-            id: Date.now(),
-            role,
-            text,
-            time: getTime(),
-            imgUrl: img,
-            qr
-        });
+    function addMessage(role, text, qr = null) {
+        messages.push({ id:Date.now(), role, text, time:getTime(), qr: qr || (role==='agent'?QR_MAP.default:null) });
         renderChat();
     }
 
     async function sendMessage(overrideText = null) {
         const text = (overrideText !== null) ? overrideText : inputTextarea.value.trim();
-        if (!text && !imgBase64) return;
-        addMessage('user', text || "📷 Şəkil analizi", imgPreview);
-        const sentImg = imgBase64;
-        imgPreview = null;
-        imgBase64 = null;
-        if (inputTextarea) inputTextarea.value = '';
-        renderThumb();
-        isLoading = true;
-        renderChat();
+        if (!text) return;
+        addMessage('user', text);
+        inputTextarea.value = '';
+        isLoading = true; renderChat();
         try {
-            const reply = await callGemini(text, sentImg);
-            addMessage('agent', reply, null, QR_MAP.default);
+            let reply;
+            if (activeTopic && TOPIC_PROMPTS[activeTopic]) {
+                reply = await getAIResponse("", activeTopic);
+                activeTopic = null;
+                document.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('active'));
+            } else {
+                reply = await getAIResponse(text);
+            }
+            addMessage('agent', reply, QR_MAP.default);
         } catch (err) {
-            console.error(err);
-            addMessage('agent', `⚠️ Xəta: ${err.message}`);
+            addMessage('agent', `⚠️ Xəta: ${err.message}\nZəhmət olmasa bir az sonra cəhd edin.`, QR_MAP.default);
         }
-        isLoading = false;
-        renderChat();
+        isLoading = false; renderChat();
     }
 
     async function handleTopic(topic) {
         activeTopic = topic.key;
         addMessage('user', `${topic.icon} ${topic.label} haqqında məlumat`);
-        isLoading = true;
-        renderChat();
+        isLoading = true; renderChat();
         try {
-            const reply = await callGemini(TOPIC_PROMPTS[topic.key]);
-            addMessage('agent', reply, null, QR_MAP[topic.key] || QR_MAP.default);
-        } catch (err) {
-            addMessage('agent', `⚠️ Xəta: ${err.message}`);
-        }
-        isLoading = false;
-        renderChat();
-        document.querySelectorAll('.chip').forEach(ch => ch.classList.remove('active'));
-        const activeChip = [...document.querySelectorAll('.chip')].find(ch => ch.innerText.includes(topic.label));
+            const reply = await getAIResponse("", topic.key);
+            addMessage('agent', reply, QR_MAP[topic.key] || QR_MAP.default);
+        } catch (err) { addMessage('agent', `⚠️ Xəta: ${err.message}`); }
+        isLoading = false; renderChat();
+        document.querySelectorAll('.chip').forEach(ch=>ch.classList.remove('active'));
+        const activeChip = [...document.querySelectorAll('.chip')].find(ch=>ch.innerText.includes(topic.label));
         if (activeChip) activeChip.classList.add('active');
+        activeTopic = null;
     }
 
     function clearChat() {
         messages = [];
-        addMessage('agent', "Salam! Mən **AN PSİXOLOJİ** agentiyəm 🌈\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınız haqqında sualınızı yazın, danışın və ya şəkil göndərin!",
-            null, ["🔵 Autizm", "🗣️ Nitq", "⚡ DEHB", "😤 Davranış"]);
+        addMessage('agent', "Salam! Mən **AN PSİXOLOJİ** agentiyəm 🌈\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınız haqqında sualınızı yazın və ya danışın!",
+            ["🔵 Autizm", "🗣️ Nitq", "⚡ DEHB", "😤 Davranış"]);
         renderChat();
     }
 
-    // ======================= SƏS, ŞƏKİL =======================
-    function handleFile(e) {
-        let f = e.target.files[0];
-        if (!f) return;
-        let reader = new FileReader();
-        reader.onload = ev => {
-            imgPreview = ev.target.result;
-            imgBase64 = imgPreview.split(',')[1];
-            showToast('📷 Şəkil əlavə edildi');
-            renderThumb();
-        };
-        reader.readAsDataURL(f);
-        e.target.value = '';
-    }
-
+    // =============== SƏS TANIMA ===============
     function startVoice() {
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRec) {
-            showToast("⚠️ Brauzeriniz səs tanımını dəstəkləmir");
-            return;
-        }
+        if (!SpeechRec) { showToast("⚠️ Brauzeriniz səs tanımını dəstəkləmir"); return; }
         const recog = new SpeechRec();
         recog.lang = 'az-AZ';
         recog.continuous = false;
         recog.interimResults = false;
-        recog.onresult = (e) => {
-            const text = e.results[0][0].transcript;
-            inputTextarea.value = text;
-            showToast('✅ Nitq tanındı');
-            recording = false;
-            if (micBtn) micBtn.classList.remove('recording');
-        };
-        recog.onerror = () => {
-            showToast('⚠️ Səs tanınmadı');
-            recording = false;
-            if (micBtn) micBtn.classList.remove('recording');
-        };
-        recog.onend = () => {
-            recording = false;
-            if (micBtn) micBtn.classList.remove('recording');
-        };
-        recog.start();
-        recording = true;
-        if (micBtn) micBtn.classList.add('recording');
-        recognition = recog;
+        recog.onresult = (e) => { inputTextarea.value = e.results[0][0].transcript; showToast('✅ Nitq tanındı'); recording=false; if(micBtn) micBtn.classList.remove('recording'); };
+        recog.onerror = () => { showToast('⚠️ Səs tanınmadı'); recording=false; if(micBtn) micBtn.classList.remove('recording'); };
+        recog.onend = () => { recording=false; if(micBtn) micBtn.classList.remove('recording'); };
+        recog.start(); recording=true; if(micBtn) micBtn.classList.add('recording'); recognition=recog;
     }
+    function stopVoice() { if(recognition) { recognition.stop(); recognition=null; } recording=false; if(micBtn) micBtn.classList.remove('recording'); }
 
-    function stopVoice() {
-        if (recognition) {
-            recognition.stop();
-            recognition = null;
-        }
-        recording = false;
-        if (micBtn) micBtn.classList.remove('recording');
-    }
-
-    // ======================= MODAL =======================
+    // =============== MODAL ===============
     function showInfoModal() {
-        const modalDiv = document.createElement('div');
-        modalDiv.className = 'modal-overlay';
-        modalDiv.innerHTML = `
-            <div class="modal-sheet">
-                <div class="modal-handle"></div>
-                <h3 style="color:#7c3aed; margin-bottom:12px;">👨‍⚕️ Mütəxəssislər Komandası</h3>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;" id="specGridModal"></div>
-                <div style="background:#fef3c7; border-radius:14px; padding:10px; margin-top:16px; font-size:0.7rem; color:#92400e;">⚠️ Diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div>
-            </div>
-        `;
+        const modalDiv = document.createElement('div'); modalDiv.className = 'modal-overlay';
+        modalDiv.innerHTML = `<div class="modal-sheet"><div class="modal-handle"></div><h3 style="color:#f97316;">👨‍⚕️ Mütəxəssislər Komandası</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;" id="specGrid"></div><div style="background:#fff0df; border-radius:24px; padding:12px; margin-top:16px; font-size:0.7rem; color:#b65f12;">⚠️ Diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div></div>`;
         document.body.appendChild(modalDiv);
-        const grid = modalDiv.querySelector('#specGridModal');
+        const grid = modalDiv.querySelector('#specGrid');
         const specs = [
-            { icon: "🧠", name: "Psixoloq", desc: "Emosional inkişaf, davranış", q: "Psixoloq olaraq uşağımın emosional inkişafı üçün tövsiyə ver." },
-            { icon: "🗣️", name: "Loqoped", desc: "Nitq, artikulyasiya", q: "Loqoped olaraq uşağımın nitq inkişafı üçün tövsiyə ver." },
-            { icon: "🖐️", name: "Erqoterapevt", desc: "Motor bacarıqlar", q: "Erqoterapevt olaraq motor bacarıqlar üçün ev məşqləri tövsiyə et." },
-            { icon: "📚", name: "Psixopedaqoq", desc: "Öyrənmə, oxuma", q: "Psixopedaqoq olaraq uşağımın öyrənmə prosesini necə dəstəkləyim?" }
+            { icon:"🧠", name:"Psixoloq", desc:"Emosional inkişaf, davranış", q:"Psixoloq olaraq uşağımın emosional inkişafı üçün tövsiyə ver." },
+            { icon:"🗣️", name:"Loqoped", desc:"Nitq, artikulyasiya", q:"Loqoped olaraq uşağımın nitq inkişafı üçün tövsiyə ver." },
+            { icon:"🖐️", name:"Erqoterapevt", desc:"Motor bacarıqlar", q:"Erqoterapevt olaraq motor bacarıqlar üçün ev məşqləri tövsiyə et." },
+            { icon:"📚", name:"Psixopedaqoq", desc:"Öyrənmə, oxuma", q:"Psixopedaqoq olaraq uşağımın öyrənmə prosesini necə dəstəkləyim?" }
         ];
         specs.forEach(s => {
-            const card = document.createElement('div');
-            card.style.background = "#f8f7ff";
-            card.style.borderRadius = "14px";
-            card.style.padding = "12px";
-            card.style.textAlign = "center";
-            card.style.cursor = "pointer";
-            card.innerHTML = `<div style="font-size:1.8rem;">${s.icon}</div>
-                             <div style="font-weight:800; font-size:0.75rem;">${s.name}</div>
-                             <div style="font-size:0.6rem;">${s.desc}</div>`;
-            card.onclick = () => {
-                modalDiv.remove();
-                sendMessage(s.q);
-            };
+            const card = document.createElement('div'); card.style.background="#fff5ea"; card.style.borderRadius="20px"; card.style.padding="12px"; card.style.textAlign="center"; card.style.cursor="pointer";
+            card.innerHTML = `<div style="font-size:1.8rem;">${s.icon}</div><div style="font-weight:800;">${s.name}</div><div style="font-size:0.6rem;">${s.desc}</div>`;
+            card.onclick = () => { modalDiv.remove(); sendMessage(s.q); };
             grid.appendChild(card);
         });
-        modalDiv.addEventListener('click', (e) => {
-            if (e.target === modalDiv) modalDiv.remove();
-        });
+        modalDiv.addEventListener('click', (e) => { if(e.target===modalDiv) modalDiv.remove(); });
     }
 
-    // ======================= İNİSİALİZASİYA VƏ SPLASH =======================
+    // =============== İNİSİALİZASİYA ===============
     function initApp() {
         const root = document.getElementById('root');
         root.innerHTML = `
             <div class="splash" id="splashScreen">
                 <div class="splash-icon">🧠</div>
                 <div class="splash-title">AN PSİXOLOJİ</div>
-                <div class="splash-sub">Uşaq Psixologiyası AI Agenti</div>
-                <div class="dot-group">
-                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-                </div>
+                <div class="splash-sub">Peşəkar Uşaq Psixologiyası Agent</div>
+                <div class="dot-group"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
             </div>
             <div class="app" id="mainApp">
                 <div class="header">
@@ -804,23 +614,19 @@
                 <div class="chat" id="chatContainer"></div>
                 <div class="input-area">
                     <div class="input-row">
-                        <div class="input-wrap">
-                            <textarea id="messageInput" rows="1" placeholder="Sualınızı yazın..."></textarea>
-                            <button class="attach-btn" id="attachBtn">📎</button>
-                        </div>
+                        <div class="input-wrap"><textarea id="messageInput" rows="1" placeholder="Uşağınızla bağlı sualınızı yazın..."></textarea></div>
                         <button class="mic-btn" id="micBtn">🎙️</button>
                         <button class="send-btn" id="sendBtn">➤</button>
                     </div>
-                    <input type="file" id="fileInput" accept="image/*" style="display:none">
                 </div>
                 <div class="footer"><span>by s_akhundoff</span><a href="#">📷 @s_akhundoff</a></div>
             </div>
         `;
 
-        const splash = document.getElementById('splashScreen');
-        const mainApp = document.getElementById('mainApp');
         setTimeout(() => {
+            const splash = document.getElementById('splashScreen');
             if (splash) splash.classList.add('hide');
+            const mainApp = document.getElementById('mainApp');
             if (mainApp) mainApp.style.opacity = '1';
             setTimeout(() => splash?.remove(), 600);
         }, 1900);
@@ -828,42 +634,28 @@
         chatContainer = document.getElementById('chatContainer');
         topicsContainer = document.getElementById('topicsContainer');
         inputTextarea = document.getElementById('messageInput');
-        fileInput = document.getElementById('fileInput');
         micBtn = document.getElementById('micBtn');
         sendBtn = document.getElementById('sendBtn');
-        attachBtn = document.getElementById('attachBtn');
         clearBtn = document.getElementById('clearBtn');
         infoBtn = document.getElementById('infoBtn');
 
         TOPICS.forEach(t => {
             let btn = document.createElement('button');
             btn.className = 'chip';
-            btn.innerText = `${t.icon} ${t.label}`;
+            btn.innerHTML = `${t.icon} <span>${t.label}</span>`;
             btn.onclick = () => handleTopic(t);
             topicsContainer.appendChild(btn);
         });
 
-        attachBtn.onclick = () => fileInput.click();
-        fileInput.onchange = handleFile;
         micBtn.onclick = () => recording ? stopVoice() : startVoice();
         sendBtn.onclick = () => sendMessage();
         clearBtn.onclick = clearChat;
         infoBtn.onclick = showInfoModal;
-
-        inputTextarea.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        inputTextarea.addEventListener('input', function () {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 80) + 'px';
-        });
+        inputTextarea.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+        inputTextarea.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
 
         clearChat();
     }
-
     initApp();
 </script>
 </body>
