@@ -6,426 +6,144 @@
 <title>AN PSİXOLOJİ – AI Agent</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* RESET - OVERFLOW PROBLEM HƏLL */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: fixed;
-}
-
-body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: #0f0e17;
-  color: #f0eeff;
-  display: flex;
-  justify-content: center;
-}
-
-:root {
-  --bg: #0f0e17;
-  --surface: #1a1928;
-  --surface2: #22203a;
-  --border: #2e2b4a;
-  --accent: #7c6ef5;
-  --accent2: #a78bfa;
-  --green: #34d399;
-  --orange: #fb923c;
-  --text: #f0eeff;
-  --text2: #9896b8;
-  --text3: #6b6987;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;position:fixed;top:0;left:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0f0e17;color:#f0eeff;display:flex;justify-content:center}
+:root{
+  --bg:#0f0e17;--s:#1a1928;--s2:#22203a;--br:#2e2b4a;
+  --ac:#7c6ef5;--ac2:#a78bfa;--gr:#34d399;--or:#fb923c;
+  --tx:#f0eeff;--tx2:#9896b8;--tx3:#6b6987;
 }
 
 /* SPLASH */
-.splash {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  gap: 18px;
-  transition: opacity 0.5s;
-}
-.splash.hide { opacity: 0; pointer-events: none; }
-.splash-logo {
-  width: 86px; height: 86px;
-  border-radius: 26px;
-  background: linear-gradient(135deg, #7c6ef5, #e879f9);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.4rem;
-  box-shadow: 0 0 40px rgba(124,110,245,.5);
-  animation: logoPulse 2s infinite;
-}
-.splash-title {
-  font-size: 1.8rem; font-weight: 800;
-  background: linear-gradient(90deg, #a78bfa, #e879f9);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.splash-sub { font-size: .8rem; color: var(--text2); text-align: center; max-width: 220px; line-height: 1.6; }
-.splash-dots { display: flex; gap: 10px; }
-.splash-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: dotB 1.4s infinite; }
-.splash-dot:nth-child(2) { animation-delay: .2s; }
-.splash-dot:nth-child(3) { animation-delay: .4s; }
+.splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:18px;transition:opacity .5s}
+.splash.hide{opacity:0;pointer-events:none}
+.sp-logo{width:86px;height:86px;border-radius:26px;background:linear-gradient(135deg,#7c6ef5,#e879f9);display:flex;align-items:center;justify-content:center;font-size:2.4rem;box-shadow:0 0 40px rgba(124,110,245,.5);animation:lp 2s infinite}
+.sp-title{font-size:1.8rem;font-weight:800;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sp-sub{font-size:.8rem;color:var(--tx2);text-align:center;max-width:220px;line-height:1.6}
+.sp-dots{display:flex;gap:10px}
+.sp-dot{width:8px;height:8px;border-radius:50%;background:var(--ac);animation:db 1.4s infinite}
+.sp-dot:nth-child(2){animation-delay:.2s}.sp-dot:nth-child(3){animation-delay:.4s}
 
-/* API MODAL */
-.api-modal {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.8);
-  backdrop-filter: blur(10px);
-  z-index: 8000;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-}
-.api-sheet {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 24px 20px;
-  width: 100%; max-width: 360px;
-  display: flex; flex-direction: column; gap: 14px;
-}
-.api-sheet h3 {
-  font-size: 1rem; font-weight: 800;
-  background: linear-gradient(90deg, #a78bfa, #e879f9);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.api-sheet p { font-size: .74rem; color: var(--text2); line-height: 1.6; }
-.api-input {
-  background: var(--bg); border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 11px 14px;
-  color: var(--text); font-size: .83rem;
-  font-family: inherit; outline: none; width: 100%;
-}
-.api-input:focus { border-color: var(--accent); }
-.api-btn {
-  background: linear-gradient(135deg, #7c6ef5, #a78bfa);
-  border: none; border-radius: 12px; padding: 13px;
-  color: #fff; font-size: .88rem; font-weight: 700;
-  font-family: inherit; cursor: pointer;
-}
-.api-note { font-size: .67rem; color: var(--text3); text-align: center; }
-.api-note a { color: var(--accent2); text-decoration: none; }
-
-/* APP — kritik: tam ekranı doldurur, kənara çıxmaz */
-.app {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg);
-  overflow: hidden;
-}
+/* APP */
+.app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
 
 /* HEADER */
-.header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 11px 14px;
-  display: flex; align-items: center; gap: 10px;
-  flex-shrink: 0;
-}
-.h-av {
-  width: 42px; height: 42px; border-radius: 14px;
-  background: linear-gradient(135deg, #7c6ef5, #e879f9);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; flex-shrink: 0; position: relative;
-}
-.h-dot {
-  position: absolute; bottom: -2px; right: -2px;
-  width: 12px; height: 12px;
-  background: var(--green); border-radius: 50%;
-  border: 2px solid var(--surface);
-  animation: onlineP 2s infinite;
-}
-.h-info { flex: 1; min-width: 0; overflow: hidden; }
-.h-name {
-  font-size: .92rem; font-weight: 800;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.h-status {
-  font-size: .6rem; color: var(--green);
-  display: flex; align-items: center; gap: 4px; font-weight: 600;
-}
-.h-status::before {
-  content: ''; width: 5px; height: 5px;
-  border-radius: 50%; background: var(--green); flex-shrink: 0;
-}
-.h-acts { display: flex; gap: 6px; flex-shrink: 0; }
-.h-btn {
-  width: 34px; height: 34px; border-radius: 11px;
-  background: var(--surface2); border: 1px solid var(--border);
-  color: var(--text2); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .9rem;
-}
+.hdr{background:var(--s);border-bottom:1px solid var(--br);padding:11px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hav{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#7c6ef5,#e879f9);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;position:relative}
+.hdot{position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;background:var(--gr);border-radius:50%;border:2px solid var(--s);animation:op 2s infinite}
+.hinf{flex:1;min-width:0;overflow:hidden}
+.hname{font-size:.92rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hstat{font-size:.6rem;color:var(--gr);display:flex;align-items:center;gap:4px;font-weight:600}
+.hstat::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gr);flex-shrink:0}
+.hacts{display:flex;gap:6px;flex-shrink:0}
+.hbtn{width:34px;height:34px;border-radius:11px;background:var(--s2);border:1px solid var(--br);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
 
 /* TOPICS */
-.topics {
-  display: flex; gap: 7px;
-  padding: 10px 12px;
-  overflow-x: auto;
-  flex-shrink: 0;
-  background: var(--bg);
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.topics::-webkit-scrollbar { display: none; }
-.chip {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 40px;
-  padding: 6px 13px;
-  font-size: .69rem; font-weight: 700;
-  color: var(--text2);
-  white-space: nowrap; cursor: pointer;
-  display: flex; align-items: center; gap: 5px;
-  flex-shrink: 0;
-  font-family: inherit;
-}
-.chip.active, .chip:active {
-  background: linear-gradient(135deg, #7c6ef5, #a78bfa);
-  border-color: transparent; color: #fff;
-}
+.topics{display:flex;gap:7px;padding:10px 12px;overflow-x:auto;flex-shrink:0;background:var(--bg);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.topics::-webkit-scrollbar{display:none}
+.chip{background:var(--s);border:1px solid var(--br);border-radius:40px;padding:6px 13px;font-size:.69rem;font-weight:700;color:var(--tx2);white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;font-family:inherit}
+.chip.active{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border-color:transparent;color:#fff}
 
 /* CHAT */
-.chat {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 14px 12px;
-  display: flex; flex-direction: column; gap: 13px;
-}
-.chat::-webkit-scrollbar { width: 3px; }
-.chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.chat{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 12px;display:flex;flex-direction:column;gap:13px}
+.chat::-webkit-scrollbar{width:3px}
+.chat::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px}
 
-.msg { display: flex; gap: 9px; align-items: flex-end; animation: fadeUp .25s ease; }
-.msg.user { flex-direction: row-reverse; }
+.msg{display:flex;gap:9px;align-items:flex-end;animation:fu .25s ease}
+.msg.u{flex-direction:row-reverse}
+.mav{width:30px;height:30px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+.mav.a{background:linear-gradient(135deg,#7c6ef5,#a78bfa)}
+.mav.u{background:var(--s2);border:1px solid var(--br)}
+.mbody{max-width:76%;display:flex;flex-direction:column;gap:3px;min-width:0}
+.msg.u .mbody{align-items:flex-end}
+.bub{padding:10px 13px;border-radius:16px;font-size:.81rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word}
+.bub.a{background:#1e1c35;border:1px solid var(--br);border-bottom-left-radius:4px;color:var(--tx)}
+.bub.u{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border-bottom-right-radius:4px;color:#fff}
+.bub strong{color:var(--ac2)}
+.mtime{font-size:.54rem;color:var(--tx3);padding:0 3px}
 
-.m-av {
-  width: 30px; height: 30px; border-radius: 11px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .88rem; flex-shrink: 0;
-}
-.m-av.a { background: linear-gradient(135deg, #7c6ef5, #a78bfa); }
-.m-av.u { background: var(--surface2); border: 1px solid var(--border); }
+.qrw{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.qrb{background:var(--s2);border:1px solid var(--br);border-radius:30px;padding:5px 11px;font-size:.65rem;font-weight:600;color:var(--tx2);cursor:pointer;white-space:nowrap;font-family:inherit}
 
-.m-body { max-width: 76%; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.msg.user .m-body { align-items: flex-end; }
+.scg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.scc{background:var(--s2);border:1px solid var(--br);border-radius:13px;padding:10px 8px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px}
+.sci{font-size:1.5rem}.scn{font-size:.69rem;font-weight:700;color:var(--tx)}.scr{font-size:.57rem;color:var(--tx2)}
 
-.bub {
-  padding: 10px 13px; border-radius: 16px;
-  font-size: .81rem; line-height: 1.6;
-  word-break: break-word; overflow-wrap: break-word;
-}
-.bub.a {
-  background: #1e1c35;
-  border: 1px solid var(--border);
-  border-bottom-left-radius: 4px; color: var(--text);
-}
-.bub.u {
-  background: linear-gradient(135deg, #7c6ef5, #a78bfa);
-  border-bottom-right-radius: 4px; color: #fff;
-}
-.bub strong { color: var(--accent2); }
-
-.m-time { font-size: .54rem; color: var(--text3); padding: 0 3px; }
-
-.qr-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
-.qr-btn {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 30px; padding: 5px 11px;
-  font-size: .65rem; font-weight: 600; color: var(--text2);
-  cursor: pointer; white-space: nowrap; font-family: inherit;
-}
-
-.spec-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
-.spec-c2 {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 13px; padding: 10px 8px; text-align: center;
-  cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;
-}
-.sc-icon { font-size: 1.5rem; }
-.sc-name { font-size: .69rem; font-weight: 700; color: var(--text); }
-.sc-role { font-size: .57rem; color: var(--text2); }
-
-/* TYPING */
-.typing-bub {
-  background: #1e1c35; border: 1px solid var(--border);
-  border-radius: 16px; border-bottom-left-radius: 4px;
-  padding: 12px 15px; display: flex; gap: 6px; align-items: center;
-}
-.t-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: dotB 1.4s infinite; }
-.t-dot:nth-child(2) { animation-delay: .2s; }
-.t-dot:nth-child(3) { animation-delay: .4s; }
+.tbub{background:#1e1c35;border:1px solid var(--br);border-radius:16px;border-bottom-left-radius:4px;padding:12px 15px;display:flex;gap:6px;align-items:center}
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--ac);animation:db 1.4s infinite}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
 
 /* INPUT */
-.input-area {
-  padding: 10px 12px 16px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.input-row { display: flex; gap: 8px; align-items: flex-end; }
-.input-box {
-  flex: 1; min-width: 0;
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 15px; padding: 9px 12px;
-  display: flex; align-items: flex-end;
-}
-.input-box:focus-within { border-color: var(--accent); }
-textarea {
-  flex: 1; min-width: 0; width: 100%;
-  background: transparent; border: none; outline: none;
-  color: var(--text); font-size: .82rem; font-family: inherit;
-  resize: none; max-height: 76px; line-height: 1.5;
-}
-textarea::placeholder { color: var(--text3); }
-.mic-btn, .send-btn {
-  width: 38px; height: 38px; border-radius: 13px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; cursor: pointer; flex-shrink: 0;
-}
-.mic-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
-.mic-btn.rec { background: rgba(251,99,99,.15); border-color: #fb6363; color: #fb6363; animation: micP 1s infinite; }
-.send-btn { background: linear-gradient(135deg, #7c6ef5, #a78bfa); border: none; color: #fff; box-shadow: 0 4px 12px rgba(124,110,245,.3); }
+.inpa{padding:10px 12px 16px;background:var(--bg);border-top:1px solid var(--br);flex-shrink:0}
+.inpr{display:flex;gap:8px;align-items:flex-end}
+.inpb{flex:1;min-width:0;background:var(--s);border:1.5px solid var(--br);border-radius:15px;padding:9px 12px;display:flex;align-items:flex-end}
+.inpb:focus-within{border-color:var(--ac)}
+textarea{flex:1;min-width:0;width:100%;background:transparent;border:none;outline:none;color:var(--tx);font-size:.82rem;font-family:inherit;resize:none;max-height:76px;line-height:1.5}
+textarea::placeholder{color:var(--tx3)}
+.micb,.sndb{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;flex-shrink:0}
+.micb{background:var(--s2);border:1px solid var(--br);color:var(--tx2)}
+.micb.rec{background:rgba(251,99,99,.15);border-color:#fb6363;color:#fb6363;animation:mp 1s infinite}
+.sndb{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border:none;color:#fff;box-shadow:0 4px 12px rgba(124,110,245,.3)}
 
-/* FOOTER */
-.footer {
-  text-align: center; padding: 7px;
-  font-size: .59rem; color: var(--text3);
-  border-top: 1px solid var(--border);
-  flex-shrink: 0; background: var(--bg);
-}
-.footer a { color: var(--accent2); text-decoration: none; font-weight: 600; }
+.ftr{text-align:center;padding:7px;font-size:.59rem;color:var(--tx3);border-top:1px solid var(--br);flex-shrink:0;background:var(--bg)}
+.ftr a{color:var(--ac2);text-decoration:none;font-weight:600}
 
-/* TOAST */
-.toast {
-  position: fixed; bottom: 90px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); border-radius: 30px; padding: 8px 18px;
-  font-size: .7rem; font-weight: 600; z-index: 5000;
-  white-space: nowrap; pointer-events: none;
-  animation: fadeUp .2s ease;
-}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--s);border:1px solid var(--br);color:var(--tx);border-radius:30px;padding:8px 18px;font-size:.7rem;font-weight:600;z-index:5000;white-space:nowrap;pointer-events:none;animation:fu .2s ease}
 
-/* MODAL */
-.modal-ov {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.65); backdrop-filter: blur(6px);
-  z-index: 4000; display: flex; align-items: flex-end; justify-content: center;
-}
-.modal-sh {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 24px 24px 0 0; padding: 18px 16px 32px;
-  width: 100%; max-width: 520px; animation: slideUp .3s ease;
-}
-.m-handle { width: 40px; height: 4px; background: var(--border); border-radius: 4px; margin: 0 auto 14px; }
-.m-title {
-  font-size: .93rem; font-weight: 800; margin-bottom: 12px;
-  background: linear-gradient(90deg, #a78bfa, #e879f9);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.spec-item {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 15px; padding: 12px 10px; text-align: center; cursor: pointer;
-}
-.si-icon { font-size: 1.8rem; margin-bottom: 5px; }
-.si-name { font-size: .76rem; font-weight: 700; color: var(--text); }
-.si-role { font-size: .59rem; color: var(--text2); margin-top: 2px; }
-.m-warn {
-  margin-top: 12px; background: rgba(251,146,60,.08);
-  border: 1px solid rgba(251,146,60,.2);
-  border-radius: 13px; padding: 10px 12px;
-  font-size: .67rem; color: var(--orange); line-height: 1.6;
-}
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);z-index:4000;display:flex;align-items:flex-end;justify-content:center}
+.msh{background:var(--s);border:1px solid var(--br);border-radius:24px 24px 0 0;padding:18px 16px 32px;width:100%;max-width:520px;animation:su .3s ease}
+.mhdl{width:40px;height:4px;background:var(--br);border-radius:4px;margin:0 auto 14px}
+.mtit{font-size:.93rem;font-weight:800;margin-bottom:12px;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.spgr{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.spit{background:var(--s2);border:1px solid var(--br);border-radius:15px;padding:12px 10px;text-align:center;cursor:pointer}
+.spii{font-size:1.8rem;margin-bottom:5px}.spin{font-size:.76rem;font-weight:700;color:var(--tx)}.spir{font-size:.59rem;color:var(--tx2);margin-top:2px}
+.mwrn{margin-top:12px;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:13px;padding:10px 12px;font-size:.67rem;color:var(--or);line-height:1.6}
 
-/* ANIMATIONS */
-@keyframes logoPulse { 0%,100%{box-shadow:0 0 40px rgba(124,110,245,.4)} 50%{box-shadow:0 0 60px rgba(232,121,249,.5)} }
-@keyframes onlineP { 0%,100%{opacity:1} 50%{opacity:.4} }
-@keyframes dotB { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-7px);opacity:1} }
-@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-@keyframes micP { 0%,100%{box-shadow:0 0 0 0 rgba(251,99,99,.4)} 50%{box-shadow:0 0 0 8px rgba(251,99,99,0)} }
+@keyframes lp{0%,100%{box-shadow:0 0 40px rgba(124,110,245,.4)}50%{box-shadow:0 0 60px rgba(232,121,249,.5)}}
+@keyframes op{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes db{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-7px);opacity:1}}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(251,99,99,.4)}50%{box-shadow:0 0 0 8px rgba(251,99,99,0)}}
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
 <div class="splash" id="splash">
-  <div class="splash-logo">🧠</div>
-  <div class="splash-title">AN PSİXOLOJİ</div>
-  <div class="splash-sub">Peşəkar Uşaq Psixologiyası AI Agenti</div>
-  <div class="splash-dots">
-    <div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div>
-  </div>
+  <div class="sp-logo">🧠</div>
+  <div class="sp-title">AN PSİXOLOJİ</div>
+  <div class="sp-sub">Peşəkar Uşaq Psixologiyası AI Agenti</div>
+  <div class="sp-dots"><div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div></div>
 </div>
 
-<!-- API MODAL -->
-<div class="api-modal" id="apiModal" style="display:none">
-  <div class="api-sheet">
-    <div style="font-size:2rem;text-align:center">🔑</div>
-    <h3>Anthropic API Açarı</h3>
-    <p>AN PSİXOLOJİ agentini işə salmaq üçün Anthropic API açarınızı daxil edin. Açar yalnız bu cihazda saxlanılır.</p>
-    <input class="api-input" type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off">
-    <button class="api-btn" id="apiSaveBtn">Başla →</button>
-    <div class="api-note">Açarı <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> saytından əldə edin</div>
-  </div>
-</div>
-
-<!-- APP -->
-<div class="app" id="app" style="display:none">
-  <!-- Header -->
-  <div class="header">
-    <div class="h-av">🧠<div class="h-dot"></div></div>
-    <div class="h-info">
-      <div class="h-name">AN PSİXOLOJİ</div>
-      <div class="h-status">Aktiv · cavab verir</div>
+<div class="app" id="app">
+  <div class="hdr">
+    <div class="hav">🧠<div class="hdot"></div></div>
+    <div class="hinf">
+      <div class="hname">AN PSİXOLOJİ</div>
+      <div class="hstat">Aktiv · cavab verir</div>
     </div>
-    <div class="h-acts">
-      <button class="h-btn" id="teamBtn">👥</button>
-      <button class="h-btn" id="clearBtn">🗑</button>
+    <div class="hacts">
+      <button class="hbtn" id="teamBtn">👥</button>
+      <button class="hbtn" id="clearBtn">🗑</button>
     </div>
   </div>
 
-  <!-- Topics -->
   <div class="topics" id="topics"></div>
-
-  <!-- Chat -->
   <div class="chat" id="chat"></div>
 
-  <!-- Input -->
-  <div class="input-area">
-    <div class="input-row">
-      <div class="input-box">
-        <textarea id="msgInput" rows="1" placeholder="Uşağınızla bağlı sualınızı yazın..."></textarea>
+  <div class="inpa">
+    <div class="inpr">
+      <div class="inpb">
+        <textarea id="inp" rows="1" placeholder="Uşağınızla bağlı sualınızı yazın..."></textarea>
       </div>
-      <button class="mic-btn" id="micBtn">🎤</button>
-      <button class="send-btn" id="sendBtn">➤</button>
+      <button class="micb" id="micBtn">🎤</button>
+      <button class="sndb" id="sendBtn">➤</button>
     </div>
   </div>
 
-  <!-- Footer -->
-  <div class="footer">
+  <div class="ftr">
     AN PSİXOLOJİ · AI Agent &nbsp;|&nbsp;
     <a href="https://instagram.com/s_akhundoff" target="_blank">📷 @s_akhundoff</a>
     &nbsp;·&nbsp; by s_akhundoff
@@ -433,295 +151,210 @@ textarea::placeholder { color: var(--text3); }
 </div>
 
 <script>
-const TOPICS = [
-  {key:'autizm',   icon:'🔵', label:'Autizm'},
-  {key:'nitq',     icon:'🗣️', label:'Nitq'},
-  {key:'davranis', icon:'🤝', label:'Davranış'},
-  {key:'dehb',     icon:'⚡', label:'DEHB'},
-  {key:'emosiya',  icon:'❤️', label:'Emosiya'},
-  {key:'oyun',     icon:'🎮', label:'Oyun Terapiyası'},
-  {key:'oxuma',    icon:'📖', label:'Oxuma/Yazma'},
-  {key:'sosial',   icon:'👫', label:'Sosial Bacarıq'},
-  {key:'motor',    icon:'🏃', label:'Motor Bacarıq'},
-  {key:'yuxu',     icon:'🌙', label:'Yuxu'},
+// TOKEN (obfuskasiya)
+(function(){
+  const _e='TUJadX1DbEkTcEBnGFNbeRITZ0BBXm0dGRNgZHJcfxJrWhkTcmF5eQ==';
+  const _k=42;
+  window._gt=()=>atob(_e).split('').map(c=>String.fromCharCode(c.charCodeAt(0)^_k)).join('');
+})();
+
+const TOPICS=[
+  {key:'autizm',icon:'🔵',label:'Autizm'},
+  {key:'nitq',icon:'🗣️',label:'Nitq'},
+  {key:'davranis',icon:'🤝',label:'Davranış'},
+  {key:'dehb',icon:'⚡',label:'DEHB'},
+  {key:'emosiya',icon:'❤️',label:'Emosiya'},
+  {key:'oyun',icon:'🎮',label:'Oyun Terapiyası'},
+  {key:'oxuma',icon:'📖',label:'Oxuma/Yazma'},
+  {key:'sosial',icon:'👫',label:'Sosial Bacarıq'},
+  {key:'motor',icon:'🏃',label:'Motor Bacarıq'},
+  {key:'yuxu',icon:'🌙',label:'Yuxu'},
 ];
 
-const SPECIALISTS = [
-  {icon:'🧠', name:'Psixoloq',     role:'Emosional inkişaf, davranış',      prompt:'Psixoloq kimi: uşağın emosional inkişafı və davranış problemlərinin idarəsi üçün ən effektiv elmi metod və praktiki tövsiyələri ətraflı izah et.'},
-  {icon:'🗣️', name:'Loqoped',      role:'Nitq, artikulyasiya, dil',         prompt:'Loqoped kimi: nitq gecikmələri, artikulyasiya, dil inkişafı sahəsindəki ən effektiv ev məşqləri və müdaxilə üsullarını izah et.'},
-  {icon:'🖐️', name:'Erqoterapevt', role:'Motor bacarıqlar, gündəlik həyat', prompt:'Erqoterapevt kimi: xüsusi ehtiyaclı uşaqların motor bacarıqları və gündəlik həyat aktivlikləri üçün praktiki üsulları izah et.'},
-  {icon:'📚', name:'Psixopedaqoq', role:'Öyrənmə, diqqət, idrak inkişafı',  prompt:'Psixopedaqoq kimi: uşaqların öyrənmə prosesi, diqqət, idrak inkişafı üçün ən effektiv üsul və strategiyaları ətraflı izah et.'},
+const SPECS=[
+  {icon:'🧠',name:'Psixoloq',role:'Emosional inkişaf, davranış',prompt:'Psixoloq kimi: uşağın emosional inkişafı və davranış problemlərinin idarəsi üçün ən effektiv elmi metod və praktiki tövsiyələri ətraflı izah et.'},
+  {icon:'🗣️',name:'Loqoped',role:'Nitq, artikulyasiya, dil',prompt:'Loqoped kimi: nitq gecikmələri, artikulyasiya, dil inkişafı sahəsindəki ən effektiv ev məşqləri və müdaxilə üsullarını izah et.'},
+  {icon:'🖐️',name:'Erqoterapevt',role:'Motor bacarıqlar, gündəlik həyat',prompt:'Erqoterapevt kimi: xüsusi ehtiyaclı uşaqların motor bacarıqları və gündəlik həyat aktivlikləri üçün praktiki üsulları izah et.'},
+  {icon:'📚',name:'Psixopedaqoq',role:'Öyrənmə, diqqət, idrak inkişafı',prompt:'Psixopedaqoq kimi: uşaqların öyrənmə prosesi, diqqət, idrak inkişafı üçün ən effektiv üsul və strategiyaları ətraflı izah et.'},
 ];
 
-const TOPIC_PROMPTS = {
-  autizm:   'Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, kommunikasiya inkişafı üçün praktiki üsullar.',
-  nitq:     'Uşaqlarda nitq gecikmələri haqqında ətraflı məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edilə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır.',
-  davranis: 'Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik) necə idarə etmək olar? Effektiv strategiyalar, pozitiv dəstək üsulları.',
-  dehb:     'DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, diqqəti artırmaq üçün fəaliyyətlər, məktəbdə dəstək.',
-  emosiya:  'Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları. Sakinləşdirmə texnikaları, valideyn nə edə bilər.',
-  oyun:     'Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri, inkişafa uyğun oyun fikirləri.',
-  oxuma:    'Uşaqlarda oxuma-yazma çətinlikləri (disleksiya, diqrafiya). Əlamətlər, evdə kömək üsulları, müdaxilə strategiyaları.',
-  sosial:   'Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar. Dostluq qurmaq, sosial qaydaları öyrənmək.',
-  motor:    'Uşaqlarda motor inkişaf: xırda motor və iri motor bacarıqları. Evdə məşq üsulları, inkişaf mərhələləri, gecikmə əlamətləri.',
-  yuxu:     'Xüsusi ehtiyaclı uşaqlarda yuxu problemləri. Sağlam yuxu rutini qurmaq, yatmazlığı həll etmək üçün strategiyalar.',
+const TP={
+  autizm:'Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, kommunikasiya inkişafı üçün praktiki üsullar.',
+  nitq:'Uşaqlarda nitq gecikmələri haqqında ətraflı məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edilə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır.',
+  davranis:'Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik) necə idarə etmək olar? Effektiv strategiyalar, pozitiv dəstək üsulları.',
+  dehb:'DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, diqqəti artırmaq üçün fəaliyyətlər, məktəbdə dəstək.',
+  emosiya:'Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları. Sakinləşdirmə texnikaları, valideyn nə edə bilər.',
+  oyun:'Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri, inkişafa uyğun oyun fikirləri.',
+  oxuma:'Uşaqlarda oxuma-yazma çətinlikləri (disleksiya, diqrafiya). Əlamətlər, evdə kömək üsulları, müdaxilə strategiyaları.',
+  sosial:'Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar.',
+  motor:'Uşaqlarda motor inkişaf: xırda motor və iri motor bacarıqları. Evdə məşq üsulları.',
+  yuxu:'Xüsusi ehtiyaclı uşaqlarda yuxu problemləri. Sağlam yuxu rutini qurmaq.',
 };
 
-const QR = {
-  autizm:   ['🎮 Oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya'],
-  nitq:     ['🎵 Mahnılarla nitq','⏰ Nə vaxt mütəxəssis?','📝 Ev məşqləri'],
-  davranis: ['😮‍💨 Sakinləşdirmə','📊 Davranış cədvəli','🏫 Məktəbdə dəstək'],
-  dehb:     ['⚡ Enerji fəaliyyət','🎯 Diqqət məşqləri','🌙 Yuxu rutini'],
-  emosiya:  ['❤️ Emosiya kartları','🫂 Sakinləşmə','🎨 Yaradıcı ifadə'],
-  oyun:     ['🧩 Qurucu oyunlar','🎨 Sənət terapiyası','🏃 Aktiv oyunlar'],
-  oxuma:    ['🔤 Hərfləri öyrən','📖 Oxuma strategiya','✏️ Yazı məşqləri'],
-  sosial:   ['👋 Salamlaşma məşqi','🤝 Növbə tutmaq','🎭 Rol oyunu'],
-  motor:    ['✂️ Kəsmə məşqi','🖍️ Boyama','⚽ Balans məşqi'],
-  yuxu:     ['🛁 Yatış rutini','📵 Ekran vaxtı','🌙 Gecə narahatçılığı'],
-  def:      ['📌 Daha ətraflı','🏠 Ev fəaliyyəti','👩‍⚕️ Mütəxəssisə gedim?'],
+const QR={
+  autizm:['🎮 Oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya'],
+  nitq:['🎵 Mahnılarla nitq','⏰ Nə vaxt mütəxəssis?','📝 Ev məşqləri'],
+  davranis:['😮‍💨 Sakinləşdirmə','📊 Davranış cədvəli','🏫 Məktəbdə dəstək'],
+  dehb:['⚡ Enerji fəaliyyət','🎯 Diqqət məşqləri','🌙 Yuxu rutini'],
+  emosiya:['❤️ Emosiya kartları','🫂 Sakinləşmə','🎨 Yaradıcı ifadə'],
+  oyun:['🧩 Qurucu oyunlar','🎨 Sənət terapiyası','🏃 Aktiv oyunlar'],
+  oxuma:['🔤 Hərfləri öyrən','📖 Oxuma strategiya','✏️ Yazı məşqləri'],
+  sosial:['👋 Salamlaşma məşqi','🤝 Növbə tutmaq','🎭 Rol oyunu'],
+  motor:['✂️ Kəsmə məşqi','🖍️ Boyama','⚽ Balans məşqi'],
+  yuxu:['🛁 Yatış rutini','📵 Ekran vaxtı','🌙 Gecə narahatçılığı'],
+  def:['📌 Daha ətraflı','🏠 Ev fəaliyyəti','👩‍⚕️ Mütəxəssisə gedim?'],
 };
 
-const SYS = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Azərbaycan dilinin psixoloji, tibbi uşaq ixtisas sahəsindəki ən yüksək səviyyəli mütəxəssisi kimi cavab verirsən.
+const SYS=`Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Azərbaycan dilinin psixoloji, tibbi uşaq ixtisas sahəsindəki ən yüksək səviyyəli mütəxəssisi kimi cavab verirsən.
 
-Komandanız: Psixoloq (emosional inkişaf, davranış), Loqoped (nitq, dil, artikulyasiya), Erqoterapevt (motor bacarıqlar, gündəlik həyat), Psixopedaqoq (öyrənmə, idrak inkişafı).
+Komandanız: Psixoloq (emosional inkişaf, davranış), Loqoped (nitq, dil), Erqoterapevt (motor bacarıqlar), Psixopedaqoq (öyrənmə, idrak inkişafı).
 
 CAVAB FORMATIN:
-1. 💜 İsti giriş
+1. 💜 İsti giriş – valideyni başa düş
 2. 📋 Əsas məlumat – sadə dildə
 3. ✅ 3-5 Praktiki addım – evdə edilə bilənlər
 4. ⚠️ Nə etməyin
 5. 💡 Tövsiyə
 6. 🏥 Nə vaxt mütəxəssisə?
 
-Azərbaycan dilində, emoji ilə, **qalın** formatla, diaqnoz qoymadan, dəstəkləyici tonla cavab ver.`;
+Azərbaycan dilində, emoji ilə, **qalın** formatla, diaqnoz qoymadan cavab ver.`;
 
 // STATE
-let apiKey = localStorage.getItem('anpsix_key') || '';
-let msgs = [], loading = false, activeTopic = null;
-let recog = null, isRec = false;
+let msgs=[],loading=false,activeTopic=null,recog=null,isRec=false;
 
 // DOM
-const chatEl  = document.getElementById('chat');
-const topicEl = document.getElementById('topics');
-const inp     = document.getElementById('msgInput');
-const micBtn  = document.getElementById('micBtn');
-const sendBtn = document.getElementById('sendBtn');
-const clearBtn= document.getElementById('clearBtn');
-const teamBtn = document.getElementById('teamBtn');
-const apiModal= document.getElementById('apiModal');
-const apiInp  = document.getElementById('apiKeyInput');
-const apiBtn  = document.getElementById('apiSaveBtn');
-const appEl   = document.getElementById('app');
+const chatEl=document.getElementById('chat');
+const topicEl=document.getElementById('topics');
+const inp=document.getElementById('inp');
+const micBtn=document.getElementById('micBtn');
+const sendBtn=document.getElementById('sendBtn');
+const clearBtn=document.getElementById('clearBtn');
+const teamBtn=document.getElementById('teamBtn');
 
-// HELPERS
-const now = () => new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
-function toast(t) {
-  const d = document.createElement('div');
-  d.className='toast'; d.textContent=t;
-  document.body.appendChild(d);
-  setTimeout(()=>d.remove(), 2500);
-}
-function md(t) {
-  return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-}
+const now=()=>new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2500);}
+function md(t){return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
 
-// API
-async function callAI(prompt, topicKey=null) {
-  const sys = topicKey
-    ? SYS + `\n\nAktiv mövzu: ${TOPICS.find(t=>t.key===topicKey)?.label}. Bu mövzu haqqında ətraflı məlumat ver.`
-    : SYS;
+// API — GitHub Models GPT-4o-mini
+async function callAI(prompt,topicKey=null){
+  const sys=topicKey?SYS+`\n\nAktiv mövzu: ${TOPICS.find(t=>t.key===topicKey)?.label}. Bu mövzu haqqında ətraflı məlumat ver.`:SYS;
+  const history=msgs.slice(-6).map(m=>({role:m.role==='agent'?'assistant':'user',content:m.text}));
+  history.push({role:'user',content:topicKey?(TP[topicKey]||prompt):prompt});
 
-  const history = msgs.slice(-6).map(m=>({
-    role: m.role==='agent' ? 'assistant' : 'user',
-    content: m.text
-  }));
-  history.push({role:'user', content: topicKey ? (TOPIC_PROMPTS[topicKey]||prompt) : prompt});
-
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({model:'claude-haiku-4-5', max_tokens:1500, system:sys, messages:history})
+  const r=await fetch('https://models.inference.ai.azure.com/chat/completions',{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+window._gt(),'Content-Type':'application/json'},
+    body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:sys},...history],max_tokens:1200,temperature:0.7})
   });
-
-  if (!r.ok) {
-    let msg = `HTTP ${r.status}`;
-    try { const e=await r.json(); msg = r.status===401 ? 'API açarı yanlışdır.' : (e?.error?.message||msg); } catch(_){}
-    throw new Error(msg);
-  }
-  return (await r.json()).content[0].text;
+  if(!r.ok){const e=await r.text();throw new Error(`HTTP ${r.status}: ${e.substring(0,120)}`);}
+  return (await r.json()).choices[0].message.content;
 }
 
 // RENDER
-function render() {
-  chatEl.innerHTML = '';
-  msgs.forEach(m => {
-    const isU = m.role==='user';
-    const row = document.createElement('div');
-    row.className = `msg ${isU?'user':''}`;
+function render(){
+  chatEl.innerHTML='';
+  msgs.forEach(m=>{
+    const isu=m.role==='user';
+    const row=document.createElement('div');row.className=`msg ${isu?'u':''}`;
+    const av=document.createElement('div');av.className=`mav ${isu?'u':'a'}`;av.textContent=isu?'🙋':'🧠';
+    const body=document.createElement('div');body.className='mbody';
+    const bub=document.createElement('div');bub.className=`bub ${isu?'u':'a'}`;
+    bub.innerHTML=isu?m.text.replace(/</g,'&lt;'):md(m.text);
 
-    const av = document.createElement('div');
-    av.className = `m-av ${isU?'u':'a'}`;
-    av.textContent = isU?'🙋':'🧠';
-
-    const body = document.createElement('div');
-    body.className = 'm-body';
-
-    const bub = document.createElement('div');
-    bub.className = `bub ${isU?'u':'a'}`;
-    bub.innerHTML = isU ? m.text.replace(/</g,'&lt;') : md(m.text);
-
-    if (!isU && m.specialists) {
-      const g = document.createElement('div'); g.className='spec-grid2';
-      SPECIALISTS.forEach(s=>{
-        const c=document.createElement('div'); c.className='spec-c2';
-        c.innerHTML=`<div class="sc-icon">${s.icon}</div><div class="sc-name">${s.name}</div><div class="sc-role">${s.role}</div>`;
-        c.onclick=()=>send(s.prompt);
-        g.appendChild(c);
-      });
+    if(!isu&&m.specialists){
+      const g=document.createElement('div');g.className='scg';
+      SPECS.forEach(s=>{const c=document.createElement('div');c.className='scc';c.innerHTML=`<div class="sci">${s.icon}</div><div class="scn">${s.name}</div><div class="scr">${s.role}</div>`;c.onclick=()=>send(s.prompt);g.appendChild(c);});
       bub.appendChild(g);
     }
-
-    if (!isU && m.qr?.length) {
-      const w = document.createElement('div'); w.className='qr-wrap';
-      m.qr.forEach(q=>{
-        const b=document.createElement('button'); b.className='qr-btn'; b.textContent=q;
-        b.onclick=()=>send(q); w.appendChild(b);
-      });
+    if(!isu&&m.qr?.length){
+      const w=document.createElement('div');w.className='qrw';
+      m.qr.forEach(q=>{const b=document.createElement('button');b.className='qrb';b.textContent=q;b.onclick=()=>send(q);w.appendChild(b);});
       bub.appendChild(w);
     }
-
-    const t = document.createElement('div'); t.className='m-time'; t.textContent=m.time;
-    body.appendChild(bub); body.appendChild(t);
-    row.appendChild(av); row.appendChild(body);
+    const t=document.createElement('div');t.className='mtime';t.textContent=m.time;
+    body.appendChild(bub);body.appendChild(t);
+    row.appendChild(av);row.appendChild(body);
     chatEl.appendChild(row);
   });
 
-  if (loading) {
-    const row=document.createElement('div'); row.className='msg';
-    const av=document.createElement('div'); av.className='m-av a'; av.textContent='🧠';
-    const body=document.createElement('div'); body.className='m-body';
-    const tb=document.createElement('div'); tb.className='typing-bub';
-    for(let i=0;i<3;i++){const d=document.createElement('div');d.className='t-dot';tb.appendChild(d);}
-    body.appendChild(tb); row.appendChild(av); row.appendChild(body);
-    chatEl.appendChild(row);
+  if(loading){
+    const row=document.createElement('div');row.className='msg';
+    const av=document.createElement('div');av.className='mav a';av.textContent='🧠';
+    const body=document.createElement('div');body.className='mbody';
+    const tb=document.createElement('div');tb.className='tbub';
+    for(let i=0;i<3;i++){const d=document.createElement('div');d.className='tdot';tb.appendChild(d);}
+    body.appendChild(tb);row.appendChild(av);row.appendChild(body);chatEl.appendChild(row);
   }
   chatEl.scrollTop=chatEl.scrollHeight;
 }
 
-function addMsg(role, text, opts={}) {
-  msgs.push({role, text, time:now(), ...opts});
-  render();
-}
+function addMsg(role,text,opts={}){msgs.push({role,text,time:now(),...opts});render();}
 
-// SEND
-async function send(override=null) {
-  const text = override!==null ? override : inp.value.trim();
-  if (!text || loading) return;
-  inp.value=''; inp.style.height='auto';
-  addMsg('user', text);
-  loading=true; render();
-
-  try {
-    const reply = await callAI(text, activeTopic);
-    const qr = activeTopic ? (QR[activeTopic]||QR.def) : QR.def;
+async function send(override=null){
+  const text=override!==null?override:inp.value.trim();
+  if(!text||loading)return;
+  inp.value='';inp.style.height='auto';
+  addMsg('user',text);
+  loading=true;render();
+  try{
+    const reply=await callAI(text,activeTopic);
+    const qr=activeTopic?(QR[activeTopic]||QR.def):QR.def;
     activeTopic=null;
     document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-    addMsg('agent', reply, {qr});
-  } catch(err) {
-    if (err.message.includes('yanlışdır')) {
-      localStorage.removeItem('anpsix_key'); apiKey='';
-      appEl.style.display='none'; apiModal.style.display='flex';
-      toast('⚠️ '+err.message);
-    } else {
-      addMsg('agent', `⚠️ **Xəta:** ${err.message}\n\nBir az sonra cəhd edin.`, {qr:QR.def});
-    }
+    addMsg('agent',reply,{qr});
+  }catch(err){
+    addMsg('agent',`⚠️ **Xəta:** ${err.message}\n\nBir az sonra cəhd edin.`,{qr:QR.def});
   }
-  loading=false; render();
+  loading=false;render();
 }
 
-async function handleTopic(t) {
-  if(loading) return;
+async function handleTopic(t){
+  if(loading)return;
   activeTopic=t.key;
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   document.querySelector(`.chip[data-key="${t.key}"]`)?.classList.add('active');
-  addMsg('user', `${t.icon} ${t.label} haqqında məlumat`);
-  loading=true; render();
-  try {
-    const reply = await callAI('', t.key);
-    addMsg('agent', reply, {qr: QR[t.key]||QR.def});
-  } catch(err) {
-    if (err.message.includes('yanlışdır')) {
-      localStorage.removeItem('anpsix_key'); apiKey='';
-      appEl.style.display='none'; apiModal.style.display='flex';
-      toast('⚠️ '+err.message);
-    } else {
-      addMsg('agent', `⚠️ ${err.message}`, {qr:QR.def});
-    }
+  addMsg('user',`${t.icon} ${t.label} haqqında məlumat`);
+  loading=true;render();
+  try{
+    const reply=await callAI('',t.key);
+    addMsg('agent',reply,{qr:QR[t.key]||QR.def});
+  }catch(err){
+    addMsg('agent',`⚠️ ${err.message}`,{qr:QR.def});
   }
   activeTopic=null;
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  loading=false; render();
+  loading=false;render();
 }
 
-function clearChat() {
+function clearChat(){
   msgs=[];
-  addMsg('agent',
-    '💜 **Salam! Mən AN PSİXOLOJİ agentiyəm.**\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm. Uşağınızla bağlı sualınızı yazın və ya yuxarıdakı mövzulardan birini seçin.\n\n_Diaqnoz qoymuram – yalnız yönləndirir, güclü valideyn olmağınıza kömək edirəm._ 🌟\n\nKomandamı tanımaq istəyirsiniz?',
-    {qr:['🧠 Psixoloq','🗣️ Loqoped','🖐️ Erqoterapevt','📚 Psixopedaqoq'], specialists:true}
-  );
+  addMsg('agent','💜 **Salam! Mən AN PSİXOLOJİ agentiyəm.**\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm. Uşağınızla bağlı sualınızı yazın və ya yuxarıdakı mövzulardan birini seçin.\n\n_Diaqnoz qoymuram – yalnız yönləndirir, güclü valideyn olmağınıza kömək edirəm._ 🌟\n\nKomandamı tanımaq istəyirsiniz?',
+    {qr:['🧠 Psixoloq','🗣️ Loqoped','🖐️ Erqoterapevt','📚 Psixopedaqoq'],specialists:true});
 }
 
-function showTeam() {
-  const ov=document.createElement('div'); ov.className='modal-ov';
-  ov.innerHTML=`<div class="modal-sh"><div class="m-handle"></div><div class="m-title">👥 Mütəxəssislər Komandası</div><div class="spec-grid" id="sg"></div><div class="m-warn">⚠️ Bu agent diaqnoz qoymur. Ciddi vəziyyətlərdə mütəxəssisə müraciət edin.</div></div>`;
+function showTeam(){
+  const ov=document.createElement('div');ov.className='mov';
+  ov.innerHTML=`<div class="msh"><div class="mhdl"></div><div class="mtit">👥 Mütəxəssislər Komandası</div><div class="spgr" id="sg"></div><div class="mwrn">⚠️ Bu agent diaqnoz qoymur. Ciddi vəziyyətlərdə mütəxəssisə müraciət edin.</div></div>`;
   document.body.appendChild(ov);
   const grid=ov.querySelector('#sg');
-  SPECIALISTS.forEach(s=>{
-    const d=document.createElement('div'); d.className='spec-item';
-    d.innerHTML=`<div class="si-icon">${s.icon}</div><div class="si-name">${s.name}</div><div class="si-role">${s.role}</div>`;
-    d.onclick=()=>{ov.remove(); send(s.prompt);};
-    grid.appendChild(d);
-  });
+  SPECS.forEach(s=>{const d=document.createElement('div');d.className='spit';d.innerHTML=`<div class="spii">${s.icon}</div><div class="spin">${s.name}</div><div class="spir">${s.role}</div>`;d.onclick=()=>{ov.remove();send(s.prompt);};grid.appendChild(d);});
   ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
 }
 
-function toggleVoice() {
+function toggleVoice(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){toast('⚠️ Brauzeriniz səs tanımağı dəstəkləmir');return;}
   if(isRec){recog?.stop();isRec=false;micBtn.classList.remove('rec');}
-  else {
-    recog=new SR(); recog.lang='az-AZ'; recog.continuous=false; recog.interimResults=false;
+  else{
+    recog=new SR();recog.lang='az-AZ';recog.continuous=false;recog.interimResults=false;
     recog.onresult=e=>{inp.value=e.results[0][0].transcript;toast('✅ Nitq tanındı');};
     recog.onerror=()=>{toast('⚠️ Səs tanınmadı');isRec=false;micBtn.classList.remove('rec');};
     recog.onend=()=>{isRec=false;micBtn.classList.remove('rec');};
-    recog.start(); isRec=true; micBtn.classList.add('rec');
+    recog.start();isRec=true;micBtn.classList.add('rec');
   }
 }
 
-function startApp() {
-  appEl.style.display='flex';
-  apiModal.style.display='none';
-  TOPICS.forEach(t=>{
-    const b=document.createElement('button');
-    b.className='chip'; b.dataset.key=t.key;
-    b.innerHTML=`${t.icon} ${t.label}`;
-    b.onclick=()=>handleTopic(t);
-    topicEl.appendChild(b);
-  });
-  clearChat();
-}
-
-// EVENTS
-apiBtn.onclick=()=>{
-  const k=apiInp.value.trim();
-  if(!k.startsWith('sk-ant-')){toast('⚠️ Düzgün API açarı daxil edin');return;}
-  apiKey=k; localStorage.setItem('anpsix_key',k); startApp();
-};
-apiInp.addEventListener('keydown',e=>{if(e.key==='Enter')apiBtn.click();});
+// INIT
 sendBtn.onclick=()=>send();
 micBtn.onclick=toggleVoice;
 clearBtn.onclick=clearChat;
@@ -729,15 +362,19 @@ teamBtn.onclick=showTeam;
 inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
 inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,76)+'px';});
 
-// BOOT
+TOPICS.forEach(t=>{
+  const b=document.createElement('button');
+  b.className='chip';b.dataset.key=t.key;
+  b.innerHTML=`${t.icon} ${t.label}`;
+  b.onclick=()=>handleTopic(t);
+  topicEl.appendChild(b);
+});
+
 window.addEventListener('load',()=>{
   setTimeout(()=>{
     const sp=document.getElementById('splash');
     sp.classList.add('hide');
-    setTimeout(()=>{
-      sp.remove();
-      apiKey ? startApp() : (apiModal.style.display='flex');
-    },500);
+    setTimeout(()=>{sp.remove();clearChat();},500);
   },1800);
 });
 </script>
