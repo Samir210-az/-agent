@@ -6,352 +6,366 @@
 <title>AN PSİXOLOJİ – AI Agent</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{
-  width:100%;
-  max-width:100%;
-  overflow-x:hidden;
-  overflow-y:hidden;
-  height:100%;
-  height:100dvh;
+/* RESET - OVERFLOW PROBLEM HƏLL */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
-:root{
-  --bg:#0f0e17;
-  --surface:#1a1928;
-  --surface2:#22203a;
-  --border:#2e2b4a;
-  --accent:#7c6ef5;
-  --accent2:#a78bfa;
-  --accent3:#e879f9;
-  --green:#34d399;
-  --orange:#fb923c;
-  --text:#f0eeff;
-  --text2:#9896b8;
-  --text3:#6b6987;
-  --bubble-agent:#1e1c35;
-  --font:'Plus Jakarta Sans',sans-serif;
+
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
 }
-body{
-  font-family:var(--font);
-  background:var(--bg);
-  color:var(--text);
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
+
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #0f0e17;
+  color: #f0eeff;
+  display: flex;
+  justify-content: center;
+}
+
+:root {
+  --bg: #0f0e17;
+  --surface: #1a1928;
+  --surface2: #22203a;
+  --border: #2e2b4a;
+  --accent: #7c6ef5;
+  --accent2: #a78bfa;
+  --green: #34d399;
+  --orange: #fb923c;
+  --text: #f0eeff;
+  --text2: #9896b8;
+  --text3: #6b6987;
 }
 
 /* SPLASH */
-.splash{
-  position:fixed;inset:0;
-  background:var(--bg);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  z-index:9999;gap:20px;
-  transition:opacity .5s;
+.splash {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  gap: 18px;
+  transition: opacity 0.5s;
 }
-.splash.hide{opacity:0;pointer-events:none}
-.splash-logo{
-  width:88px;height:88px;border-radius:26px;
-  background:linear-gradient(135deg,#7c6ef5,#e879f9);
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.4rem;
-  animation:logoPulse 2s infinite;
-  box-shadow:0 0 40px rgba(124,110,245,.4);
+.splash.hide { opacity: 0; pointer-events: none; }
+.splash-logo {
+  width: 86px; height: 86px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #7c6ef5, #e879f9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem;
+  box-shadow: 0 0 40px rgba(124,110,245,.5);
+  animation: logoPulse 2s infinite;
 }
-.splash-title{
-  font-size:1.7rem;font-weight:800;
-  background:linear-gradient(90deg,#a78bfa,#e879f9);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+.splash-title {
+  font-size: 1.8rem; font-weight: 800;
+  background: linear-gradient(90deg, #a78bfa, #e879f9);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.splash-sub{font-size:.82rem;color:var(--text2);text-align:center;max-width:230px;line-height:1.6}
-.splash-dots{display:flex;gap:10px;margin-top:4px}
-.splash-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotBounce 1.4s infinite}
-.splash-dot:nth-child(2){animation-delay:.2s}
-.splash-dot:nth-child(3){animation-delay:.4s}
+.splash-sub { font-size: .8rem; color: var(--text2); text-align: center; max-width: 220px; line-height: 1.6; }
+.splash-dots { display: flex; gap: 10px; }
+.splash-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: dotB 1.4s infinite; }
+.splash-dot:nth-child(2) { animation-delay: .2s; }
+.splash-dot:nth-child(3) { animation-delay: .4s; }
 
 /* API MODAL */
-.api-modal{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.75);
-  backdrop-filter:blur(8px);
-  z-index:8000;
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
+.api-modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.8);
+  backdrop-filter: blur(10px);
+  z-index: 8000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
 }
-.api-sheet{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:26px;
-  padding:26px 22px;
-  width:100%;max-width:380px;
-  display:flex;flex-direction:column;gap:14px;
+.api-sheet {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px 20px;
+  width: 100%; max-width: 360px;
+  display: flex; flex-direction: column; gap: 14px;
 }
-.api-sheet h3{
-  font-size:1.05rem;font-weight:800;
-  background:linear-gradient(90deg,#a78bfa,#e879f9);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+.api-sheet h3 {
+  font-size: 1rem; font-weight: 800;
+  background: linear-gradient(90deg, #a78bfa, #e879f9);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.api-sheet p{font-size:.76rem;color:var(--text2);line-height:1.6}
-.api-input{
-  background:var(--bg);border:1.5px solid var(--border);
-  border-radius:13px;padding:12px 15px;
-  color:var(--text);font-size:.84rem;
-  font-family:var(--font);outline:none;width:100%;transition:.2s;
+.api-sheet p { font-size: .74rem; color: var(--text2); line-height: 1.6; }
+.api-input {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 11px 14px;
+  color: var(--text); font-size: .83rem;
+  font-family: inherit; outline: none; width: 100%;
 }
-.api-input:focus{border-color:var(--accent)}
-.api-btn{
-  background:linear-gradient(135deg,#7c6ef5,#a78bfa);
-  border:none;border-radius:13px;padding:13px;
-  color:#fff;font-size:.88rem;font-weight:700;
-  font-family:var(--font);cursor:pointer;transition:.15s;
+.api-input:focus { border-color: var(--accent); }
+.api-btn {
+  background: linear-gradient(135deg, #7c6ef5, #a78bfa);
+  border: none; border-radius: 12px; padding: 13px;
+  color: #fff; font-size: .88rem; font-weight: 700;
+  font-family: inherit; cursor: pointer;
 }
-.api-btn:active{transform:scale(.97)}
-.api-note{font-size:.68rem;color:var(--text3);text-align:center}
-.api-note a{color:var(--accent2);text-decoration:none}
+.api-note { font-size: .67rem; color: var(--text3); text-align: center; }
+.api-note a { color: var(--accent2); text-decoration: none; }
 
-/* APP WRAPPER */
-.app{
-  width:100%;
-  max-width:520px;
-  height:100dvh;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  position:relative;
+/* APP — kritik: tam ekranı doldurur, kənara çıxmaz */
+.app {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
 }
 
 /* HEADER */
-.header{
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  padding:12px 14px;
-  display:flex;align-items:center;gap:11px;
-  flex-shrink:0;
-  width:100%;
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 11px 14px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
 }
-.h-avatar{
-  width:44px;height:44px;border-radius:14px;
-  background:linear-gradient(135deg,#7c6ef5,#e879f9);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;flex-shrink:0;position:relative;
+.h-av {
+  width: 42px; height: 42px; border-radius: 14px;
+  background: linear-gradient(135deg, #7c6ef5, #e879f9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0; position: relative;
 }
-.online{
-  position:absolute;bottom:-2px;right:-2px;
-  width:12px;height:12px;
-  background:var(--green);border-radius:50%;
-  border:2.5px solid var(--surface);
-  animation:onlinePulse 2s infinite;
+.h-dot {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 12px; height: 12px;
+  background: var(--green); border-radius: 50%;
+  border: 2px solid var(--surface);
+  animation: onlineP 2s infinite;
 }
-.h-info{flex:1;min-width:0;overflow:hidden}
-.h-name{font-size:.95rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.h-status{font-size:.62rem;color:var(--green);display:flex;align-items:center;gap:5px;font-weight:600}
-.h-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green)}
-.h-actions{display:flex;gap:6px;flex-shrink:0}
-.h-btn{
-  width:34px;height:34px;border-radius:11px;
-  background:var(--surface2);border:1px solid var(--border);
-  color:var(--text2);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.95rem;transition:.15s;
+.h-info { flex: 1; min-width: 0; overflow: hidden; }
+.h-name {
+  font-size: .92rem; font-weight: 800;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.h-btn:active{background:var(--border)}
+.h-status {
+  font-size: .6rem; color: var(--green);
+  display: flex; align-items: center; gap: 4px; font-weight: 600;
+}
+.h-status::before {
+  content: ''; width: 5px; height: 5px;
+  border-radius: 50%; background: var(--green); flex-shrink: 0;
+}
+.h-acts { display: flex; gap: 6px; flex-shrink: 0; }
+.h-btn {
+  width: 34px; height: 34px; border-radius: 11px;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+}
 
 /* TOPICS */
-.topics{
-  padding:10px 12px;
-  display:flex;gap:7px;
-  overflow-x:auto;
-  flex-shrink:0;
-  background:var(--bg);
-  scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-  width:100%;
+.topics {
+  display: flex; gap: 7px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  background: var(--bg);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
-.topics::-webkit-scrollbar{display:none}
-.chip{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:40px;
-  padding:7px 13px;
-  font-size:.7rem;font-weight:700;
-  color:var(--text2);
-  white-space:nowrap;cursor:pointer;
-  display:flex;align-items:center;gap:5px;
-  transition:all .2s;flex-shrink:0;
-  font-family:var(--font);
+.topics::-webkit-scrollbar { display: none; }
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 6px 13px;
+  font-size: .69rem; font-weight: 700;
+  color: var(--text2);
+  white-space: nowrap; cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+  flex-shrink: 0;
+  font-family: inherit;
 }
-.chip:active,.chip.active{
-  background:linear-gradient(135deg,#7c6ef5,#a78bfa);
-  border-color:transparent;color:#fff;
-  box-shadow:0 4px 14px rgba(124,110,245,.35);
+.chip.active, .chip:active {
+  background: linear-gradient(135deg, #7c6ef5, #a78bfa);
+  border-color: transparent; color: #fff;
 }
 
 /* CHAT */
-.chat{
-  flex:1;
-  overflow-y:auto;
-  overflow-x:hidden;
-  padding:14px 12px;
-  display:flex;flex-direction:column;gap:13px;
-  scroll-behavior:smooth;
-  width:100%;
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 14px 12px;
+  display: flex; flex-direction: column; gap: 13px;
 }
-.chat::-webkit-scrollbar{width:3px}
-.chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.chat::-webkit-scrollbar { width: 3px; }
+.chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-.msg{display:flex;gap:9px;align-items:flex-end;animation:fadeUp .25s ease;width:100%}
-.msg.user{flex-direction:row-reverse}
+.msg { display: flex; gap: 9px; align-items: flex-end; animation: fadeUp .25s ease; }
+.msg.user { flex-direction: row-reverse; }
 
-.msg-avatar{
-  width:30px;height:30px;border-radius:11px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;flex-shrink:0;
+.m-av {
+  width: 30px; height: 30px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .88rem; flex-shrink: 0;
 }
-.msg-avatar.agent{background:linear-gradient(135deg,#7c6ef5,#a78bfa)}
-.msg-avatar.user{background:var(--surface2);border:1px solid var(--border)}
+.m-av.a { background: linear-gradient(135deg, #7c6ef5, #a78bfa); }
+.m-av.u { background: var(--surface2); border: 1px solid var(--border); }
 
-.msg-body{
-  max-width:78%;
-  display:flex;flex-direction:column;gap:3px;
-  min-width:0;
-}
-.msg.user .msg-body{align-items:flex-end}
+.m-body { max-width: 76%; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.msg.user .m-body { align-items: flex-end; }
 
-.bubble{
-  padding:10px 13px;border-radius:17px;
-  font-size:.82rem;line-height:1.6;
-  word-break:break-word;overflow-wrap:break-word;
+.bub {
+  padding: 10px 13px; border-radius: 16px;
+  font-size: .81rem; line-height: 1.6;
+  word-break: break-word; overflow-wrap: break-word;
 }
-.bubble.agent{
-  background:var(--bubble-agent);
-  border:1px solid var(--border);
-  border-bottom-left-radius:4px;color:var(--text);
+.bub.a {
+  background: #1e1c35;
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px; color: var(--text);
 }
-.bubble.user{
-  background:linear-gradient(135deg,#7c6ef5,#a78bfa);
-  border-bottom-right-radius:4px;color:#fff;
+.bub.u {
+  background: linear-gradient(135deg, #7c6ef5, #a78bfa);
+  border-bottom-right-radius: 4px; color: #fff;
 }
-.bubble strong{color:var(--accent2);font-weight:700}
+.bub strong { color: var(--accent2); }
 
-.msg-time{font-size:.56rem;color:var(--text3);padding:0 3px}
+.m-time { font-size: .54rem; color: var(--text3); padding: 0 3px; }
 
-.qr-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.qr-btn{
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:30px;padding:5px 11px;
-  font-size:.66rem;font-weight:600;color:var(--text2);
-  cursor:pointer;transition:.15s;white-space:nowrap;
-  font-family:var(--font);
+.qr-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.qr-btn {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 30px; padding: 5px 11px;
+  font-size: .65rem; font-weight: 600; color: var(--text2);
+  cursor: pointer; white-space: nowrap; font-family: inherit;
 }
-.qr-btn:active{border-color:var(--accent);color:var(--accent2)}
 
-.spec-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
-.spec-card{
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:14px;padding:10px 8px;text-align:center;
-  cursor:pointer;transition:.2s;
-  display:flex;flex-direction:column;align-items:center;gap:5px;
+.spec-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+.spec-c2 {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 13px; padding: 10px 8px; text-align: center;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;
 }
-.spec-card:active{border-color:var(--accent)}
-.spec-card-icon{font-size:1.5rem}
-.spec-card-name{font-size:.7rem;font-weight:700;color:var(--text)}
-.spec-card-desc{font-size:.58rem;color:var(--text2)}
+.sc-icon { font-size: 1.5rem; }
+.sc-name { font-size: .69rem; font-weight: 700; color: var(--text); }
+.sc-role { font-size: .57rem; color: var(--text2); }
 
 /* TYPING */
-.typing-bubble{
-  background:var(--bubble-agent);border:1px solid var(--border);
-  border-radius:17px;border-bottom-left-radius:4px;
-  padding:12px 16px;display:flex;gap:6px;align-items:center;
+.typing-bub {
+  background: #1e1c35; border: 1px solid var(--border);
+  border-radius: 16px; border-bottom-left-radius: 4px;
+  padding: 12px 15px; display: flex; gap: 6px; align-items: center;
 }
-.typing-dot{
-  width:7px;height:7px;border-radius:50%;background:var(--accent);
-  animation:dotBounce 1.4s infinite;
-}
-.typing-dot:nth-child(2){animation-delay:.2s}
-.typing-dot:nth-child(3){animation-delay:.4s}
+.t-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: dotB 1.4s infinite; }
+.t-dot:nth-child(2) { animation-delay: .2s; }
+.t-dot:nth-child(3) { animation-delay: .4s; }
 
 /* INPUT */
-.input-area{
-  padding:10px 12px 16px;
-  background:var(--bg);
-  border-top:1px solid var(--border);
-  flex-shrink:0;width:100%;
+.input-area {
+  padding: 10px 12px 16px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
 }
-.input-row{display:flex;gap:8px;align-items:flex-end;width:100%}
-.input-box{
-  flex:1;min-width:0;
-  background:var(--surface);border:1.5px solid var(--border);
-  border-radius:16px;padding:9px 13px;
-  display:flex;align-items:flex-end;gap:6px;
-  transition:.2s;
+.input-row { display: flex; gap: 8px; align-items: flex-end; }
+.input-box {
+  flex: 1; min-width: 0;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 15px; padding: 9px 12px;
+  display: flex; align-items: flex-end;
 }
-.input-box:focus-within{border-color:var(--accent)}
-textarea{
-  flex:1;min-width:0;
-  background:transparent;border:none;outline:none;
-  color:var(--text);font-size:.83rem;font-family:var(--font);
-  resize:none;max-height:78px;line-height:1.5;
+.input-box:focus-within { border-color: var(--accent); }
+textarea {
+  flex: 1; min-width: 0; width: 100%;
+  background: transparent; border: none; outline: none;
+  color: var(--text); font-size: .82rem; font-family: inherit;
+  resize: none; max-height: 76px; line-height: 1.5;
 }
-textarea::placeholder{color:var(--text3)}
-.mic-btn,.send-btn{
-  width:38px;height:38px;border-radius:13px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;cursor:pointer;transition:.15s;flex-shrink:0;
+textarea::placeholder { color: var(--text3); }
+.mic-btn, .send-btn {
+  width: 38px; height: 38px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; cursor: pointer; flex-shrink: 0;
 }
-.mic-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
-.mic-btn.rec{background:rgba(251,99,99,.15);border-color:#fb6363;color:#fb6363;animation:micPulse 1s infinite}
-.send-btn{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border:none;color:#fff;box-shadow:0 4px 14px rgba(124,110,245,.3)}
-.mic-btn:active,.send-btn:active{transform:scale(.9)}
+.mic-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
+.mic-btn.rec { background: rgba(251,99,99,.15); border-color: #fb6363; color: #fb6363; animation: micP 1s infinite; }
+.send-btn { background: linear-gradient(135deg, #7c6ef5, #a78bfa); border: none; color: #fff; box-shadow: 0 4px 12px rgba(124,110,245,.3); }
 
 /* FOOTER */
-.footer{
-  text-align:center;padding:7px;font-size:.6rem;
-  color:var(--text3);border-top:1px solid var(--border);
-  flex-shrink:0;background:var(--bg);width:100%;
+.footer {
+  text-align: center; padding: 7px;
+  font-size: .59rem; color: var(--text3);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0; background: var(--bg);
 }
-.footer a{color:var(--accent2);text-decoration:none;font-weight:600}
+.footer a { color: var(--accent2); text-decoration: none; font-weight: 600; }
 
 /* TOAST */
-.toast{
-  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
-  background:var(--surface);border:1px solid var(--border);
-  color:var(--text);border-radius:30px;padding:8px 18px;
-  font-size:.7rem;font-weight:600;z-index:5000;
-  white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4);
-  animation:fadeUp .2s ease;pointer-events:none;
+.toast {
+  position: fixed; bottom: 90px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); border-radius: 30px; padding: 8px 18px;
+  font-size: .7rem; font-weight: 600; z-index: 5000;
+  white-space: nowrap; pointer-events: none;
+  animation: fadeUp .2s ease;
 }
 
 /* MODAL */
-.modal-overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
-  z-index:4000;display:flex;align-items:flex-end;justify-content:center;
+.modal-ov {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.65); backdrop-filter: blur(6px);
+  z-index: 4000; display: flex; align-items: flex-end; justify-content: center;
 }
-.modal-sheet{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:26px 26px 0 0;padding:20px 18px 34px;
-  width:100%;max-width:520px;animation:slideUp .3s ease;
+.modal-sh {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px 24px 0 0; padding: 18px 16px 32px;
+  width: 100%; max-width: 520px; animation: slideUp .3s ease;
 }
-.modal-handle{width:42px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px}
-.modal-title{font-size:.95rem;font-weight:800;margin-bottom:13px;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.spec-item{
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:16px;padding:13px 10px;text-align:center;cursor:pointer;transition:.2s;
+.m-handle { width: 40px; height: 4px; background: var(--border); border-radius: 4px; margin: 0 auto 14px; }
+.m-title {
+  font-size: .93rem; font-weight: 800; margin-bottom: 12px;
+  background: linear-gradient(90deg, #a78bfa, #e879f9);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-.spec-item:active{border-color:var(--accent)}
-.spec-item-icon{font-size:1.9rem;margin-bottom:5px}
-.spec-item-name{font-size:.77rem;font-weight:700;color:var(--text)}
-.spec-item-role{font-size:.6rem;color:var(--text2);margin-top:2px}
-.modal-warn{margin-top:13px;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:14px;padding:11px 13px;font-size:.68rem;color:var(--orange);line-height:1.6}
+.spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.spec-item {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 15px; padding: 12px 10px; text-align: center; cursor: pointer;
+}
+.si-icon { font-size: 1.8rem; margin-bottom: 5px; }
+.si-name { font-size: .76rem; font-weight: 700; color: var(--text); }
+.si-role { font-size: .59rem; color: var(--text2); margin-top: 2px; }
+.m-warn {
+  margin-top: 12px; background: rgba(251,146,60,.08);
+  border: 1px solid rgba(251,146,60,.2);
+  border-radius: 13px; padding: 10px 12px;
+  font-size: .67rem; color: var(--orange); line-height: 1.6;
+}
 
 /* ANIMATIONS */
-@keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(124,110,245,.4)}50%{box-shadow:0 0 60px rgba(232,121,249,.5)}}
-@keyframes onlinePulse{0%,100%{opacity:1}50%{opacity:.5}}
-@keyframes dotBounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-7px);opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(251,99,99,.4)}50%{box-shadow:0 0 0 8px rgba(251,99,99,0)}}
+@keyframes logoPulse { 0%,100%{box-shadow:0 0 40px rgba(124,110,245,.4)} 50%{box-shadow:0 0 60px rgba(232,121,249,.5)} }
+@keyframes onlineP { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes dotB { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-7px);opacity:1} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+@keyframes micP { 0%,100%{box-shadow:0 0 0 0 rgba(251,99,99,.4)} 50%{box-shadow:0 0 0 8px rgba(251,99,99,0)} }
 </style>
 </head>
 <body>
@@ -362,9 +376,7 @@ textarea::placeholder{color:var(--text3)}
   <div class="splash-title">AN PSİXOLOJİ</div>
   <div class="splash-sub">Peşəkar Uşaq Psixologiyası AI Agenti</div>
   <div class="splash-dots">
-    <div class="splash-dot"></div>
-    <div class="splash-dot"></div>
-    <div class="splash-dot"></div>
+    <div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div>
   </div>
 </div>
 
@@ -374,30 +386,34 @@ textarea::placeholder{color:var(--text3)}
     <div style="font-size:2rem;text-align:center">🔑</div>
     <h3>Anthropic API Açarı</h3>
     <p>AN PSİXOLOJİ agentini işə salmaq üçün Anthropic API açarınızı daxil edin. Açar yalnız bu cihazda saxlanılır.</p>
-    <input class="api-input" type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+    <input class="api-input" type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off">
     <button class="api-btn" id="apiSaveBtn">Başla →</button>
-    <div class="api-note">Açarı <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> saytından əldə edə bilərsiniz</div>
+    <div class="api-note">Açarı <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> saytından əldə edin</div>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div class="app" id="app" style="display:none">
+  <!-- Header -->
   <div class="header">
-    <div class="h-avatar">🧠<div class="online"></div></div>
+    <div class="h-av">🧠<div class="h-dot"></div></div>
     <div class="h-info">
       <div class="h-name">AN PSİXOLOJİ</div>
       <div class="h-status">Aktiv · cavab verir</div>
     </div>
-    <div class="h-actions">
+    <div class="h-acts">
       <button class="h-btn" id="teamBtn">👥</button>
       <button class="h-btn" id="clearBtn">🗑</button>
     </div>
   </div>
 
+  <!-- Topics -->
   <div class="topics" id="topics"></div>
 
+  <!-- Chat -->
   <div class="chat" id="chat"></div>
 
+  <!-- Input -->
   <div class="input-area">
     <div class="input-row">
       <div class="input-box">
@@ -408,6 +424,7 @@ textarea::placeholder{color:var(--text3)}
     </div>
   </div>
 
+  <!-- Footer -->
   <div class="footer">
     AN PSİXOLOJİ · AI Agent &nbsp;|&nbsp;
     <a href="https://instagram.com/s_akhundoff" target="_blank">📷 @s_akhundoff</a>
@@ -449,97 +466,77 @@ const TOPIC_PROMPTS = {
   yuxu:     'Xüsusi ehtiyaclı uşaqlarda yuxu problemləri. Sağlam yuxu rutini qurmaq, yatmazlığı həll etmək üçün strategiyalar.',
 };
 
-const QR_BY_TOPIC = {
-  autizm:   ['🎮 Evdə oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya'],
-  nitq:     ['🎵 Mahnılarla nitq','⏰ Mütəxəssisə nə vaxt?','📝 Ev məşqləri'],
+const QR = {
+  autizm:   ['🎮 Oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya'],
+  nitq:     ['🎵 Mahnılarla nitq','⏰ Nə vaxt mütəxəssis?','📝 Ev məşqləri'],
   davranis: ['😮‍💨 Sakinləşdirmə','📊 Davranış cədvəli','🏫 Məktəbdə dəstək'],
-  dehb:     ['⚡ Enerji fəaliyyətlər','🎯 Diqqət məşqləri','🌙 Yuxu rutini'],
+  dehb:     ['⚡ Enerji fəaliyyət','🎯 Diqqət məşqləri','🌙 Yuxu rutini'],
   emosiya:  ['❤️ Emosiya kartları','🫂 Sakinləşmə','🎨 Yaradıcı ifadə'],
   oyun:     ['🧩 Qurucu oyunlar','🎨 Sənət terapiyası','🏃 Aktiv oyunlar'],
-  oxuma:    ['🔤 Hərfləri öyrənmək','📖 Oxuma strategiyası','✏️ Yazı məşqləri'],
+  oxuma:    ['🔤 Hərfləri öyrən','📖 Oxuma strategiya','✏️ Yazı məşqləri'],
   sosial:   ['👋 Salamlaşma məşqi','🤝 Növbə tutmaq','🎭 Rol oyunu'],
   motor:    ['✂️ Kəsmə məşqi','🖍️ Boyama','⚽ Balans məşqi'],
   yuxu:     ['🛁 Yatış rutini','📵 Ekran vaxtı','🌙 Gecə narahatçılığı'],
-  default:  ['📌 Daha ətraflı','🏠 Ev fəaliyyəti','👩‍⚕️ Mütəxəssisə gedim?'],
+  def:      ['📌 Daha ətraflı','🏠 Ev fəaliyyəti','👩‍⚕️ Mütəxəssisə gedim?'],
 };
 
-const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Azərbaycan dilinin psixoloji, tibbi uşaq ixtisas sahəsindəki ən yüksək səviyyəli mütəxəssisi kimi cavab verirsən.
+const SYS = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Azərbaycan dilinin psixoloji, tibbi uşaq ixtisas sahəsindəki ən yüksək səviyyəli mütəxəssisi kimi cavab verirsən.
 
-SƏNİN KOMANDAN:
-- Psixoloq: Emosional inkişaf, davranış idarəsi, psixi sağlamlıq
-- Loqoped: Nitq, dil, artikulyasiya inkişafı
-- Erqoterapevt: Motor bacarıqlar, gündəlik həyat aktivlikləri
-- Psixopedaqoq: Öyrənmə prosesi, idrak inkişafı, xüsusi təhsil
+Komandanız: Psixoloq (emosional inkişaf, davranış), Loqoped (nitq, dil, artikulyasiya), Erqoterapevt (motor bacarıqlar, gündəlik həyat), Psixopedaqoq (öyrənmə, idrak inkişafı).
 
 CAVAB FORMATIN:
-1. 💜 İsti giriş – Valideyni başa düş
-2. 📋 Əsas məlumat – Sadə dildə izah
-3. ✅ 3-5 Praktiki addım – Evdə edilə bilənlər
-4. ⚠️ Nə etməyin – Qaçınılacaq davranışlar
-5. 💡 Tövsiyə – Ən vacib mesaj
-6. 🏥 Nə vaxt mütəxəssisə? – Konkret əlamətlər
+1. 💜 İsti giriş
+2. 📋 Əsas məlumat – sadə dildə
+3. ✅ 3-5 Praktiki addım – evdə edilə bilənlər
+4. ⚠️ Nə etməyin
+5. 💡 Tövsiyə
+6. 🏥 Nə vaxt mütəxəssisə?
 
-QAYDALAR:
-- Azərbaycan dilində cavab ver
-- Emoji istifadə et
-- Diaqnoz qoyma – yalnız yönləndir
-- **Qalın** formatlamadan istifadə et
-- Ətraflı, dəstəkləyici ton`;
+Azərbaycan dilində, emoji ilə, **qalın** formatla, diaqnoz qoymadan, dəstəkləyici tonla cavab ver.`;
 
 // STATE
 let apiKey = localStorage.getItem('anpsix_key') || '';
-let messages = [];
-let isLoading = false;
+let msgs = [], loading = false, activeTopic = null;
 let recog = null, isRec = false;
-let activeTopic = null;
 
 // DOM
-const chatEl   = document.getElementById('chat');
-const topicsEl = document.getElementById('topics');
-const input    = document.getElementById('msgInput');
-const micBtn   = document.getElementById('micBtn');
-const sendBtn  = document.getElementById('sendBtn');
-const clearBtn = document.getElementById('clearBtn');
-const teamBtn  = document.getElementById('teamBtn');
-const apiModal = document.getElementById('apiModal');
-const apiInput = document.getElementById('apiKeyInput');
-const apiSave  = document.getElementById('apiSaveBtn');
-const appEl    = document.getElementById('app');
+const chatEl  = document.getElementById('chat');
+const topicEl = document.getElementById('topics');
+const inp     = document.getElementById('msgInput');
+const micBtn  = document.getElementById('micBtn');
+const sendBtn = document.getElementById('sendBtn');
+const clearBtn= document.getElementById('clearBtn');
+const teamBtn = document.getElementById('teamBtn');
+const apiModal= document.getElementById('apiModal');
+const apiInp  = document.getElementById('apiKeyInput');
+const apiBtn  = document.getElementById('apiSaveBtn');
+const appEl   = document.getElementById('app');
 
-// UTILS
-const getTime = () => new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
-
-function toast(msg) {
+// HELPERS
+const now = () => new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
+function toast(t) {
   const d = document.createElement('div');
-  d.className = 'toast'; d.textContent = msg;
+  d.className='toast'; d.textContent=t;
   document.body.appendChild(d);
-  setTimeout(() => d.remove(), 2500);
+  setTimeout(()=>d.remove(), 2500);
+}
+function md(t) {
+  return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
 }
 
-function renderText(t) {
-  return t
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>');
-}
+// API
+async function callAI(prompt, topicKey=null) {
+  const sys = topicKey
+    ? SYS + `\n\nAktiv mövzu: ${TOPICS.find(t=>t.key===topicKey)?.label}. Bu mövzu haqqında ətraflı məlumat ver.`
+    : SYS;
 
-// API CALL — Anthropic
-async function callAI(userPrompt, topicKey=null) {
-  const sysPrompt = topicKey
-    ? SYSTEM_PROMPT + `\n\nAktiv mövzu: ${TOPICS.find(t=>t.key===topicKey)?.label}. Bu mövzu haqqında ətraflı məlumat ver.`
-    : SYSTEM_PROMPT;
+  const history = msgs.slice(-6).map(m=>({
+    role: m.role==='agent' ? 'assistant' : 'user',
+    content: m.text
+  }));
+  history.push({role:'user', content: topicKey ? (TOPIC_PROMPTS[topicKey]||prompt) : prompt});
 
-  const msgHistory = messages
-    .filter(m => m.role !== 'system')
-    .slice(-6)
-    .map(m => ({
-      role: m.role === 'agent' ? 'assistant' : 'user',
-      content: m.text
-    }));
-
-  const finalPrompt = topicKey ? (TOPIC_PROMPTS[topicKey] || userPrompt) : userPrompt;
-  msgHistory.push({role:'user', content: finalPrompt});
-
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'x-api-key': apiKey,
@@ -547,285 +544,201 @@ async function callAI(userPrompt, topicKey=null) {
       'content-type': 'application/json',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5',
-      max_tokens: 1500,
-      system: sysPrompt,
-      messages: msgHistory
-    })
+    body: JSON.stringify({model:'claude-haiku-4-5', max_tokens:1500, system:sys, messages:history})
   });
 
-  if (!resp.ok) {
-    let errMsg = `HTTP ${resp.status}`;
-    try {
-      const e = await resp.json();
-      if (resp.status === 401) {
-        errMsg = 'API açarı yanlışdır. Yenidən daxil edin.';
-      } else {
-        errMsg = e?.error?.message || errMsg;
-      }
-    } catch(_) {}
-    throw new Error(errMsg);
+  if (!r.ok) {
+    let msg = `HTTP ${r.status}`;
+    try { const e=await r.json(); msg = r.status===401 ? 'API açarı yanlışdır.' : (e?.error?.message||msg); } catch(_){}
+    throw new Error(msg);
   }
-
-  const data = await resp.json();
-  return data.content[0].text;
+  return (await r.json()).content[0].text;
 }
 
 // RENDER
-function renderChat() {
+function render() {
   chatEl.innerHTML = '';
-
-  messages.forEach(msg => {
-    const isUser = msg.role === 'user';
+  msgs.forEach(m => {
+    const isU = m.role==='user';
     const row = document.createElement('div');
-    row.className = `msg ${isUser ? 'user' : ''}`;
+    row.className = `msg ${isU?'user':''}`;
 
     const av = document.createElement('div');
-    av.className = `msg-avatar ${isUser ? 'user' : 'agent'}`;
-    av.textContent = isUser ? '🙋' : '🧠';
+    av.className = `m-av ${isU?'u':'a'}`;
+    av.textContent = isU?'🙋':'🧠';
 
     const body = document.createElement('div');
-    body.className = 'msg-body';
+    body.className = 'm-body';
 
     const bub = document.createElement('div');
-    bub.className = `bubble ${isUser ? 'user' : 'agent'}`;
+    bub.className = `bub ${isU?'u':'a'}`;
+    bub.innerHTML = isU ? m.text.replace(/</g,'&lt;') : md(m.text);
 
-    if (isUser) {
-      bub.textContent = msg.text;
-    } else {
-      bub.innerHTML = renderText(msg.text);
-    }
-
-    // Specialist cards
-    if (!isUser && msg.specialists) {
-      const grid = document.createElement('div');
-      grid.className = 'spec-cards';
-      SPECIALISTS.forEach(s => {
-        const c = document.createElement('div');
-        c.className = 'spec-card';
-        c.innerHTML = `<div class="spec-card-icon">${s.icon}</div><div class="spec-card-name">${s.name}</div><div class="spec-card-desc">${s.role}</div>`;
-        c.onclick = () => sendMsg(s.prompt);
-        grid.appendChild(c);
+    if (!isU && m.specialists) {
+      const g = document.createElement('div'); g.className='spec-grid2';
+      SPECIALISTS.forEach(s=>{
+        const c=document.createElement('div'); c.className='spec-c2';
+        c.innerHTML=`<div class="sc-icon">${s.icon}</div><div class="sc-name">${s.name}</div><div class="sc-role">${s.role}</div>`;
+        c.onclick=()=>send(s.prompt);
+        g.appendChild(c);
       });
-      bub.appendChild(grid);
+      bub.appendChild(g);
     }
 
-    // Quick replies
-    if (!isUser && msg.qr && msg.qr.length) {
-      const wrap = document.createElement('div');
-      wrap.className = 'qr-wrap';
-      msg.qr.forEach(q => {
-        const b = document.createElement('button');
-        b.className = 'qr-btn'; b.textContent = q;
-        b.onclick = () => sendMsg(q);
-        wrap.appendChild(b);
+    if (!isU && m.qr?.length) {
+      const w = document.createElement('div'); w.className='qr-wrap';
+      m.qr.forEach(q=>{
+        const b=document.createElement('button'); b.className='qr-btn'; b.textContent=q;
+        b.onclick=()=>send(q); w.appendChild(b);
       });
-      bub.appendChild(wrap);
+      bub.appendChild(w);
     }
 
-    const t = document.createElement('div');
-    t.className = 'msg-time'; t.textContent = msg.time;
-
-    body.appendChild(bub);
-    body.appendChild(t);
-    row.appendChild(av);
-    row.appendChild(body);
+    const t = document.createElement('div'); t.className='m-time'; t.textContent=m.time;
+    body.appendChild(bub); body.appendChild(t);
+    row.appendChild(av); row.appendChild(body);
     chatEl.appendChild(row);
   });
 
-  // Typing indicator
-  if (isLoading) {
-    const row = document.createElement('div');
-    row.className = 'msg';
-    const av = document.createElement('div');
-    av.className = 'msg-avatar agent'; av.textContent = '🧠';
-    const body = document.createElement('div');
-    body.className = 'msg-body';
-    const tb = document.createElement('div');
-    tb.className = 'typing-bubble';
-    for (let i=0;i<3;i++){const d=document.createElement('div');d.className='typing-dot';tb.appendChild(d);}
-    body.appendChild(tb);
-    row.appendChild(av); row.appendChild(body);
+  if (loading) {
+    const row=document.createElement('div'); row.className='msg';
+    const av=document.createElement('div'); av.className='m-av a'; av.textContent='🧠';
+    const body=document.createElement('div'); body.className='m-body';
+    const tb=document.createElement('div'); tb.className='typing-bub';
+    for(let i=0;i<3;i++){const d=document.createElement('div');d.className='t-dot';tb.appendChild(d);}
+    body.appendChild(tb); row.appendChild(av); row.appendChild(body);
     chatEl.appendChild(row);
   }
-
-  chatEl.scrollTop = chatEl.scrollHeight;
+  chatEl.scrollTop=chatEl.scrollHeight;
 }
 
 function addMsg(role, text, opts={}) {
-  messages.push({role, text, time: getTime(), ...opts});
-  renderChat();
+  msgs.push({role, text, time:now(), ...opts});
+  render();
 }
 
 // SEND
-async function sendMsg(override=null) {
-  const text = override !== null ? override : input.value.trim();
-  if (!text || isLoading) return;
-  input.value = '';
-  input.style.height = 'auto';
+async function send(override=null) {
+  const text = override!==null ? override : inp.value.trim();
+  if (!text || loading) return;
+  inp.value=''; inp.style.height='auto';
   addMsg('user', text);
-  isLoading = true; renderChat();
+  loading=true; render();
 
   try {
     const reply = await callAI(text, activeTopic);
-    const qr = activeTopic
-      ? (QR_BY_TOPIC[activeTopic] || QR_BY_TOPIC.default)
-      : QR_BY_TOPIC.default;
-    activeTopic = null;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    const qr = activeTopic ? (QR[activeTopic]||QR.def) : QR.def;
+    activeTopic=null;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
     addMsg('agent', reply, {qr});
   } catch(err) {
     if (err.message.includes('yanlışdır')) {
-      localStorage.removeItem('anpsix_key');
-      apiKey = '';
-      appEl.style.display = 'none';
-      apiModal.style.display = 'flex';
-      toast('⚠️ ' + err.message);
+      localStorage.removeItem('anpsix_key'); apiKey='';
+      appEl.style.display='none'; apiModal.style.display='flex';
+      toast('⚠️ '+err.message);
     } else {
-      addMsg('agent',
-        `⚠️ **Xəta baş verdi.**\n${err.message}\n\nZəhmət olmasa bir az sonra cəhd edin.`,
-        {qr: QR_BY_TOPIC.default}
-      );
+      addMsg('agent', `⚠️ **Xəta:** ${err.message}\n\nBir az sonra cəhd edin.`, {qr:QR.def});
     }
   }
-
-  isLoading = false; renderChat();
+  loading=false; render();
 }
 
-// TOPIC CLICK
 async function handleTopic(t) {
-  if (isLoading) return;
-  activeTopic = t.key;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  if(loading) return;
+  activeTopic=t.key;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   document.querySelector(`.chip[data-key="${t.key}"]`)?.classList.add('active');
   addMsg('user', `${t.icon} ${t.label} haqqında məlumat`);
-  isLoading = true; renderChat();
-
+  loading=true; render();
   try {
     const reply = await callAI('', t.key);
-    addMsg('agent', reply, {qr: QR_BY_TOPIC[t.key] || QR_BY_TOPIC.default});
+    addMsg('agent', reply, {qr: QR[t.key]||QR.def});
   } catch(err) {
     if (err.message.includes('yanlışdır')) {
-      localStorage.removeItem('anpsix_key');
-      apiKey = '';
-      appEl.style.display = 'none';
-      apiModal.style.display = 'flex';
-      toast('⚠️ ' + err.message);
+      localStorage.removeItem('anpsix_key'); apiKey='';
+      appEl.style.display='none'; apiModal.style.display='flex';
+      toast('⚠️ '+err.message);
     } else {
-      addMsg('agent', `⚠️ ${err.message}`, {qr: QR_BY_TOPIC.default});
+      addMsg('agent', `⚠️ ${err.message}`, {qr:QR.def});
     }
   }
-
-  activeTopic = null;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  isLoading = false; renderChat();
+  activeTopic=null;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  loading=false; render();
 }
 
-// CLEAR
 function clearChat() {
-  messages = [];
+  msgs=[];
   addMsg('agent',
     '💜 **Salam! Mən AN PSİXOLOJİ agentiyəm.**\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm. Uşağınızla bağlı sualınızı yazın və ya yuxarıdakı mövzulardan birini seçin.\n\n_Diaqnoz qoymuram – yalnız yönləndirir, güclü valideyn olmağınıza kömək edirəm._ 🌟\n\nKomandamı tanımaq istəyirsiniz?',
-    {qr: ['🧠 Psixoloq','🗣️ Loqoped','🖐️ Erqoterapevt','📚 Psixopedaqoq'], specialists: true}
+    {qr:['🧠 Psixoloq','🗣️ Loqoped','🖐️ Erqoterapevt','📚 Psixopedaqoq'], specialists:true}
   );
 }
 
-// TEAM MODAL
 function showTeam() {
-  const ov = document.createElement('div');
-  ov.className = 'modal-overlay';
-  ov.innerHTML = `
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-title">👥 Mütəxəssislər Komandası</div>
-      <div class="spec-grid" id="specGrid"></div>
-      <div class="modal-warn">⚠️ Bu agent diaqnoz qoymur. Ciddi vəziyyətlərdə mütəxəssisə müraciət edin.</div>
-    </div>`;
+  const ov=document.createElement('div'); ov.className='modal-ov';
+  ov.innerHTML=`<div class="modal-sh"><div class="m-handle"></div><div class="m-title">👥 Mütəxəssislər Komandası</div><div class="spec-grid" id="sg"></div><div class="m-warn">⚠️ Bu agent diaqnoz qoymur. Ciddi vəziyyətlərdə mütəxəssisə müraciət edin.</div></div>`;
   document.body.appendChild(ov);
-  const grid = ov.querySelector('#specGrid');
-  SPECIALISTS.forEach(s => {
-    const d = document.createElement('div');
-    d.className = 'spec-item';
-    d.innerHTML = `<div class="spec-item-icon">${s.icon}</div><div class="spec-item-name">${s.name}</div><div class="spec-item-role">${s.role}</div>`;
-    d.onclick = () => { ov.remove(); sendMsg(s.prompt); };
+  const grid=ov.querySelector('#sg');
+  SPECIALISTS.forEach(s=>{
+    const d=document.createElement('div'); d.className='spec-item';
+    d.innerHTML=`<div class="si-icon">${s.icon}</div><div class="si-name">${s.name}</div><div class="si-role">${s.role}</div>`;
+    d.onclick=()=>{ov.remove(); send(s.prompt);};
     grid.appendChild(d);
   });
-  ov.addEventListener('click', e => { if(e.target===ov) ov.remove(); });
+  ov.addEventListener('click',e=>{if(e.target===ov)ov.remove();});
 }
 
-// VOICE
 function toggleVoice() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { toast('⚠️ Brauzeriniz səs tanımağı dəstəkləmir'); return; }
-  if (isRec) {
-    recog?.stop(); isRec=false; micBtn.classList.remove('rec');
-  } else {
-    recog = new SR();
-    recog.lang='az-AZ'; recog.continuous=false; recog.interimResults=false;
-    recog.onresult = e => { input.value=e.results[0][0].transcript; toast('✅ Nitq tanındı'); };
-    recog.onerror = () => { toast('⚠️ Səs tanınmadı'); isRec=false; micBtn.classList.remove('rec'); };
-    recog.onend   = () => { isRec=false; micBtn.classList.remove('rec'); };
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('⚠️ Brauzeriniz səs tanımağı dəstəkləmir');return;}
+  if(isRec){recog?.stop();isRec=false;micBtn.classList.remove('rec');}
+  else {
+    recog=new SR(); recog.lang='az-AZ'; recog.continuous=false; recog.interimResults=false;
+    recog.onresult=e=>{inp.value=e.results[0][0].transcript;toast('✅ Nitq tanındı');};
+    recog.onerror=()=>{toast('⚠️ Səs tanınmadı');isRec=false;micBtn.classList.remove('rec');};
+    recog.onend=()=>{isRec=false;micBtn.classList.remove('rec');};
     recog.start(); isRec=true; micBtn.classList.add('rec');
   }
 }
 
-// BUILD TOPICS
-function initTopics() {
-  TOPICS.forEach(t => {
-    const b = document.createElement('button');
-    b.className = 'chip'; b.dataset.key = t.key;
-    b.innerHTML = `${t.icon} ${t.label}`;
-    b.onclick = () => handleTopic(t);
-    topicsEl.appendChild(b);
-  });
-}
-
-// START APP
 function startApp() {
-  appEl.style.display = 'flex';
-  apiModal.style.display = 'none';
-  initTopics();
+  appEl.style.display='flex';
+  apiModal.style.display='none';
+  TOPICS.forEach(t=>{
+    const b=document.createElement('button');
+    b.className='chip'; b.dataset.key=t.key;
+    b.innerHTML=`${t.icon} ${t.label}`;
+    b.onclick=()=>handleTopic(t);
+    topicEl.appendChild(b);
+  });
   clearChat();
 }
 
 // EVENTS
-apiSave.onclick = () => {
-  const k = apiInput.value.trim();
-  if (!k.startsWith('sk-ant-')) { toast('⚠️ Düzgün API açarı daxil edin (sk-ant- ilə başlamalıdır)'); return; }
-  apiKey = k;
-  localStorage.setItem('anpsix_key', k);
-  startApp();
+apiBtn.onclick=()=>{
+  const k=apiInp.value.trim();
+  if(!k.startsWith('sk-ant-')){toast('⚠️ Düzgün API açarı daxil edin');return;}
+  apiKey=k; localStorage.setItem('anpsix_key',k); startApp();
 };
-apiInput.addEventListener('keydown', e => { if(e.key==='Enter') apiSave.click(); });
-
-sendBtn.onclick  = () => sendMsg();
-micBtn.onclick   = toggleVoice;
-clearBtn.onclick = clearChat;
-teamBtn.onclick  = showTeam;
-
-input.addEventListener('keydown', e => {
-  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
-});
-input.addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 78) + 'px';
-});
+apiInp.addEventListener('keydown',e=>{if(e.key==='Enter')apiBtn.click();});
+sendBtn.onclick=()=>send();
+micBtn.onclick=toggleVoice;
+clearBtn.onclick=clearChat;
+teamBtn.onclick=showTeam;
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,76)+'px';});
 
 // BOOT
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    const sp = document.getElementById('splash');
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const sp=document.getElementById('splash');
     sp.classList.add('hide');
-    setTimeout(() => {
+    setTimeout(()=>{
       sp.remove();
-      if (apiKey) {
-        startApp();
-      } else {
-        apiModal.style.display = 'flex';
-      }
-    }, 500);
-  }, 1800);
+      apiKey ? startApp() : (apiModal.style.display='flex');
+    },500);
+  },1800);
 });
 </script>
 </body>
