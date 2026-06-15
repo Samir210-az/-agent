@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>AN PSİXOLOJİ</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html { height:100%; overflow:hidden; }
+
+body {
+  height:100%;
+  overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#0d0c1d;
+  color:#eeeeff;
+  display:flex;
+  flex-direction:column;
+}
+
+/* SPLASH */
+#splash {
+  position:fixed; inset:0; z-index:999;
+  background:linear-gradient(160deg,#1a0533,#0d0c1d);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:16px;
+  transition:opacity 0.5s;
+}
+#splash.gone { opacity:0; pointer-events:none; }
+.sp-icon {
+  width:90px; height:90px; border-radius:24px;
+  background:linear-gradient(135deg,#7b5ea7,#c084fc);
+  display:flex; align-items:center; justify-content:center;
+  font-size:42px;
+  box-shadow:0 0 40px rgba(192,132,252,0.4);
+}
+.sp-title { font-size:26px; font-weight:800; color:#fff; letter-spacing:-0.5px; }
+.sp-sub { font-size:13px; color:#a89fc0; text-align:center; }
+.sp-dots { display:flex; gap:8px; margin-top:8px; }
+.sp-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:#7b5ea7; animation:bounce 1.2s infinite;
+}
+.sp-dot:nth-child(2){animation-delay:.2s}
+.sp-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce {
+  0%,80%,100%{transform:scale(0.6);opacity:0.4}
+  40%{transform:scale(1.2);opacity:1}
+}
+
+/* LAYOUT */
+#wrap {
+  display:flex; flex-direction:column;
+  height:100%; overflow:hidden;
+}
+
+/* HEADER */
+#header {
+  flex-shrink:0;
+  background:#13122a;
+  border-bottom:1px solid #2a2850;
+  padding:12px 14px;
+  display:flex; align-items:center; gap:10px;
+}
+.hlogo {
+  width:40px; height:40px; border-radius:12px;
+  background:linear-gradient(135deg,#7b5ea7,#c084fc);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0; position:relative;
+}
+.hlogo-dot {
+  position:absolute; bottom:-2px; right:-2px;
+  width:11px; height:11px; border-radius:50%;
+  background:#4ade80; border:2px solid #13122a;
+}
+.htitle { font-size:15px; font-weight:800; color:#fff; }
+.hsub { font-size:11px; color:#4ade80; margin-top:1px; }
+.hbtns { margin-left:auto; display:flex; gap:6px; }
+.hbtn {
+  width:34px; height:34px; border-radius:10px;
+  background:#1e1d38; border:1px solid #2a2850;
+  color:#a89fc0; font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* CHIPS */
+#chips {
+  flex-shrink:0;
+  display:flex; gap:7px; padding:10px 12px;
+  overflow-x:auto; background:#0d0c1d;
+}
+#chips::-webkit-scrollbar { display:none; }
+.chip {
+  flex-shrink:0; white-space:nowrap;
+  background:#1e1d38; border:1px solid #2a2850;
+  border-radius:20px; padding:6px 13px;
+  font-size:12px; font-weight:700; color:#a89fc0;
+  cursor:pointer;
+}
+.chip.on {
+  background:linear-gradient(135deg,#7b5ea7,#c084fc);
+  border-color:transparent; color:#fff;
+}
+
+/* CHAT */
+#chat {
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  padding:14px 12px; display:flex; flex-direction:column; gap:12px;
+}
+#chat::-webkit-scrollbar { width:3px; }
+#chat::-webkit-scrollbar-thumb { background:#2a2850; border-radius:3px; }
+
+.row { display:flex; gap:8px; align-items:flex-end; }
+.row.me { flex-direction:row-reverse; }
+
+.ava {
+  width:30px; height:30px; border-radius:10px;
+  background:linear-gradient(135deg,#7b5ea7,#c084fc);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0;
+}
+.ava.me { background:#1e1d38; border:1px solid #2a2850; }
+
+.col { max-width:75%; display:flex; flex-direction:column; gap:3px; }
+.row.me .col { align-items:flex-end; }
+
+.bbl {
+  padding:10px 13px; border-radius:16px;
+  font-size:13px; line-height:1.6;
+  word-break:break-word;
+}
+.bbl.bot {
+  background:#1a1836; border:1px solid #2a2850;
+  border-bottom-left-radius:4px; color:#eeeeff;
+}
+.bbl.me {
+  background:linear-gradient(135deg,#7b5ea7,#c084fc);
+  border-bottom-right-radius:4px; color:#fff;
+}
+.bbl strong { color:#d8b4fe; }
+.tm { font-size:10px; color:#4a4870; padding:0 3px; }
+
+/* QUICK REPLIES */
+.qrs { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.qr {
+  background:#1e1d38; border:1px solid #2a2850;
+  border-radius:20px; padding:5px 11px;
+  font-size:11px; font-weight:600; color:#a89fc0;
+  cursor:pointer; white-space:nowrap;
+}
+
+/* SPEC GRID */
+.sgrid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:8px; }
+.scard {
+  background:#1e1d38; border:1px solid #2a2850;
+  border-radius:12px; padding:10px 8px; text-align:center;
+  cursor:pointer;
+}
+.scard-i { font-size:24px; }
+.scard-n { font-size:11px; font-weight:700; color:#fff; margin-top:4px; }
+.scard-r { font-size:10px; color:#a89fc0; margin-top:2px; }
+
+/* TYPING */
+.typing {
+  background:#1a1836; border:1px solid #2a2850;
+  border-radius:16px; border-bottom-left-radius:4px;
+  padding:12px 16px; display:flex; gap:5px; align-items:center;
+}
+.tdot {
+  width:7px; height:7px; border-radius:50%;
+  background:#7b5ea7; animation:bounce 1.2s infinite;
+}
+.tdot:nth-child(2){animation-delay:.2s}
+.tdot:nth-child(3){animation-delay:.4s}
+
+/* INPUT */
+#inputbar {
+  flex-shrink:0;
+  padding:10px 12px 16px; background:#0d0c1d;
+  border-top:1px solid #2a2850;
+}
+.irow { display:flex; gap:8px; align-items:flex-end; }
+.ibox {
+  flex:1; background:#1e1d38; border:1.5px solid #2a2850;
+  border-radius:14px; padding:9px 12px;
+  display:flex; align-items:flex-end;
+}
+.ibox:focus-within { border-color:#7b5ea7; }
+#ta {
+  flex:1; background:none; border:none; outline:none;
+  color:#eeeeff; font-size:14px; resize:none;
+  max-height:76px; line-height:1.5; font-family:inherit;
+}
+#ta::placeholder { color:#4a4870; }
+.ibtn {
+  width:38px; height:38px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; cursor:pointer; flex-shrink:0;
+  border:none;
+}
+#micbtn { background:#1e1d38; border:1px solid #2a2850; color:#a89fc0; }
+#micbtn.on { background:rgba(239,68,68,.15); border-color:#ef4444; color:#ef4444; }
+#sndbtn { background:linear-gradient(135deg,#7b5ea7,#c084fc); color:#fff; }
+
+/* FOOTER */
+#footer {
+  flex-shrink:0; text-align:center; padding:6px;
+  font-size:10px; color:#4a4870;
+  border-top:1px solid #2a2850; background:#0d0c1d;
+}
+#footer a { color:#c084fc; text-decoration:none; font-weight:600; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:85px; left:50%;
+  transform:translateX(-50%);
+  background:#1e1d38; border:1px solid #2a2850;
+  color:#eeeeff; border-radius:20px;
+  padding:8px 16px; font-size:12px; font-weight:600;
+  z-index:500; white-space:nowrap; pointer-events:none;
+}
+
+/* MODAL */
+.mover {
+  position:fixed; inset:0; background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(4px); z-index:300;
+  display:flex; align-items:flex-end; justify-content:center;
+}
+.mbox {
+  background:#13122a; border:1px solid #2a2850;
+  border-radius:20px 20px 0 0; padding:16px 14px 28px;
+  width:100%; max-width:520px;
+}
+.mbar { width:36px; height:3px; background:#2a2850; border-radius:3px; margin:0 auto 14px; }
+.mtitle { font-size:14px; font-weight:800; margin-bottom:12px; color:#c084fc; }
+.mgrid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mitem {
+  background:#1e1d38; border:1px solid #2a2850;
+  border-radius:14px; padding:12px 8px; text-align:center; cursor:pointer;
+}
+.mi-i { font-size:28px; margin-bottom:4px; }
+.mi-n { font-size:12px; font-weight:700; color:#fff; }
+.mi-r { font-size:10px; color:#a89fc0; margin-top:2px; }
+.mwarn {
+  margin-top:12px; padding:10px 12px;
+  background:rgba(251,146,60,0.08); border:1px solid rgba(251,146,60,0.2);
+  border-radius:12px; font-size:11px; color:#fb923c; line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="sp-icon">🧠</div>
+  <div class="sp-title">AN PSİXOLOJİ</div>
+  <div class="sp-sub">Peşəkar Uşaq Psixologiyası Agenti</div>
+  <div class="sp-dots">
+    <div class="sp-dot"></div>
+    <div class="sp-dot"></div>
+    <div class="sp-dot"></div>
+  </div>
+</div>
+
+<div id="wrap">
+  <div id="header">
+    <div class="hlogo">🧠<div class="hlogo-dot"></div></div>
+    <div>
+      <div class="htitle">AN PSİXOLOJİ</div>
+      <div class="hsub">● Aktiv · cavab verir</div>
+    </div>
+    <div class="hbtns">
+      <button class="hbtn" onclick="showTeam()">👥</button>
+      <button class="hbtn" onclick="clearChat()">🗑</button>
+    </div>
+  </div>
+
+  <div id="chips"></div>
+
+  <div id="chat"></div>
+
+  <div id="inputbar">
+    <div class="irow">
+      <div class="ibox">
+        <textarea id="ta" rows="1" placeholder="Sualınızı yazın..."></textarea>
+      </div>
+      <button class="ibtn" id="micbtn" onclick="toggleMic()">🎤</button>
+      <button class="ibtn" id="sndbtn" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+
+  <div id="footer">
+    AN PSİXOLOJİ · AI Agent &nbsp;|&nbsp;
+    <a href="https://instagram.com/s_akhundoff" target="_blank">📷 @s_akhundoff</a>
+    &nbsp;·&nbsp; by s_akhundoff
+  </div>
+</div>
+
+<script>
+// ── TOKEN ──────────────────────────────────────────────
+const _d='TUJadX1DbEkTcEBnGFNbeRITZ0BBXm0dGRNgZHJcfxJrWhkTcmF5eQ==';
+const _k=42;
+const GT=()=>atob(_d).split('').map(c=>String.fromCharCode(c.charCodeAt(0)^_k)).join('');
+
+// ── DATA ───────────────────────────────────────────────
+const TOPICS=[
+  {k:'autizm',  i:'🔵',l:'Autizm'},
+  {k:'nitq',    i:'🗣️',l:'Nitq'},
+  {k:'davranis',i:'🤝',l:'Davranış'},
+  {k:'dehb',    i:'⚡',l:'DEHB'},
+  {k:'emosiya', i:'❤️',l:'Emosiya'},
+  {k:'oyun',    i:'🎮',l:'Oyun Terapiyası'},
+  {k:'oxuma',   i:'📖',l:'Oxuma/Yazma'},
+  {k:'sosial',  i:'👫',l:'Sosial Bacarıq'},
+  {k:'motor',   i:'🏃',l:'Motor Bacarıq'},
+  {k:'yuxu',    i:'🌙',l:'Yuxu'},
+];
+
+const SPECS=[
+  {i:'🧠',n:'Psixoloq',    r:'Emosional inkişaf, davranış',     p:'Psixoloq kimi uşağın emosional inkişafı və davranış problemləri üçün ən effektiv praktiki tövsiyələri ətraflı izah et.'},
+  {i:'🗣️',n:'Loqoped',     r:'Nitq, artikulyasiya, dil',        p:'Loqoped kimi nitq gecikmələri, artikulyasiya, dil inkişafı üçün ev məşqlərini və müdaxilə üsullarını izah et.'},
+  {i:'🖐️',n:'Erqoterapevt',r:'Motor bacarıqlar, gündəlik həyat',p:'Erqoterapevt kimi uşağın motor bacarıqları və gündəlik həyat aktivlikləri üçün praktiki üsulları izah et.'},
+  {i:'📚',n:'Psixopedaqoq',r:'Öyrənmə, diqqət, idrak',          p:'Psixopedaqoq kimi uşağın öyrənmə prosesi, diqqət, idrak inkişafı üçün ən effektiv strategiyaları izah et.'},
+];
+
+const PROMPTS={
+  autizm:'Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, kommunikasiya inkişafı üçün praktiki üsullar.',
+  nitq:'Uşaqlarda nitq gecikmələri haqqında ətraflı məlumat ver. Yaşa görə nitq inkişafı normaları, evdə məşqlər, loqopedə nə vaxt müraciət etmək lazımdır.',
+  davranis:'Xüsusi ehtiyaclı uşaqlarda davranış problemlərini necə idarə etmək olar? Effektiv strategiyalar, pozitiv dəstək üsulları, çətin anlarda nə etmək lazımdır.',
+  dehb:'DEHB olan uşaqlar haqqında məlumat ver. Əlamətlər, evdə kömək üsulları, diqqəti artırmaq üçün fəaliyyətlər, məktəbdə dəstək.',
+  emosiya:'Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə. Sakinləşdirmə texnikaları, valideyn nə edə bilər.',
+  oyun:'Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə edilə biləcək oyun növləri.',
+  oxuma:'Uşaqlarda oxuma-yazma çətinlikləri. Əlamətlər, evdə kömək üsulları, müdaxilə strategiyaları.',
+  sosial:'Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar.',
+  motor:'Uşaqlarda xırda və iri motor inkişafı. Evdə məşq üsulları, gecikmə əlamətləri.',
+  yuxu:'Xüsusi ehtiyaclı uşaqlarda yuxu problemləri. Sağlam yuxu rutini qurmaq üçün tövsiyələr.',
+};
+
+const QRS={
+  autizm:  ['🎮 Oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya'],
+  nitq:    ['🎵 Mahnılarla nitq','⏰ Nə vaxt mütəxəssis?','📝 Ev məşqləri'],
+  davranis:['😮‍💨 Sakinləşdirmə','📊 Davranış cədvəli','🏫 Məktəbdə dəstək'],
+  dehb:    ['⚡ Enerji fəaliyyət','🎯 Diqqət məşqləri','🌙 Yuxu rutini'],
+  emosiya: ['❤️ Emosiya kartları','🫂 Sakinləşmə','🎨 Yaradıcı ifadə'],
+  oyun:    ['🧩 Qurucu oyunlar','🎨 Sənət terapiyası','🏃 Aktiv oyunlar'],
+  oxuma:   ['🔤 Hərfləri öyrən','📖 Oxuma strategiya','✏️ Yazı məşqləri'],
+  sosial:  ['👋 Salamlaşma','🤝 Növbə tutmaq','🎭 Rol oyunu'],
+  motor:   ['✂️ Kəsmə məşqi','🖍️ Boyama','⚽ Balans məşqi'],
+  yuxu:    ['🛁 Yatış rutini','📵 Ekran vaxtı','🌙 Gecə narahatçılığı'],
+  def:     ['📌 Daha ətraflı','🏠 Ev fəaliyyəti','👩‍⚕️ Mütəxəssisə gedim?'],
+};
+
+const SYS=`Sən "AN PSİXOLOJİ" AI agentisən. Azərbaycan dilinin uşaq psixologiyası, logopediya, erqoterapiya sahəsindəki ən yüksək səviyyəli mütəxəssisi kimi cavab verirsən.
+
+CAVAB FORMATIN:
+1. 💜 İsti giriş
+2. 📋 Əsas məlumat – sadə dildə
+3. ✅ 3-5 Praktiki addım – evdə edilə bilənlər
+4. ⚠️ Nə etməyin
+5. 💡 Əsas tövsiyə
+6. 🏥 Nə vaxt mütəxəssisə?
+
+Azərbaycan dilində, emoji ilə, **qalın** formatla, diaqnoz qoymadan, ümidverici tonla cavab ver.`;
+
+// ── STATE ──────────────────────────────────────────────
+let msgs=[], busy=false, topic=null, rec=null, isRec=false;
+
+// ── HELPERS ────────────────────────────────────────────
+const now=()=>new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
+
+function toast(msg){
+  const el=document.createElement('div');
+  el.className='toast'; el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2400);
+}
+
+function fmt(t){
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n/g,'<br>');
+}
+
+// ── API ────────────────────────────────────────────────
+async function ask(text, topicKey=null){
+  const sys = topicKey
+    ? SYS+'\n\nAktiv mövzu: '+TOPICS.find(t=>t.k===topicKey)?.l+'. Bu mövzu haqqında ətraflı məlumat ver.'
+    : SYS;
+
+  const history = msgs.slice(-8).map(m=>({
+    role: m.r==='bot' ? 'assistant' : 'user',
+    content: m.t
+  }));
+  history.push({role:'user', content: topicKey?(PROMPTS[topicKey]||text):text});
+
+  const res = await fetch('https://models.inference.ai.azure.com/chat/completions',{
+    method:'POST',
+    headers:{
+      'Authorization':'Bearer '+GT(),
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({
+      model:'gpt-4o-mini',
+      messages:[{role:'system',content:sys},...history],
+      max_tokens:1200,
+      temperature:0.7
+    })
+  });
+
+  if(!res.ok){
+    const txt=await res.text();
+    throw new Error('HTTP '+res.status+': '+txt.slice(0,100));
+  }
+  const data=await res.json();
+  return data.choices[0].message.content;
+}
+
+// ── RENDER ─────────────────────────────────────────────
+function render(){
+  const chat=document.getElementById('chat');
+  chat.innerHTML='';
+
+  msgs.forEach(m=>{
+    const isMe=m.r==='me';
+    const row=document.createElement('div');
+    row.className='row'+(isMe?' me':'');
+
+    const av=document.createElement('div');
+    av.className='ava'+(isMe?' me':'');
+    av.textContent=isMe?'🙋':'🧠';
+
+    const col=document.createElement('div');
+    col.className='col';
+
+    const bbl=document.createElement('div');
+    bbl.className='bbl '+(isMe?'me':'bot');
+    if(isMe) bbl.textContent=m.t;
+    else bbl.innerHTML=fmt(m.t);
+
+    // Specialist cards
+    if(!isMe && m.specs){
+      const g=document.createElement('div'); g.className='sgrid';
+      SPECS.forEach(s=>{
+        const c=document.createElement('div'); c.className='scard';
+        c.innerHTML=`<div class="scard-i">${s.i}</div><div class="scard-n">${s.n}</div><div class="scard-r">${s.r}</div>`;
+        c.onclick=()=>send(s.p);
+        g.appendChild(c);
+      });
+      bbl.appendChild(g);
+    }
+
+    // Quick replies
+    if(!isMe && m.qr?.length){
+      const w=document.createElement('div'); w.className='qrs';
+      m.qr.forEach(q=>{
+        const b=document.createElement('button'); b.className='qr'; b.textContent=q;
+        b.onclick=()=>send(q);
+        w.appendChild(b);
+      });
+      bbl.appendChild(w);
+    }
+
+    const tm=document.createElement('div'); tm.className='tm'; tm.textContent=m.ts;
+    col.appendChild(bbl); col.appendChild(tm);
+    row.appendChild(av); row.appendChild(col);
+    chat.appendChild(row);
+  });
+
+  // Typing
+  if(busy){
+    const row=document.createElement('div'); row.className='row';
+    const av=document.createElement('div'); av.className='ava'; av.textContent='🧠';
+    const col=document.createElement('div'); col.className='col';
+    const typ=document.createElement('div'); typ.className='typing';
+    for(let i=0;i<3;i++){const d=document.createElement('div');d.className='tdot';typ.appendChild(d);}
+    col.appendChild(typ); row.appendChild(av); row.appendChild(col);
+    chat.appendChild(row);
+  }
+
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function add(role,text,opts={}){
+  msgs.push({r:role,t:text,ts:now(),...opts});
+  render();
+}
+
+// ── SEND ───────────────────────────────────────────────
+async function send(override=null){
+  const ta=document.getElementById('ta');
+  const text=override!==null ? override : ta.value.trim();
+  if(!text||busy) return;
+  ta.value=''; ta.style.height='auto';
+  add('me',text);
+  busy=true; render();
+
+  try{
+    const reply=await ask(text,topic);
+    const qr=topic?(QRS[topic]||QRS.def):QRS.def;
+    topic=null;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    add('bot',reply,{qr});
+  }catch(e){
+    add('bot','⚠️ **Xəta baş verdi.**\n'+e.message+'\n\nBir az sonra yenidən cəhd edin.',{qr:QRS.def});
+  }
+  busy=false; render();
+}
+
+function sendMsg(){ send(); }
+
+// ── TOPIC ──────────────────────────────────────────────
+async function clickTopic(t){
+  if(busy) return;
+  topic=t.k;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  document.querySelector(`.chip[data-k="${t.k}"]`)?.classList.add('on');
+  add('me',t.i+' '+t.l+' haqqında məlumat');
+  busy=true; render();
+
+  try{
+    const reply=await ask('',t.k);
+    add('bot',reply,{qr:QRS[t.k]||QRS.def});
+  }catch(e){
+    add('bot','⚠️ '+e.message,{qr:QRS.def});
+  }
+  topic=null;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  busy=false; render();
+}
+
+// ── CLEAR ──────────────────────────────────────────────
+function clearChat(){
+  msgs=[];
+  add('bot',
+    '💜 **Salam! Mən AN PSİXOLOJİ agentiyəm.**\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm.\n\nUşağınızla bağlı sualınızı yazın və ya yuxarıdan mövzu seçin.\n\n_Diaqnoz qoymuram – yalnız yönləndirir, güclü valideyn olmağınıza kömək edirəm._ 🌟',
+    {qr:['🧠 Psixoloq','🗣️ Loqoped','🖐️ Erqoterapevt','📚 Psixopedaqoq'], specs:true}
+  );
+}
+
+// ── TEAM ───────────────────────────────────────────────
+function showTeam(){
+  const ov=document.createElement('div'); ov.className='mover';
+  ov.innerHTML=`<div class="mbox">
+    <div class="mbar"></div>
+    <div class="mtitle">👥 Mütəxəssislər Komandası</div>
+    <div class="mgrid" id="_mg"></div>
+    <div class="mwarn">⚠️ Bu agent diaqnoz qoymur. Ciddi hallarda mütəxəssisə müraciət edin.</div>
+  </div>`;
+  document.body.appendChild(ov);
+  const g=ov.querySelector('#_mg');
+  SPECS.forEach(s=>{
+    const d=document.createElement('div'); d.className='mitem';
+    d.innerHTML=`<div class="mi-i">${s.i}</div><div class="mi-n">${s.n}</div><div class="mi-r">${s.r}</div>`;
+    d.onclick=()=>{ ov.remove(); send(s.p); };
+    g.appendChild(d);
+  });
+  ov.addEventListener('click',e=>{ if(e.target===ov) ov.remove(); });
+}
+
+// ── MIC ────────────────────────────────────────────────
+function toggleMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ toast('⚠️ Brauzeriniz səs tanımağı dəstəkləmir'); return; }
+  const btn=document.getElementById('micbtn');
+  if(isRec){ rec?.stop(); isRec=false; btn.classList.remove('on'); return; }
+  rec=new SR(); rec.lang='az-AZ'; rec.continuous=false; rec.interimResults=false;
+  rec.onresult=e=>{ document.getElementById('ta').value=e.results[0][0].transcript; toast('✅ Nitq tanındı'); };
+  rec.onerror=()=>{ toast('⚠️ Səs tanınmadı'); isRec=false; btn.classList.remove('on'); };
+  rec.onend=()=>{ isRec=false; btn.classList.remove('on'); };
+  rec.start(); isRec=true; btn.classList.add('on');
+}
+
+// ── TEXTAREA AUTO-RESIZE ───────────────────────────────
+document.getElementById('ta').addEventListener('input',function(){
+  this.style.height='auto';
+  this.style.height=Math.min(this.scrollHeight,76)+'px';
+});
+document.getElementById('ta').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); }
+});
+
+// ── BUILD CHIPS ────────────────────────────────────────
+const chipsEl=document.getElementById('chips');
+TOPICS.forEach(t=>{
+  const b=document.createElement('button');
+  b.className='chip'; b.dataset.k=t.k;
+  b.textContent=t.i+' '+t.l;
+  b.onclick=()=>clickTopic(t);
+  chipsEl.appendChild(b);
+});
+
+// ── BOOT ───────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  clearChat();
+  setTimeout(()=>{
+    const sp=document.getElementById('splash');
+    sp.classList.add('gone');
+    setTimeout(()=>sp.remove(), 500);
+  }, 1800);
+});
+</script>
+</body>
+</html>
