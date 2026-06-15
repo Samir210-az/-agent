@@ -2,12 +2,19 @@
 <html lang="az">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>AN PSİXOLOJİ – AI Agent</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+  overflow-y:hidden;
+  height:100%;
+  height:100dvh;
+}
 :root{
   --bg:#0f0e17;
   --surface:#1a1928;
@@ -22,136 +29,323 @@
   --text2:#9896b8;
   --text3:#6b6987;
   --bubble-agent:#1e1c35;
-  --bubble-user:linear-gradient(135deg,#7c6ef5,#a78bfa);
-  --radius:20px;
   --font:'Plus Jakarta Sans',sans-serif;
 }
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
 
-/* === SPLASH === */
-.splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:20px;transition:opacity .5s}
+/* SPLASH */
+.splash{
+  position:fixed;inset:0;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:9999;gap:20px;
+  transition:opacity .5s;
+}
 .splash.hide{opacity:0;pointer-events:none}
-.splash-logo{width:90px;height:90px;border-radius:28px;background:linear-gradient(135deg,#7c6ef5,#e879f9);display:flex;align-items:center;justify-content:center;font-size:2.5rem;animation:logoPulse 2s infinite;box-shadow:0 0 40px rgba(124,110,245,.4)}
-.splash-title{font-size:1.8rem;font-weight:800;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.splash-sub{font-size:.85rem;color:var(--text2);text-align:center;max-width:240px;line-height:1.6}
-.splash-dots{display:flex;gap:10px}
+.splash-logo{
+  width:88px;height:88px;border-radius:26px;
+  background:linear-gradient(135deg,#7c6ef5,#e879f9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.4rem;
+  animation:logoPulse 2s infinite;
+  box-shadow:0 0 40px rgba(124,110,245,.4);
+}
+.splash-title{
+  font-size:1.7rem;font-weight:800;
+  background:linear-gradient(90deg,#a78bfa,#e879f9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.splash-sub{font-size:.82rem;color:var(--text2);text-align:center;max-width:230px;line-height:1.6}
+.splash-dots{display:flex;gap:10px;margin-top:4px}
 .splash-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotBounce 1.4s infinite}
 .splash-dot:nth-child(2){animation-delay:.2s}
 .splash-dot:nth-child(3){animation-delay:.4s}
 
-/* === API KEY MODAL === */
-.api-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px}
-.api-sheet{background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:28px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:16px}
-.api-sheet h3{font-size:1.1rem;font-weight:700;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.api-sheet p{font-size:.78rem;color:var(--text2);line-height:1.6}
-.api-input{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;color:var(--text);font-size:.85rem;font-family:var(--font);outline:none;width:100%;transition:.2s}
+/* API MODAL */
+.api-modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);
+  z-index:8000;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.api-sheet{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:26px 22px;
+  width:100%;max-width:380px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.api-sheet h3{
+  font-size:1.05rem;font-weight:800;
+  background:linear-gradient(90deg,#a78bfa,#e879f9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.api-sheet p{font-size:.76rem;color:var(--text2);line-height:1.6}
+.api-input{
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:13px;padding:12px 15px;
+  color:var(--text);font-size:.84rem;
+  font-family:var(--font);outline:none;width:100%;transition:.2s;
+}
 .api-input:focus{border-color:var(--accent)}
-.api-btn{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border:none;border-radius:14px;padding:13px;color:#fff;font-size:.9rem;font-weight:700;font-family:var(--font);cursor:pointer;transition:.15s}
+.api-btn{
+  background:linear-gradient(135deg,#7c6ef5,#a78bfa);
+  border:none;border-radius:13px;padding:13px;
+  color:#fff;font-size:.88rem;font-weight:700;
+  font-family:var(--font);cursor:pointer;transition:.15s;
+}
 .api-btn:active{transform:scale(.97)}
-.api-note{font-size:.7rem;color:var(--text3);text-align:center}
+.api-note{font-size:.68rem;color:var(--text3);text-align:center}
 .api-note a{color:var(--accent2);text-decoration:none}
 
-/* === WRAPPER === */
-.app{width:100%;max-width:520px;height:100dvh;max-height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+/* APP WRAPPER */
+.app{
+  width:100%;
+  max-width:520px;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  position:relative;
+}
 
-/* === HEADER === */
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;backdrop-filter:blur(12px)}
-.h-avatar{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#7c6ef5,#e879f9);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;position:relative}
-.online{position:absolute;bottom:-2px;right:-2px;width:13px;height:13px;background:var(--green);border-radius:50%;border:2.5px solid var(--surface);animation:onlinePulse 2s infinite}
-.h-info{flex:1;min-width:0}
-.h-name{font-size:1rem;font-weight:800;color:var(--text)}
-.h-status{font-size:.65rem;color:var(--green);display:flex;align-items:center;gap:5px;font-weight:600}
-.h-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:onlinePulse 2s infinite}
-.h-actions{display:flex;gap:6px}
-.h-btn{width:36px;height:36px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:.15s}
-.h-btn:hover{background:var(--border);color:var(--text)}
+/* HEADER */
+.header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:12px 14px;
+  display:flex;align-items:center;gap:11px;
+  flex-shrink:0;
+  width:100%;
+}
+.h-avatar{
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,#7c6ef5,#e879f9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;position:relative;
+}
+.online{
+  position:absolute;bottom:-2px;right:-2px;
+  width:12px;height:12px;
+  background:var(--green);border-radius:50%;
+  border:2.5px solid var(--surface);
+  animation:onlinePulse 2s infinite;
+}
+.h-info{flex:1;min-width:0;overflow:hidden}
+.h-name{font-size:.95rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-status{font-size:.62rem;color:var(--green);display:flex;align-items:center;gap:5px;font-weight:600}
+.h-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green)}
+.h-actions{display:flex;gap:6px;flex-shrink:0}
+.h-btn{
+  width:34px;height:34px;border-radius:11px;
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.95rem;transition:.15s;
+}
+.h-btn:active{background:var(--border)}
 
-/* === TOPICS === */
-.topics{padding:12px 14px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;background:var(--bg);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+/* TOPICS */
+.topics{
+  padding:10px 12px;
+  display:flex;gap:7px;
+  overflow-x:auto;
+  flex-shrink:0;
+  background:var(--bg);
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  width:100%;
+}
 .topics::-webkit-scrollbar{display:none}
-.chip{background:var(--surface);border:1px solid var(--border);border-radius:40px;padding:7px 14px;font-size:.72rem;font-weight:700;color:var(--text2);white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;flex-shrink:0}
-.chip:hover{border-color:var(--accent);color:var(--accent2)}
-.chip.active{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(124,110,245,.35)}
-.chip-icon{font-size:.9rem}
+.chip{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:40px;
+  padding:7px 13px;
+  font-size:.7rem;font-weight:700;
+  color:var(--text2);
+  white-space:nowrap;cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+  transition:all .2s;flex-shrink:0;
+  font-family:var(--font);
+}
+.chip:active,.chip.active{
+  background:linear-gradient(135deg,#7c6ef5,#a78bfa);
+  border-color:transparent;color:#fff;
+  box-shadow:0 4px 14px rgba(124,110,245,.35);
+}
 
-/* === CHAT === */
-.chat{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.chat::-webkit-scrollbar{width:4px}
-.chat::-webkit-scrollbar-track{background:transparent}
-.chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+/* CHAT */
+.chat{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:14px 12px;
+  display:flex;flex-direction:column;gap:13px;
+  scroll-behavior:smooth;
+  width:100%;
+}
+.chat::-webkit-scrollbar{width:3px}
+.chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-.msg{display:flex;gap:10px;align-items:flex-end;animation:fadeUp .25s ease}
+.msg{display:flex;gap:9px;align-items:flex-end;animation:fadeUp .25s ease;width:100%}
 .msg.user{flex-direction:row-reverse}
 
-.msg-avatar{width:32px;height:32px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.msg-avatar{
+  width:30px;height:30px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;flex-shrink:0;
+}
 .msg-avatar.agent{background:linear-gradient(135deg,#7c6ef5,#a78bfa)}
-.msg-avatar.user{background:linear-gradient(135deg,#1e1c35,#2e2b4a);border:1px solid var(--border)}
+.msg-avatar.user{background:var(--surface2);border:1px solid var(--border)}
 
-.msg-body{max-width:76%;display:flex;flex-direction:column;gap:4px}
+.msg-body{
+  max-width:78%;
+  display:flex;flex-direction:column;gap:3px;
+  min-width:0;
+}
 .msg.user .msg-body{align-items:flex-end}
 
-.bubble{padding:11px 15px;border-radius:18px;font-size:.83rem;line-height:1.6;word-break:break-word}
-.bubble.agent{background:var(--bubble-agent);border:1px solid var(--border);border-bottom-left-radius:5px;color:var(--text)}
-.bubble.user{background:var(--bubble-user);border-bottom-right-radius:5px;color:#fff}
+.bubble{
+  padding:10px 13px;border-radius:17px;
+  font-size:.82rem;line-height:1.6;
+  word-break:break-word;overflow-wrap:break-word;
+}
+.bubble.agent{
+  background:var(--bubble-agent);
+  border:1px solid var(--border);
+  border-bottom-left-radius:4px;color:var(--text);
+}
+.bubble.user{
+  background:linear-gradient(135deg,#7c6ef5,#a78bfa);
+  border-bottom-right-radius:4px;color:#fff;
+}
 .bubble strong{color:var(--accent2);font-weight:700}
-.bubble em{color:var(--text2);font-style:normal}
 
-.msg-time{font-size:.58rem;color:var(--text3);padding:0 4px;font-weight:500}
+.msg-time{font-size:.56rem;color:var(--text3);padding:0 3px}
 
-/* Quick replies */
-.qr-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-.qr-btn{background:var(--surface2);border:1px solid var(--border);border-radius:30px;padding:6px 12px;font-size:.68rem;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;white-space:nowrap;font-family:var(--font)}
-.qr-btn:hover{border-color:var(--accent);color:var(--accent2)}
-.qr-btn:active{transform:scale(.96)}
+.qr-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.qr-btn{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:30px;padding:5px 11px;
+  font-size:.66rem;font-weight:600;color:var(--text2);
+  cursor:pointer;transition:.15s;white-space:nowrap;
+  font-family:var(--font);
+}
+.qr-btn:active{border-color:var(--accent);color:var(--accent2)}
 
-/* Typing */
-.typing-wrap{display:flex;gap:10px;align-items:center}
-.typing-bubble{background:var(--bubble-agent);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:5px;padding:12px 18px;display:flex;gap:7px;align-items:center}
-.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:dotBounce 1.4s infinite}
+.spec-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.spec-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:14px;padding:10px 8px;text-align:center;
+  cursor:pointer;transition:.2s;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+}
+.spec-card:active{border-color:var(--accent)}
+.spec-card-icon{font-size:1.5rem}
+.spec-card-name{font-size:.7rem;font-weight:700;color:var(--text)}
+.spec-card-desc{font-size:.58rem;color:var(--text2)}
+
+/* TYPING */
+.typing-bubble{
+  background:var(--bubble-agent);border:1px solid var(--border);
+  border-radius:17px;border-bottom-left-radius:4px;
+  padding:12px 16px;display:flex;gap:6px;align-items:center;
+}
+.typing-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--accent);
+  animation:dotBounce 1.4s infinite;
+}
 .typing-dot:nth-child(2){animation-delay:.2s}
 .typing-dot:nth-child(3){animation-delay:.4s}
 
-/* Specialist card inside bubble */
-.spec-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.spec-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:12px 10px;text-align:center;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:6px}
-.spec-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.spec-card-icon{font-size:1.6rem}
-.spec-card-name{font-size:.72rem;font-weight:700;color:var(--text)}
-.spec-card-desc{font-size:.6rem;color:var(--text2)}
-
-/* === INPUT === */
-.input-area{padding:12px 14px 20px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
-.input-row{display:flex;gap:10px;align-items:flex-end}
-.input-box{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:10px 14px;display:flex;align-items:flex-end;gap:8px;transition:.2s}
+/* INPUT */
+.input-area{
+  padding:10px 12px 16px;
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  flex-shrink:0;width:100%;
+}
+.input-row{display:flex;gap:8px;align-items:flex-end;width:100%}
+.input-box{
+  flex:1;min-width:0;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:16px;padding:9px 13px;
+  display:flex;align-items:flex-end;gap:6px;
+  transition:.2s;
+}
 .input-box:focus-within{border-color:var(--accent)}
-textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:.85rem;font-family:var(--font);resize:none;max-height:80px;line-height:1.5}
+textarea{
+  flex:1;min-width:0;
+  background:transparent;border:none;outline:none;
+  color:var(--text);font-size:.83rem;font-family:var(--font);
+  resize:none;max-height:78px;line-height:1.5;
+}
 textarea::placeholder{color:var(--text3)}
-.mic-btn{width:40px;height:40px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:.15s;flex-shrink:0}
+.mic-btn,.send-btn{
+  width:38px;height:38px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;cursor:pointer;transition:.15s;flex-shrink:0;
+}
+.mic-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
 .mic-btn.rec{background:rgba(251,99,99,.15);border-color:#fb6363;color:#fb6363;animation:micPulse 1s infinite}
-.send-btn{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#7c6ef5,#a78bfa);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:.15s;flex-shrink:0;box-shadow:0 4px 14px rgba(124,110,245,.35)}
-.send-btn:active,.mic-btn:active{transform:scale(.92)}
+.send-btn{background:linear-gradient(135deg,#7c6ef5,#a78bfa);border:none;color:#fff;box-shadow:0 4px 14px rgba(124,110,245,.3)}
+.mic-btn:active,.send-btn:active{transform:scale(.9)}
 
-/* === FOOTER === */
-.footer{text-align:center;padding:8px;font-size:.62rem;color:var(--text3);border-top:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+/* FOOTER */
+.footer{
+  text-align:center;padding:7px;font-size:.6rem;
+  color:var(--text3);border-top:1px solid var(--border);
+  flex-shrink:0;background:var(--bg);width:100%;
+}
 .footer a{color:var(--accent2);text-decoration:none;font-weight:600}
 
-/* === TOAST === */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:30px;padding:9px 20px;font-size:.72rem;font-weight:600;z-index:5000;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:fadeUp .2s ease}
+/* TOAST */
+.toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);border-radius:30px;padding:8px 18px;
+  font-size:.7rem;font-weight:600;z-index:5000;
+  white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4);
+  animation:fadeUp .2s ease;pointer-events:none;
+}
 
-/* === MODAL === */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:4000;display:flex;align-items:flex-end;justify-content:center;padding:0 0 0}
-.modal-sheet{background:var(--surface);border:1px solid var(--border);border-radius:28px 28px 0 0;padding:22px 20px 36px;width:100%;max-width:520px;animation:slideUp .3s ease}
-.modal-handle{width:44px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 18px}
-.modal-title{font-size:1rem;font-weight:800;margin-bottom:14px;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.spec-item{background:var(--surface2);border:1px solid var(--border);border-radius:18px;padding:14px 12px;text-align:center;cursor:pointer;transition:.2s}
-.spec-item:hover{border-color:var(--accent);transform:translateY(-2px)}
-.spec-item-icon{font-size:2rem;margin-bottom:6px}
-.spec-item-name{font-size:.8rem;font-weight:700;color:var(--text)}
-.spec-item-role{font-size:.62rem;color:var(--text2);margin-top:2px}
-.modal-warn{margin-top:14px;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:16px;padding:12px 14px;font-size:.7rem;color:var(--orange);line-height:1.6}
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+  z-index:4000;display:flex;align-items:flex-end;justify-content:center;
+}
+.modal-sheet{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:26px 26px 0 0;padding:20px 18px 34px;
+  width:100%;max-width:520px;animation:slideUp .3s ease;
+}
+.modal-handle{width:42px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px}
+.modal-title{font-size:.95rem;font-weight:800;margin-bottom:13px;background:linear-gradient(90deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.spec-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:16px;padding:13px 10px;text-align:center;cursor:pointer;transition:.2s;
+}
+.spec-item:active{border-color:var(--accent)}
+.spec-item-icon{font-size:1.9rem;margin-bottom:5px}
+.spec-item-name{font-size:.77rem;font-weight:700;color:var(--text)}
+.spec-item-role{font-size:.6rem;color:var(--text2);margin-top:2px}
+.modal-warn{margin-top:13px;background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:14px;padding:11px 13px;font-size:.68rem;color:var(--orange);line-height:1.6}
 
-/* === ANIMATIONS === */
+/* ANIMATIONS */
 @keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(124,110,245,.4)}50%{box-shadow:0 0 60px rgba(232,121,249,.5)}}
 @keyframes onlinePulse{0%,100%{opacity:1}50%{opacity:.5}}
 @keyframes dotBounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-7px);opacity:1}}
@@ -174,8 +368,8 @@ textarea::placeholder{color:var(--text3)}
   </div>
 </div>
 
-<!-- API KEY MODAL -->
-<div class="api-modal" id="apiModal">
+<!-- API MODAL -->
+<div class="api-modal" id="apiModal" style="display:none">
   <div class="api-sheet">
     <div style="font-size:2rem;text-align:center">🔑</div>
     <h3>Anthropic API Açarı</h3>
@@ -188,7 +382,6 @@ textarea::placeholder{color:var(--text3)}
 
 <!-- MAIN APP -->
 <div class="app" id="app" style="display:none">
-  <!-- Header -->
   <div class="header">
     <div class="h-avatar">🧠<div class="online"></div></div>
     <div class="h-info">
@@ -196,18 +389,15 @@ textarea::placeholder{color:var(--text3)}
       <div class="h-status">Aktiv · cavab verir</div>
     </div>
     <div class="h-actions">
-      <button class="h-btn" id="teamBtn" title="Komanda">👥</button>
-      <button class="h-btn" id="clearBtn" title="Təmizlə">🗑</button>
+      <button class="h-btn" id="teamBtn">👥</button>
+      <button class="h-btn" id="clearBtn">🗑</button>
     </div>
   </div>
 
-  <!-- Topics -->
   <div class="topics" id="topics"></div>
 
-  <!-- Chat -->
   <div class="chat" id="chat"></div>
 
-  <!-- Input -->
   <div class="input-area">
     <div class="input-row">
       <div class="input-box">
@@ -218,15 +408,14 @@ textarea::placeholder{color:var(--text3)}
     </div>
   </div>
 
-  <!-- Footer -->
   <div class="footer">
-    AN PSİXOLOJİ · AI Agent &nbsp;|&nbsp; 
-    <a href="https://instagram.com/s_akhundoff" target="_blank">📷 @s_akhundoff</a> &nbsp;·&nbsp; by s_akhundoff
+    AN PSİXOLOJİ · AI Agent &nbsp;|&nbsp;
+    <a href="https://instagram.com/s_akhundoff" target="_blank">📷 @s_akhundoff</a>
+    &nbsp;·&nbsp; by s_akhundoff
   </div>
 </div>
 
 <script>
-// ===== CONFIG =====
 const TOPICS = [
   {key:'autizm',   icon:'🔵', label:'Autizm'},
   {key:'nitq',     icon:'🗣️', label:'Nitq'},
@@ -241,31 +430,31 @@ const TOPICS = [
 ];
 
 const SPECIALISTS = [
-  {icon:'🧠', name:'Psixoloq',      role:'Emosional inkişaf, davranış idarəsi',  prompt:'Psixoloq kimi cavab ver: uşağın emosional inkişafı, davranış problemlərinin idarəsi üçün ən son elmi metod və tövsiyələri ətraflı izah et.'},
-  {icon:'🗣️', name:'Loqoped',       role:'Nitq, artikulyasiya, dil inkişafı',   prompt:'Loqoped kimi cavab ver: nitq gecikmələri, artikulyasiya, dil inkişafı sahəsindəki ən effektiv ev məşqləri və müdaxilə üsullarını izah et.'},
-  {icon:'🖐️', name:'Erqoterapevt',  role:'Motor bacarıqlar, gündəlik həyat',   prompt:'Erqoterapevt kimi cavab ver: xüsusi ehtiyaclı uşaqların motor bacarıqları, gündəlik həyat aktivliklərindəki inkişafı üçün praktiki üsulları izah et.'},
-  {icon:'📚', name:'Psixopedaqoq',  role:'Öyrənmə, diqqət, idrak inkişafı',    prompt:'Psixopedaqoq kimi cavab ver: uşaqların öyrənmə prosesi, diqqət, idrak inkişafı üçün ən effektiv üsul və strategiyaları ətraflı izah et.'},
+  {icon:'🧠', name:'Psixoloq',     role:'Emosional inkişaf, davranış',      prompt:'Psixoloq kimi: uşağın emosional inkişafı və davranış problemlərinin idarəsi üçün ən effektiv elmi metod və praktiki tövsiyələri ətraflı izah et.'},
+  {icon:'🗣️', name:'Loqoped',      role:'Nitq, artikulyasiya, dil',         prompt:'Loqoped kimi: nitq gecikmələri, artikulyasiya, dil inkişafı sahəsindəki ən effektiv ev məşqləri və müdaxilə üsullarını izah et.'},
+  {icon:'🖐️', name:'Erqoterapevt', role:'Motor bacarıqlar, gündəlik həyat', prompt:'Erqoterapevt kimi: xüsusi ehtiyaclı uşaqların motor bacarıqları və gündəlik həyat aktivlikləri üçün praktiki üsulları izah et.'},
+  {icon:'📚', name:'Psixopedaqoq', role:'Öyrənmə, diqqət, idrak inkişafı',  prompt:'Psixopedaqoq kimi: uşaqların öyrənmə prosesi, diqqət, idrak inkişafı üçün ən effektiv üsul və strategiyaları ətraflı izah et.'},
 ];
 
 const TOPIC_PROMPTS = {
-  autizm:   'Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, gündəlik rutin necə qurulmalıdır, kommunikasiya inkişafı üçün praktiki üsullar.',
-  nitq:     'Uşaqlarda nitq gecikmələri haqqında ətraflı məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edilə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır, əlamətlər.',
-  davranis: 'Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik, qışqırma) necə idarə etmək olar? Effektiv strategiyalar, pozitiv dəstək üsulları, çətin anlarda nə etmək lazımdır.',
-  dehb:     'DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, diqqəti artırmaq üçün fəaliyyətlər, məktəbdə dəstək, rutin qurmaq.',
-  emosiya:  'Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları. Sakinləşdirmə texnikaları, emosiyaları ifadə etmə üsulları, valideyn nə edə bilər.',
-  oyun:     'Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri, inkişafa uyğun oyun fikirləri, strukturlu və sərbəst oyunun fərqi.',
-  oxuma:    'Uşaqlarda oxuma-yazma çətinlikləri (disleksiya, diqrafiya). Əlamətlər, evdə kömək üsulları, müdaxilə strategiyaları, nə vaxt mütəxəssisə getmək lazımdır.',
-  sosial:   'Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar. Dostluq qurmaq, sosial qaydaları öyrənmək, qrup fəaliyyətlərə qatılmaq.',
-  motor:    'Uşaqlarda motor inkişaf: xırda motor (qələm tutma, kəsmə) və iri motor (yürüş, tarazlıq) bacarıqları. Evdə məşq üsulları, inkişaf mərhələləri, gecikmə əlamətləri.',
-  yuxu:     'Xüsusi ehtiyaclı uşaqlarda yuxu problemləri. Sağlam yuxu rutini qurmaq, yatmazlığı həll etmək üçün strategiyalar, yuxu xijieni tövsiyələri.',
+  autizm:   'Autizm spektr pozuntusu olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, valideyn evdə nə edə bilər, hansı terapiyalar kömək edir, kommunikasiya inkişafı üçün praktiki üsullar.',
+  nitq:     'Uşaqlarda nitq gecikmələri haqqında ətraflı məlumat ver. Yaşa görə normal nitq inkişafı normaları, evdə edilə bilinəcək məşqlər, loqopedə nə vaxt müraciət etmək lazımdır.',
+  davranis: 'Xüsusi ehtiyaclı uşaqlarda davranış problemlərini (aqressiya, özünə zərər, itaətsizlik) necə idarə etmək olar? Effektiv strategiyalar, pozitiv dəstək üsulları.',
+  dehb:     'DEHB olan uşaqlar haqqında ətraflı məlumat ver. Əlamətlər, evdə kömək üsulları, diqqəti artırmaq üçün fəaliyyətlər, məktəbdə dəstək.',
+  emosiya:  'Xüsusi ehtiyaclı uşaqlarda emosional inkişaf və emosiya tənzimləmə bacarıqları. Sakinləşdirmə texnikaları, valideyn nə edə bilər.',
+  oyun:     'Oyun terapiyası nədir? Xüsusi ehtiyaclı uşaqlar üçün evdə tətbiq edilə biləcək oyun növləri, inkişafa uyğun oyun fikirləri.',
+  oxuma:    'Uşaqlarda oxuma-yazma çətinlikləri (disleksiya, diqrafiya). Əlamətlər, evdə kömək üsulları, müdaxilə strategiyaları.',
+  sosial:   'Xüsusi ehtiyaclı uşaqlarda sosial bacarıqların inkişafı üçün praktiki üsullar. Dostluq qurmaq, sosial qaydaları öyrənmək.',
+  motor:    'Uşaqlarda motor inkişaf: xırda motor və iri motor bacarıqları. Evdə məşq üsulları, inkişaf mərhələləri, gecikmə əlamətləri.',
+  yuxu:     'Xüsusi ehtiyaclı uşaqlarda yuxu problemləri. Sağlam yuxu rutini qurmaq, yatmazlığı həll etmək üçün strategiyalar.',
 };
 
 const QR_BY_TOPIC = {
-  autizm:   ['🎮 Evdə oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya üsulları'],
+  autizm:   ['🎮 Evdə oyun fikirlər','📅 Rutin qurmaq','🗣️ Kommunikasiya'],
   nitq:     ['🎵 Mahnılarla nitq','⏰ Mütəxəssisə nə vaxt?','📝 Ev məşqləri'],
   davranis: ['😮‍💨 Sakinləşdirmə','📊 Davranış cədvəli','🏫 Məktəbdə dəstək'],
   dehb:     ['⚡ Enerji fəaliyyətlər','🎯 Diqqət məşqləri','🌙 Yuxu rutini'],
-  emosiya:  ['❤️ Emosiya kartları','🫂 Sakinləşmə üsulları','🎨 Yaradıcı ifadə'],
+  emosiya:  ['❤️ Emosiya kartları','🫂 Sakinləşmə','🎨 Yaradıcı ifadə'],
   oyun:     ['🧩 Qurucu oyunlar','🎨 Sənət terapiyası','🏃 Aktiv oyunlar'],
   oxuma:    ['🔤 Hərfləri öyrənmək','📖 Oxuma strategiyası','✏️ Yazı məşqləri'],
   sosial:   ['👋 Salamlaşma məşqi','🤝 Növbə tutmaq','🎭 Rol oyunu'],
@@ -278,35 +467,33 @@ const SYSTEM_PROMPT = `Sən "AN PSİXOLOJİ" adlı ixtisaslaşmış AI agentisə
 
 SƏNİN KOMANDAN:
 - Psixoloq: Emosional inkişaf, davranış idarəsi, psixi sağlamlıq
-- Loqoped: Nitq, dil, artikulyasiya inkişafı  
-- Erqoterapevt: Motor bacarıqlar, gündəlik həyat aktivlikləri, hissi inteqrasiya
+- Loqoped: Nitq, dil, artikulyasiya inkişafı
+- Erqoterapevt: Motor bacarıqlar, gündəlik həyat aktivlikləri
 - Psixopedaqoq: Öyrənmə prosesi, idrak inkişafı, xüsusi təhsil
 
-CAVAB FORMATIN (hər dəfə bu strukturu istifadə et):
-1. 💜 **İsti giriş** – Valideyni başa düş, əlaqə qur
-2. 📋 **Əsas məlumat** – Sadə, anlaşılan dildə izah et
-3. ✅ **3-5 Praktiki addım** – Evdə edilə bilənlər, konkret
-4. ⚠️ **Nə etməyin** – Qaçınılacaq davranışlar
-5. 💡 **Tövsiyə** – Ən vacib bir mesaj
-6. 🏥 **Nə vaxt mütəxəssisə?** – Konkret əlamətlər
+CAVAB FORMATIN:
+1. 💜 İsti giriş – Valideyni başa düş
+2. 📋 Əsas məlumat – Sadə dildə izah
+3. ✅ 3-5 Praktiki addım – Evdə edilə bilənlər
+4. ⚠️ Nə etməyin – Qaçınılacaq davranışlar
+5. 💡 Tövsiyə – Ən vacib mesaj
+6. 🏥 Nə vaxt mütəxəssisə? – Konkret əlamətlər
 
 QAYDALAR:
 - Azərbaycan dilində cavab ver
-- Emoji istifadə et (lakin həddindən çox deyil)
+- Emoji istifadə et
 - Diaqnoz qoyma – yalnız yönləndir
-- Valideyni gücləndir, qorxutma
-- **Qalın** və _kursiv_ formatlamadan istifadə et
-- Uzun, ətraflı cavab ver (ən azı 300 söz)
-- Həmişə ümid verici tonla bitir`;
+- **Qalın** formatlamadan istifadə et
+- Ətraflı, dəstəkləyici ton`;
 
-// ===== STATE =====
+// STATE
 let apiKey = localStorage.getItem('anpsix_key') || '';
 let messages = [];
 let isLoading = false;
 let recog = null, isRec = false;
 let activeTopic = null;
 
-// ===== DOM REFS =====
+// DOM
 const chatEl   = document.getElementById('chat');
 const topicsEl = document.getElementById('topics');
 const input    = document.getElementById('msgInput');
@@ -319,24 +506,38 @@ const apiInput = document.getElementById('apiKeyInput');
 const apiSave  = document.getElementById('apiSaveBtn');
 const appEl    = document.getElementById('app');
 
-// ===== UTILS =====
-const time = () => new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
-const toast = msg => {
-  const d = document.createElement('div');
-  d.className='toast'; d.textContent=msg;
-  document.body.appendChild(d);
-  setTimeout(()=>d.remove(), 2500);
-};
-const renderText = t => t
-  .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-  .replace(/_(.+?)_/g,'<em style="color:var(--accent2);font-style:normal">$1</em>')
-  .replace(/\n/g,'<br>');
+// UTILS
+const getTime = () => new Date().toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit'});
 
-// ===== API CALL =====
+function toast(msg) {
+  const d = document.createElement('div');
+  d.className = 'toast'; d.textContent = msg;
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 2500);
+}
+
+function renderText(t) {
+  return t
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+// API CALL — Anthropic
 async function callAI(userPrompt, topicKey=null) {
   const sysPrompt = topicKey
-    ? SYSTEM_PROMPT + `\n\nAktiv mövzu: ${TOPICS.find(t=>t.key===topicKey)?.label || topicKey}. Bu mövzu haqqında ətraflı məlumat ver.`
+    ? SYSTEM_PROMPT + `\n\nAktiv mövzu: ${TOPICS.find(t=>t.key===topicKey)?.label}. Bu mövzu haqqında ətraflı məlumat ver.`
     : SYSTEM_PROMPT;
+
+  const msgHistory = messages
+    .filter(m => m.role !== 'system')
+    .slice(-6)
+    .map(m => ({
+      role: m.role === 'agent' ? 'assistant' : 'user',
+      content: m.text
+    }));
+
+  const finalPrompt = topicKey ? (TOPIC_PROMPTS[topicKey] || userPrompt) : userPrompt;
+  msgHistory.push({role:'user', content: finalPrompt});
 
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -350,27 +551,31 @@ async function callAI(userPrompt, topicKey=null) {
       model: 'claude-haiku-4-5',
       max_tokens: 1500,
       system: sysPrompt,
-      messages: [
-        ...messages.filter(m=>m.role!=='system').slice(-6).map(m=>({
-          role: m.role==='agent'?'assistant':'user',
-          content: m.text
-        })),
-        {role:'user', content: topicKey ? (TOPIC_PROMPTS[topicKey]||userPrompt) : userPrompt}
-      ]
+      messages: msgHistory
     })
   });
+
   if (!resp.ok) {
-    const e = await resp.json().catch(()=>({}));
-    if (resp.status===401) throw new Error('API açarı yanlışdır. Yenidən daxil edin.');
-    throw new Error(e?.error?.message || `Xəta: ${resp.status}`);
+    let errMsg = `HTTP ${resp.status}`;
+    try {
+      const e = await resp.json();
+      if (resp.status === 401) {
+        errMsg = 'API açarı yanlışdır. Yenidən daxil edin.';
+      } else {
+        errMsg = e?.error?.message || errMsg;
+      }
+    } catch(_) {}
+    throw new Error(errMsg);
   }
+
   const data = await resp.json();
   return data.content[0].text;
 }
 
-// ===== RENDER =====
+// RENDER
 function renderChat() {
   chatEl.innerHTML = '';
+
   messages.forEach(msg => {
     const isUser = msg.role === 'user';
     const row = document.createElement('div');
@@ -385,9 +590,14 @@ function renderChat() {
 
     const bub = document.createElement('div');
     bub.className = `bubble ${isUser ? 'user' : 'agent'}`;
-    if (isUser) bub.textContent = msg.text;
-    else bub.innerHTML = renderText(msg.text);
 
+    if (isUser) {
+      bub.textContent = msg.text;
+    } else {
+      bub.innerHTML = renderText(msg.text);
+    }
+
+    // Specialist cards
     if (!isUser && msg.specialists) {
       const grid = document.createElement('div');
       grid.className = 'spec-cards';
@@ -401,12 +611,13 @@ function renderChat() {
       bub.appendChild(grid);
     }
 
-    if (!isUser && msg.qr) {
+    // Quick replies
+    if (!isUser && msg.qr && msg.qr.length) {
       const wrap = document.createElement('div');
       wrap.className = 'qr-wrap';
       msg.qr.forEach(q => {
         const b = document.createElement('button');
-        b.className='qr-btn'; b.textContent=q;
+        b.className = 'qr-btn'; b.textContent = q;
         b.onclick = () => sendMsg(q);
         wrap.appendChild(b);
       });
@@ -423,83 +634,104 @@ function renderChat() {
     chatEl.appendChild(row);
   });
 
+  // Typing indicator
   if (isLoading) {
     const row = document.createElement('div');
     row.className = 'msg';
     const av = document.createElement('div');
     av.className = 'msg-avatar agent'; av.textContent = '🧠';
-    const tw = document.createElement('div');
-    tw.className = 'typing-wrap';
+    const body = document.createElement('div');
+    body.className = 'msg-body';
     const tb = document.createElement('div');
     tb.className = 'typing-bubble';
     for (let i=0;i<3;i++){const d=document.createElement('div');d.className='typing-dot';tb.appendChild(d);}
-    tw.appendChild(tb);
-    row.appendChild(av); row.appendChild(tw);
+    body.appendChild(tb);
+    row.appendChild(av); row.appendChild(body);
     chatEl.appendChild(row);
   }
+
   chatEl.scrollTop = chatEl.scrollHeight;
 }
 
 function addMsg(role, text, opts={}) {
-  messages.push({role, text, time: time(), ...opts});
+  messages.push({role, text, time: getTime(), ...opts});
   renderChat();
 }
 
-// ===== SEND =====
+// SEND
 async function sendMsg(override=null) {
   const text = override !== null ? override : input.value.trim();
   if (!text || isLoading) return;
-  input.value = ''; input.style.height='auto';
+  input.value = '';
+  input.style.height = 'auto';
   addMsg('user', text);
   isLoading = true; renderChat();
+
   try {
     const reply = await callAI(text, activeTopic);
-    const qr = activeTopic ? (QR_BY_TOPIC[activeTopic]||QR_BY_TOPIC.default) : QR_BY_TOPIC.default;
+    const qr = activeTopic
+      ? (QR_BY_TOPIC[activeTopic] || QR_BY_TOPIC.default)
+      : QR_BY_TOPIC.default;
     activeTopic = null;
-    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
     addMsg('agent', reply, {qr});
   } catch(err) {
     if (err.message.includes('yanlışdır')) {
       localStorage.removeItem('anpsix_key');
       apiKey = '';
-      appEl.style.display='none';
-      apiModal.style.display='flex';
+      appEl.style.display = 'none';
+      apiModal.style.display = 'flex';
       toast('⚠️ ' + err.message);
     } else {
-      addMsg('agent', `⚠️ ${err.message}\n\nZəhmət olmasa bir az sonra cəhd edin.`, {qr:QR_BY_TOPIC.default});
+      addMsg('agent',
+        `⚠️ **Xəta baş verdi.**\n${err.message}\n\nZəhmət olmasa bir az sonra cəhd edin.`,
+        {qr: QR_BY_TOPIC.default}
+      );
     }
   }
+
   isLoading = false; renderChat();
 }
 
-// ===== TOPIC =====
+// TOPIC CLICK
 async function handleTopic(t) {
+  if (isLoading) return;
   activeTopic = t.key;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   document.querySelector(`.chip[data-key="${t.key}"]`)?.classList.add('active');
   addMsg('user', `${t.icon} ${t.label} haqqında məlumat`);
   isLoading = true; renderChat();
+
   try {
     const reply = await callAI('', t.key);
-    addMsg('agent', reply, {qr: QR_BY_TOPIC[t.key]||QR_BY_TOPIC.default});
+    addMsg('agent', reply, {qr: QR_BY_TOPIC[t.key] || QR_BY_TOPIC.default});
   } catch(err) {
-    addMsg('agent', `⚠️ ${err.message}`, {qr:QR_BY_TOPIC.default});
+    if (err.message.includes('yanlışdır')) {
+      localStorage.removeItem('anpsix_key');
+      apiKey = '';
+      appEl.style.display = 'none';
+      apiModal.style.display = 'flex';
+      toast('⚠️ ' + err.message);
+    } else {
+      addMsg('agent', `⚠️ ${err.message}`, {qr: QR_BY_TOPIC.default});
+    }
   }
+
   activeTopic = null;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   isLoading = false; renderChat();
 }
 
-// ===== CLEAR =====
+// CLEAR
 function clearChat() {
   messages = [];
   addMsg('agent',
-    '💜 **Salam! Mən AN PSİXOLOJİ agentiyəm.**\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm. Uşağınızla bağlı sualınızı yazın və ya aşağıdakı mövzulardan birini seçin.\n\n_Diaqnoz qoymuram – yalnız yönləndirir, güclü valideyn olmağınıza kömək edirəm._ 🌟\n\nKomandamı tanımaq istəyirsiniz?',
-    {qr:['🧠 Psixoloq', '🗣️ Loqoped', '🖐️ Erqoterapevt', '📚 Psixopedaqoq'], specialists: true}
+    '💜 **Salam! Mən AN PSİXOLOJİ agentiyəm.**\n\nMən psixoloq, loqoped, erqoterapevt və psixopedaqoq kimi sizə kömək edirəm. Uşağınızla bağlı sualınızı yazın və ya yuxarıdakı mövzulardan birini seçin.\n\n_Diaqnoz qoymuram – yalnız yönləndirir, güclü valideyn olmağınıza kömək edirəm._ 🌟\n\nKomandamı tanımaq istəyirsiniz?',
+    {qr: ['🧠 Psixoloq','🗣️ Loqoped','🖐️ Erqoterapevt','📚 Psixopedaqoq'], specialists: true}
   );
 }
 
-// ===== TEAM MODAL =====
+// TEAM MODAL
 function showTeam() {
   const ov = document.createElement('div');
   ov.className = 'modal-overlay';
@@ -514,15 +746,15 @@ function showTeam() {
   const grid = ov.querySelector('#specGrid');
   SPECIALISTS.forEach(s => {
     const d = document.createElement('div');
-    d.className='spec-item';
-    d.innerHTML=`<div class="spec-item-icon">${s.icon}</div><div class="spec-item-name">${s.name}</div><div class="spec-item-role">${s.role}</div>`;
+    d.className = 'spec-item';
+    d.innerHTML = `<div class="spec-item-icon">${s.icon}</div><div class="spec-item-name">${s.name}</div><div class="spec-item-role">${s.role}</div>`;
     d.onclick = () => { ov.remove(); sendMsg(s.prompt); };
     grid.appendChild(d);
   });
   ov.addEventListener('click', e => { if(e.target===ov) ov.remove(); });
 }
 
-// ===== VOICE =====
+// VOICE
 function toggleVoice() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { toast('⚠️ Brauzeriniz səs tanımağı dəstəkləmir'); return; }
@@ -532,42 +764,43 @@ function toggleVoice() {
     recog = new SR();
     recog.lang='az-AZ'; recog.continuous=false; recog.interimResults=false;
     recog.onresult = e => { input.value=e.results[0][0].transcript; toast('✅ Nitq tanındı'); };
-    recog.onerror = () => { toast('⚠️ Səs tanınmadı'); };
-    recog.onend = () => { isRec=false; micBtn.classList.remove('rec'); };
+    recog.onerror = () => { toast('⚠️ Səs tanınmadı'); isRec=false; micBtn.classList.remove('rec'); };
+    recog.onend   = () => { isRec=false; micBtn.classList.remove('rec'); };
     recog.start(); isRec=true; micBtn.classList.add('rec');
   }
 }
 
-// ===== INIT =====
+// BUILD TOPICS
 function initTopics() {
   TOPICS.forEach(t => {
     const b = document.createElement('button');
-    b.className='chip'; b.dataset.key=t.key;
-    b.innerHTML=`<span class="chip-icon">${t.icon}</span>${t.label}`;
+    b.className = 'chip'; b.dataset.key = t.key;
+    b.innerHTML = `${t.icon} ${t.label}`;
     b.onclick = () => handleTopic(t);
     topicsEl.appendChild(b);
   });
 }
 
+// START APP
 function startApp() {
-  appEl.style.display='flex';
-  apiModal.style.display='none';
+  appEl.style.display = 'flex';
+  apiModal.style.display = 'none';
   initTopics();
   clearChat();
 }
 
-// Events
+// EVENTS
 apiSave.onclick = () => {
   const k = apiInput.value.trim();
-  if (!k.startsWith('sk-ant-')) { toast('⚠️ Düzgün API açarı daxil edin'); return; }
+  if (!k.startsWith('sk-ant-')) { toast('⚠️ Düzgün API açarı daxil edin (sk-ant- ilə başlamalıdır)'); return; }
   apiKey = k;
   localStorage.setItem('anpsix_key', k);
   startApp();
 };
 apiInput.addEventListener('keydown', e => { if(e.key==='Enter') apiSave.click(); });
 
-sendBtn.onclick = () => sendMsg();
-micBtn.onclick  = toggleVoice;
+sendBtn.onclick  = () => sendMsg();
+micBtn.onclick   = toggleVoice;
 clearBtn.onclick = clearChat;
 teamBtn.onclick  = showTeam;
 
@@ -575,23 +808,24 @@ input.addEventListener('keydown', e => {
   if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
 });
 input.addEventListener('input', function() {
-  this.style.height='auto';
-  this.style.height = Math.min(this.scrollHeight,80)+'px';
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 78) + 'px';
 });
 
-// Boot
+// BOOT
 window.addEventListener('load', () => {
   setTimeout(() => {
-    document.getElementById('splash').classList.add('hide');
+    const sp = document.getElementById('splash');
+    sp.classList.add('hide');
     setTimeout(() => {
-      document.getElementById('splash').remove();
+      sp.remove();
       if (apiKey) {
         startApp();
       } else {
-        apiModal.style.display='flex';
+        apiModal.style.display = 'flex';
       }
     }, 500);
-  }, 2000);
+  }, 1800);
 });
 </script>
 </body>
