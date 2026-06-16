@@ -395,17 +395,11 @@ async function ask(text, topicKey=null){
     ? SYS+'\n\nAktiv mövzu: '+TOPICS.find(t=>t.k===topicKey)?.l+'. Bu mövzu haqqında ətraflı məlumat ver.'
     : SYS;
 
-  const history = msgs.slice(-8).map(m=>({
-    role: m.r==='bot' ? 'model' : 'user',
-    parts:[{text: m.t}]
-  }));
-  history.push({role:'user', parts:[{text: topicKey?(PROMPTS[topicKey]||text):text}]});
-
-  const history2 = msgs.slice(-8).map(m=>({
+  const history = msgs.slice(-6).map(m=>({
     role: m.r==='bot' ? 'assistant' : 'user',
     content: m.t
   }));
-  history2.push({role:'user', content: topicKey?(PROMPTS[topicKey]||text):text});
+  history.push({role:'user', content: topicKey?(PROMPTS[topicKey]||text):text});
 
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method:'POST',
@@ -414,9 +408,9 @@ async function ask(text, topicKey=null){
       'Authorization':'Bearer '+GT()
     },
     body:JSON.stringify({
-      model:'llama-3.3-70b-versatile',
-      messages:[{role:'system',content:sys},...history2],
-      max_tokens:1200,
+      model:'llama3-70b-8192',
+      messages:[{role:'system',content:sys},...history],
+      max_tokens:800,
       temperature:0.7
     })
   });
