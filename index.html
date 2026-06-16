@@ -422,34 +422,6 @@ async function ask(text, topicKey=null){
   return data.candidates[0].content.parts[0].text;
 }
 
-  const history = msgs.slice(-8).map(m=>({
-    role: m.r==='bot' ? 'assistant' : 'user',
-    content: m.t
-  }));
-  history.push({role:'user', content: topicKey?(PROMPTS[topicKey]||text):text});
-
-  const res = await fetch('https://models.inference.ai.azure.com/chat/completions',{
-    method:'POST',
-    headers:{
-      'Authorization':'Bearer '+GT(),
-      'Content-Type':'application/json'
-    },
-    body:JSON.stringify({
-      model:'gpt-4o-mini',
-      messages:[{role:'system',content:sys},...history],
-      max_tokens:1200,
-      temperature:0.7
-    })
-  });
-
-  if(!res.ok){
-    const txt=await res.text();
-    throw new Error('HTTP '+res.status+': '+txt.slice(0,100));
-  }
-  const data=await res.json();
-  return data.choices[0].message.content;
-}
-
 // ── RENDER ─────────────────────────────────────────────
 function render(){
   const chat=document.getElementById('chat');
