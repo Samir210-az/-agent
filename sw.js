@@ -1,4 +1,4 @@
-const CACHE = "anpsix-v1";
+const CACHE = "anpsix-v3";
 const FILES = ["/", "/index.html", "/manifest.json"];
 
 self.addEventListener("install", e => {
